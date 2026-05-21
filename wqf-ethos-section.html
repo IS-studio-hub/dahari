@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>WQF Ethos section (embed)</title>
+	<!--
+		Standalone clone of the WorldQuant Foundry "Our ethos" block.
+		Live site wiring: main.min.css (Tailwind), gsap.min.js + ScrollTrigger, Alpine + splitTextReveal in main.min.js.
+		splitTextReveal on production uses GSAP SplitText (Club); this file uses the same word-level fallback as other embeds.
+
+		Webflow: Head = <style> below + this comment block optional; Embed = #wqf-ethos-root …; Footer = GSAP + Alpine scripts + alpine:init.
+		"Join Us" fires CustomEvent `contact-modal:open` (detail: '#contact') — hook in Webflow or replace @click.
+	-->
+	<style>
+		[x-cloak] { display: none !important; }
+
+		@font-face {
+			font-display: swap;
+			font-family: "Roc Grotesk";
+			font-style: normal;
+			font-weight: 400;
+			src: url("https://www.worldquantfoundry.com/assets/roc-grotesk-regular.woff2") format("woff2"),
+				url("https://www.worldquantfoundry.com/assets/roc-grotesk-regular.woff") format("woff");
+		}
+		@font-face {
+			font-display: swap;
+			font-family: "Roc Grotesk";
+			font-style: normal;
+			font-weight: 500;
+			src: url("https://www.worldquantfoundry.com/assets/roc-grotesk-medium.woff2") format("woff2"),
+				url("https://www.worldquantfoundry.com/assets/roc-grotesk-medium.woff") format("woff");
+		}
+		@font-face {
+			font-display: swap;
+			font-family: "Azeret Mono";
+			font-style: normal;
+			font-weight: 500;
+			src: url("https://www.worldquantfoundry.com/assets/azeret-mono-regular.otf") format("opentype");
+		}
+
+		@keyframes wqf-glitch-hover {
+			0% { opacity: 1; }
+			8% { opacity: 0.7; }
+			12% { opacity: 0.2; }
+			18% { opacity: 0.9; }
+			25% { opacity: 1; }
+			32% { opacity: 0.4; }
+			38% { opacity: 0.8; }
+			42% { opacity: 0.3; }
+			48% { opacity: 1; }
+			65% { opacity: 0.85; }
+			72% { opacity: 0.15; }
+			78% { opacity: 0.6; }
+			85% { opacity: 1; }
+			92% { opacity: 0.5; }
+			to { opacity: 1; }
+		}
+
+		#wqf-ethos-root {
+			--easing: cubic-bezier(0.62, 0.16, 0.13, 1.01);
+			--color-rich-carbon: #111;
+			--color-neural-fog: #dadada;
+			--color-off-white: #e7e7e7;
+			--color-electric-teal: #5c939f;
+			--color-infrared: #ed6d40;
+			box-sizing: border-box;
+			width: 100%;
+			-webkit-font-smoothing: antialiased;
+		}
+
+		#wqf-ethos-root *,
+		#wqf-ethos-root *::before,
+		#wqf-ethos-root *::after {
+			box-sizing: border-box;
+		}
+
+		#wqf-ethos-root .wqf-section {
+			background: var(--color-neural-fog);
+			border-radius: 20px 20px 0 0;
+			color: var(--color-rich-carbon);
+			overflow: hidden;
+			padding-top: 120px;
+			padding-bottom: 200px;
+		}
+
+		@media (min-width: 768px) {
+			#wqf-ethos-root .wqf-section {
+				padding-top: 220px;
+				padding-bottom: 220px;
+			}
+		}
+
+		#wqf-ethos-root .wqf-container {
+			margin-left: auto;
+			margin-right: auto;
+			max-width: 1440px;
+			padding-left: 24px;
+			padding-right: 24px;
+			width: 100%;
+		}
+
+		#wqf-ethos-root .wqf-intro-grid {
+			display: grid;
+			gap: 24px;
+			margin-bottom: 40px;
+			grid-template-columns: 1fr;
+		}
+
+		@media (min-width: 768px) {
+			#wqf-ethos-root .wqf-intro-grid {
+				grid-template-columns: 1fr 1fr;
+				margin-bottom: 60px;
+			}
+		}
+
+		#wqf-ethos-root .wqf-intro-left {
+			display: flex;
+			flex-direction: column;
+			gap: 12px;
+		}
+
+		#wqf-ethos-root .wqf-intro-right {
+			align-items: flex-start;
+			display: flex;
+			flex-direction: column;
+		}
+
+		#wqf-ethos-root .p2-mono {
+			font-family: "Azeret Mono", monospace;
+			font-size: 0.688rem;
+			line-height: 0.938rem;
+			text-transform: uppercase;
+		}
+
+		@media (min-width: 768px) {
+			#wqf-ethos-root .p2-mono {
+				font-size: 0.75rem;
+			}
+		}
+
+		#wqf-ethos-root .p1 {
+			font-size: 0.875rem;
+			line-height: 120%;
+		}
+
+		@media (min-width: 768px) {
+			#wqf-ethos-root .p1 {
+				font-size: 1rem;
+			}
+		}
+
+		#wqf-ethos-root .h5 {
+			font-family: "Roc Grotesk", system-ui, sans-serif;
+			font-size: 1.5rem;
+			font-weight: 500;
+			line-height: 1;
+			text-transform: uppercase;
+		}
+
+		@media (min-width: 768px) {
+			#wqf-ethos-root .h5 {
+				font-size: 1.875rem;
+			}
+		}
+
+		#wqf-ethos-root .h4 {
+			font-family: "Roc Grotesk", system-ui, sans-serif;
+			font-size: 1.75rem;
+			font-weight: 500;
+			line-height: 1;
+			text-transform: uppercase;
+		}
+
+		@media (min-width: 768px) {
+			#wqf-ethos-root .h4 {
+				font-size: 2.5rem;
+			}
+		}
+
+		/* Card title: mobile h4, desktop h5 size */
+		@media (min-width: 768px) {
+			#wqf-ethos-root .wqf-card-title {
+				font-size: 1.875rem;
+			}
+		}
+
+		#wqf-ethos-root .wqf-body-copy {
+			border-top: 1px solid rgba(17, 17, 17, 0.2);
+			margin-bottom: 24px;
+			padding-top: 20px;
+		}
+
+		@media (min-width: 768px) {
+			#wqf-ethos-root .wqf-body-copy {
+				margin-bottom: 32px;
+			}
+		}
+
+		#wqf-ethos-root .text-pretty {
+			text-wrap: pretty;
+		}
+
+		/* Join Us button (light section → dark theme = carbon ink + accents) */
+		#wqf-ethos-root .wqf-btn {
+			--inset: 0;
+			background: none;
+			border: none;
+			color: inherit;
+			cursor: pointer;
+			display: block;
+			font: inherit;
+			isolation: isolate;
+			padding: 0;
+			position: relative;
+			text-align: left;
+		}
+
+		@media (hover: hover) {
+			#wqf-ethos-root .wqf-btn:hover {
+				animation: wqf-glitch-hover 0.3s linear;
+			}
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			#wqf-ethos-root .wqf-btn:hover {
+				animation: none;
+			}
+		}
+
+		#wqf-ethos-root .wqf-btn-inner {
+			align-items: center;
+			display: flex;
+			height: 40px;
+			justify-content: center;
+			padding-left: 20px;
+			padding-right: 20px;
+		}
+
+		#wqf-ethos-root .button--dot {
+			background: var(--color-rich-carbon);
+			border-radius: 3px;
+			flex-shrink: 0;
+			height: 10px;
+			width: 10px;
+			filter: blur(20px);
+			opacity: 0;
+			transform: translateX(-24px);
+			transition: all 0.4s var(--easing);
+		}
+
+		@media (hover: hover) {
+			#wqf-ethos-root .wqf-btn:hover .button--dot,
+			#wqf-ethos-root .wqf-btn:active .button--dot {
+				filter: blur(0);
+				opacity: 1;
+				transform: translateX(-5px);
+			}
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			#wqf-ethos-root .button--dot {
+				display: none;
+			}
+		}
+
+		#wqf-ethos-root .wqf-btn-label {
+			color: var(--color-rich-carbon);
+			display: flex;
+			overflow: hidden;
+			position: relative;
+			transform: translateX(-5px);
+			transition: transform 0.4s var(--easing);
+		}
+
+		@media (hover: hover) {
+			#wqf-ethos-root .wqf-btn:hover .wqf-btn-label,
+			#wqf-ethos-root .wqf-btn:active .wqf-btn-label {
+				transform: translateX(5px);
+			}
+		}
+
+		#wqf-ethos-root .wqf-btn-label span:first-child {
+			transition: transform 0.4s var(--easing);
+		}
+
+		#wqf-ethos-root .wqf-btn-label span.wqf-btn-label-dup {
+			inset: 0;
+			position: absolute;
+			transform: translateY(100%);
+			transition: transform 0.4s var(--easing);
+		}
+
+		@media (hover: hover) {
+			#wqf-ethos-root .wqf-btn:hover .wqf-btn-label span:first-child,
+			#wqf-ethos-root .wqf-btn:active .wqf-btn-label span:first-child {
+				transform: translateY(-100%);
+			}
+			#wqf-ethos-root .wqf-btn:hover .wqf-btn-label span.wqf-btn-label-dup,
+			#wqf-ethos-root .wqf-btn:active .wqf-btn-label span.wqf-btn-label-dup {
+				transform: translateY(0);
+			}
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			#wqf-ethos-root .wqf-btn-label {
+				transform: none;
+			}
+			#wqf-ethos-root .wqf-btn-label span.wqf-btn-label-dup {
+				display: none;
+			}
+		}
+
+		#wqf-ethos-root .corner-accent {
+			color: var(--color-rich-carbon);
+			position: absolute;
+		}
+
+		#wqf-ethos-root .corner-accent:first-of-type {
+			left: var(--inset, 0);
+			top: var(--inset, 0);
+		}
+		#wqf-ethos-root .corner-accent:nth-of-type(2) {
+			right: var(--inset, 0);
+			top: var(--inset, 0);
+			transform: rotate(90deg);
+		}
+		#wqf-ethos-root .corner-accent:nth-of-type(3) {
+			bottom: var(--inset, 0);
+			left: var(--inset, 0);
+			transform: rotate(270deg);
+		}
+		#wqf-ethos-root .corner-accent:nth-of-type(4) {
+			bottom: var(--inset, 0);
+			right: var(--inset, 0);
+			transform: rotate(180deg);
+		}
+
+		/* Ethos cards list */
+		#wqf-ethos-root .wqf-ethos-cards {
+			display: flex;
+			flex-direction: column;
+			gap: 20px;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		@media (min-width: 768px) {
+			#wqf-ethos-root .wqf-ethos-cards {
+				flex-direction: row;
+				gap: 0;
+			}
+		}
+
+		#wqf-ethos-root .wqf-ethos-li {
+			flex-shrink: 0;
+			transition: width 0.5s var(--easing) 0.1s;
+			width: 100%;
+		}
+
+		@media (min-width: 768px) {
+			#wqf-ethos-root .wqf-ethos-li {
+				width: 25%;
+			}
+			#wqf-ethos-root .wqf-ethos-cards.wqf-has-active .wqf-ethos-li {
+				width: 20%;
+			}
+			#wqf-ethos-root .wqf-ethos-li.wqf-ethos-li-active {
+				width: 40% !important;
+			}
+		}
+
+		#wqf-ethos-root .wqf-ethos-card-inner {
+			border-radius: 20px;
+			height: 100%;
+			overflow: hidden;
+			position: relative;
+			transition: width 0.5s var(--easing) 0.1s;
+			width: 100%;
+		}
+
+		@media (min-width: 768px) {
+			#wqf-ethos-root .wqf-ethos-card-inner {
+				width: 125%;
+			}
+			#wqf-ethos-root .wqf-ethos-li.wqf-ethos-li-active .wqf-ethos-card-inner {
+				width: 100%;
+			}
+		}
+
+		#wqf-ethos-root .wqf-card-skin-dark {
+			background: var(--color-rich-carbon);
+			color: var(--color-neural-fog);
+		}
+
+		#wqf-ethos-root .wqf-card-skin-teal {
+			background: var(--color-electric-teal);
+			color: var(--color-rich-carbon);
+		}
+
+		#wqf-ethos-root .wqf-card-skin-infrared {
+			background: var(--color-infrared);
+			color: var(--color-rich-carbon);
+		}
+
+		#wqf-ethos-root .wqf-card-skin-light {
+			background: var(--color-off-white);
+			color: var(--color-rich-carbon);
+		}
+
+		#wqf-ethos-root .wqf-card-body {
+			display: flex;
+			justify-content: center;
+			min-height: 100%;
+			padding-bottom: 20px;
+			padding-top: 40px;
+			width: 100%;
+		}
+
+		@media (min-width: 768px) {
+			#wqf-ethos-root .wqf-card-body {
+				padding-bottom: 40px;
+				padding-top: 40px;
+			}
+		}
+
+		#wqf-ethos-root .wqf-card-stack {
+			align-items: center;
+			display: flex;
+			flex-direction: column;
+			gap: 22px;
+			max-width: 100%;
+			padding-left: 20px;
+			padding-right: 20px;
+			text-align: center;
+			width: 100%;
+		}
+
+		@media (min-width: 768px) {
+			#wqf-ethos-root .wqf-card-stack {
+				gap: 44px;
+				max-width: 300px;
+				flex-shrink: 0;
+			}
+		}
+
+		#wqf-ethos-root .wqf-card-title-btn {
+			background: none;
+			border: none;
+			color: inherit;
+			cursor: pointer;
+			font: inherit;
+			padding: 0;
+			text-align: center;
+		}
+
+		@media (max-width: 767px) {
+			#wqf-ethos-root .wqf-card-title-btn {
+				display: none;
+			}
+		}
+
+		#wqf-ethos-root .wqf-card-title-static {
+			margin: 0 auto;
+			max-width: 290px;
+		}
+
+		#wqf-ethos-root .wqf-card-heading {
+			margin-left: auto;
+			margin-right: auto;
+			max-width: 290px;
+		}
+
+		@media (min-width: 768px) {
+			#wqf-ethos-root .wqf-card-title-static {
+				display: none;
+			}
+		}
+
+		#wqf-ethos-root .wqf-card-fig {
+			height: auto;
+			max-height: 300px;
+			width: 100%;
+		}
+
+		#wqf-ethos-root .wqf-card-fig img {
+			display: block;
+			height: auto;
+			margin: 0 auto;
+			max-height: 300px;
+			object-fit: contain;
+			object-position: center;
+			width: 100%;
+		}
+
+		#wqf-ethos-root .wqf-card-meta {
+			display: flex;
+			flex-direction: column;
+			gap: 15px;
+		}
+
+		/* splitTextReveal word spans */
+		#wqf-ethos-root .wqf-word-wrap {
+			display: inline;
+		}
+
+		#wqf-ethos-root .wqf-word {
+			display: inline-block;
+			overflow: hidden;
+			vertical-align: top;
+		}
+
+		#wqf-ethos-root .wqf-word-inner {
+			display: inline-block;
+		}
+	</style>
+</head>
+<body style="margin:0;background:#111;">
+	<div id="wqf-ethos-root">
+		<section
+			class="wqf-section"
+			x-data="{
+				init() {
+					const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+					if (prefersReducedMotion) return;
+					const tl = gsap.timeline({
+						scrollTrigger: {
+							trigger: this.$el,
+							start: 'top bottom-=10%',
+							end: 'top center',
+							scrub: 1,
+						},
+					});
+					tl.from(this.$el, {
+						css: { clipPath: 'inset(0 100% 0 0)' },
+						duration: 1.2,
+					});
+				},
+			}"
+		>
+			<div class="wqf-container" x-ref="content" id="ethos">
+				<div class="wqf-intro-grid">
+					<div class="wqf-intro-left">
+						<h2 class="p2-mono">Our ethos</h2>
+						<p class="h5">
+							Vision matters.<br />
+							Velocity wins.
+						</p>
+					</div>
+					<div class="wqf-intro-right">
+						<p class="p1 wqf-body-copy">
+							Our comprehensive founder platform shifts the odds. With infrastructure that works. With experts who've been there. With the right pressure—pushing you forward, not under. This isn't an accelerator. It's complete company building, at the speed deep tech demands.
+						</p>
+						<button
+							type="button"
+							class="wqf-btn"
+							data-theme="dark"
+							aria-label="Join us"
+							@click="$dispatch('contact-modal:open', '#contact')"
+						>
+							<div class="wqf-btn-inner">
+								<div class="button--dot" aria-hidden="true"></div>
+								<div class="wqf-btn-label p2-mono">
+									<span>Join Us</span>
+									<span class="wqf-btn-label-dup" aria-hidden="true">Join Us</span>
+								</div>
+							</div>
+							<svg class="corner-accent" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M0.499951 0.199996L0.499952 9.2M0.199951 0.499995L9.19995 0.499995" stroke="currentColor" /></svg>
+							<svg class="corner-accent" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M0.499951 0.199996L0.499952 9.2M0.199951 0.499995L9.19995 0.499995" stroke="currentColor" /></svg>
+							<svg class="corner-accent" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M0.499951 0.199996L0.499952 9.2M0.199951 0.499995L9.19995 0.499995" stroke="currentColor" /></svg>
+							<svg class="corner-accent" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M0.499951 0.199996L0.499952 9.2M0.199951 0.499995L9.19995 0.499995" stroke="currentColor" /></svg>
+						</button>
+					</div>
+				</div>
+
+				<ul
+					id="ethos-cards"
+					class="wqf-ethos-cards"
+					:class="{ 'wqf-has-active': activeCard !== null }"
+					x-data="{
+						activeCard: null,
+						init() {
+							const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+							if (prefersReducedMotion) return;
+							const mm = gsap.matchMedia();
+							mm.add('(max-width: 767px)', () => {
+								const cards = gsap.utils.toArray(this.$el.querySelectorAll('li'));
+								cards.forEach((card) => {
+									gsap.from(card, {
+										scrollTrigger: {
+											trigger: card,
+											start: 'top 50%',
+											end: 'bottom bottom',
+										},
+										clipPath: 'inset(0 0 100% 0)',
+										duration: 0.6,
+										ease: 'power3.inOut',
+									});
+								});
+							});
+						},
+					}"
+				>
+					<li
+						class="wqf-ethos-li"
+						:class="{ 'wqf-ethos-li-active': activeCard === 1 }"
+						@mouseenter="activeCard = 1"
+						@mouseleave="activeCard = null"
+					>
+						<div class="wqf-ethos-card-inner wqf-card-skin-dark" id="ethos-card-1">
+							<div class="wqf-card-body">
+								<div class="wqf-card-stack">
+									<button
+										type="button"
+										class="wqf-card-title-btn"
+										@click="activeCard = 1"
+										:aria-expanded="(activeCard === 1).toString()"
+										aria-controls="ethos-card-1"
+									>
+										<h3 class="h4 wqf-card-title wqf-card-heading uppercase" x-data="splitTextReveal">
+											Exponential Foresight
+										</h3>
+									</button>
+									<h3 class="h4 wqf-card-title-static uppercase">Exponential Foresight</h3>
+									<figure class="wqf-card-fig">
+										<img
+											src="https://worldquant-foundry.files.svdcdn.com/production/images/exponential-foresight-icon.svg?dm=1763974077"
+											alt=""
+											loading="lazy"
+											decoding="async"
+											width="2000"
+											height="2985"
+										/>
+									</figure>
+									<div class="p2-mono wqf-card-meta">
+										<p>01 / 04</p>
+										<p class="text-pretty">
+											We spot industry trends before they permeate the industry. Transform them into companies that matter. Some call it foresight. We call it pattern recognition at scale.
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+
+					<li
+						class="wqf-ethos-li"
+						:class="{ 'wqf-ethos-li-active': activeCard === 2 }"
+						@mouseenter="activeCard = 2"
+						@mouseleave="activeCard = null"
+					>
+						<div class="wqf-ethos-card-inner wqf-card-skin-teal" id="ethos-card-2">
+							<div class="wqf-card-body">
+								<div class="wqf-card-stack">
+									<button
+										type="button"
+										class="wqf-card-title-btn"
+										@click="activeCard = 2"
+										:aria-expanded="(activeCard === 2).toString()"
+										aria-controls="ethos-card-2"
+									>
+										<h3 class="h4 wqf-card-title wqf-card-heading uppercase" x-data="splitTextReveal">
+											Full-stack support
+										</h3>
+									</button>
+									<h3 class="h4 wqf-card-title-static uppercase">Full-stack support</h3>
+									<figure class="wqf-card-fig">
+										<img
+											src="https://worldquant-foundry.files.svdcdn.com/production/images/full-stack-support-icon.svg?dm=1763974134"
+											alt=""
+											loading="lazy"
+											decoding="async"
+											width="2000"
+											height="2667"
+										/>
+									</figure>
+									<div class="p2-mono wqf-card-meta">
+										<p>02 / 04</p>
+										<p class="text-pretty">
+											Brand, marketing, performance, legal, ops, finance, funding, and development. Tech founders need tailored support—and a dedicated team from day one.
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+
+					<li
+						class="wqf-ethos-li"
+						:class="{ 'wqf-ethos-li-active': activeCard === 3 }"
+						@mouseenter="activeCard = 3"
+						@mouseleave="activeCard = null"
+					>
+						<div class="wqf-ethos-card-inner wqf-card-skin-infrared" id="ethos-card-3">
+							<div class="wqf-card-body">
+								<div class="wqf-card-stack">
+									<button
+										type="button"
+										class="wqf-card-title-btn"
+										@click="activeCard = 3"
+										:aria-expanded="(activeCard === 3).toString()"
+										aria-controls="ethos-card-3"
+									>
+										<h3 class="h4 wqf-card-title wqf-card-heading uppercase" x-data="splitTextReveal">
+											Financial stability
+										</h3>
+									</button>
+									<h3 class="h4 wqf-card-title-static uppercase">Financial stability</h3>
+									<figure class="wqf-card-fig">
+										<img
+											src="https://worldquant-foundry.files.svdcdn.com/production/images/financial-support-icon.svg?dm=1763974167"
+											alt=""
+											loading="lazy"
+											decoding="async"
+											width="2000"
+											height="2247"
+										/>
+									</figure>
+									<div class="p2-mono wqf-card-meta">
+										<p>03 / 04</p>
+										<p class="text-pretty">
+											Breakthrough thinking shouldn't compete with rent. That's why we pay salaries from the start. You focus on building. We handle everything else.
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+
+					<li
+						class="wqf-ethos-li"
+						:class="{ 'wqf-ethos-li-active': activeCard === 4 }"
+						@mouseenter="activeCard = 4"
+						@mouseleave="activeCard = null"
+					>
+						<div class="wqf-ethos-card-inner wqf-card-skin-light" id="ethos-card-4">
+							<div class="wqf-card-body">
+								<div class="wqf-card-stack">
+									<button
+										type="button"
+										class="wqf-card-title-btn"
+										@click="activeCard = 4"
+										:aria-expanded="(activeCard === 4).toString()"
+										aria-controls="ethos-card-4"
+									>
+										<h3 class="h4 wqf-card-title wqf-card-heading uppercase" x-data="splitTextReveal">
+											Intelligent iteration
+										</h3>
+									</button>
+									<h3 class="h4 wqf-card-title-static uppercase">Intelligent iteration</h3>
+									<figure class="wqf-card-fig">
+										<img
+											src="https://worldquant-foundry.files.svdcdn.com/production/images/intelligent-iteration-icon.svg?dm=1763974129"
+											alt=""
+											loading="lazy"
+											decoding="async"
+											width="2000"
+											height="3279"
+										/>
+									</figure>
+									<div class="p2-mono wqf-card-meta">
+										<p>04 / 04</p>
+										<p class="text-pretty">
+											Know what you want to build? Start today. No drawn-out program or slow-moving curriculum. Just ruthless focus on product-market fit and market entry.
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</section>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+	<script>
+		document.addEventListener("alpine:init", () => {
+			gsap.registerPlugin(ScrollTrigger);
+
+			Alpine.data("splitTextReveal", () => ({
+				init() {
+					const el = this.$el;
+					if (!el) return;
+					if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+						gsap.set(el, { opacity: 1 });
+						return;
+					}
+					const raw = el.textContent.trim();
+					const words = raw.split(/\s+/);
+					el.textContent = "";
+					words.forEach((w, i) => {
+						const wrap = document.createElement("span");
+						wrap.className = "wqf-word-wrap";
+						const outer = document.createElement("span");
+						outer.className = "wqf-word";
+						const inner = document.createElement("span");
+						inner.className = "wqf-word-inner";
+						inner.textContent = w + (i < words.length - 1 ? "\u00a0" : "");
+						outer.appendChild(inner);
+						wrap.appendChild(outer);
+						el.appendChild(wrap);
+					});
+					gsap.from(el.querySelectorAll(".wqf-word-inner"), {
+						yPercent: 110,
+						duration: 1.4,
+						stagger: 0.08,
+						ease: "expo.out",
+						scrollTrigger: { trigger: el, start: "top 70%" },
+						onComplete: () => ScrollTrigger.refresh(),
+					});
+				},
+			}));
+		});
+	</script>
+	<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
+</body>
+</html>

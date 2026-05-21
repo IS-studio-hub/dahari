@@ -1,0 +1,123 @@
+/**
+ * Laurus-style custom cursor (fine pointer + motion OK only).
+ * https://laurus-property.com/ — circle acts like a negative-color lens.
+ * .dh-site-cursor__invert-ring keeps inversion inside the cursor in both small and big states.
+ */
+
+html.dh-custom-cursor--on,
+html.dh-custom-cursor--on * {
+  cursor: none !important;
+}
+
+html.dh-custom-cursor--on .dh-skip-link:focus,
+html.dh-custom-cursor--on .dh-skip-link:focus-visible,
+html.dh-custom-cursor--on .wqf-skip-link:focus,
+html.dh-custom-cursor--on .wqf-skip-link:focus-visible {
+  cursor: auto !important;
+}
+
+html.dh-custom-cursor--on
+  :is(input, textarea):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not(
+    [type="range"]
+  ):not([type="file"]):not([type="hidden"]) {
+  cursor: text !important;
+}
+
+#dh-site-cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+  z-index: 50000;
+  will-change: transform;
+  isolation: isolate;
+}
+
+#dh-site-cursor.dh-site-cursor--hidden {
+  opacity: 0;
+}
+
+/* Negative colors only inside this circle */
+.dh-site-cursor__invert-ring {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  border-radius: 50%;
+  /* Center stays under the pointer: scale for “link” size, don’t animate width/height (those shift %-translate mid-transition). */
+  transform: translate3d(-50%, -50%, 0) scale(1);
+  transform-origin: 50% 50%;
+  pointer-events: none;
+  z-index: 0;
+  background-color: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  opacity: 1;
+  transition:
+    opacity 0.18s ease,
+    transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@supports ((-webkit-backdrop-filter: invert(1)) or (backdrop-filter: invert(1))) {
+  #dh-site-cursor .dh-site-cursor__invert-ring {
+    background-color: rgba(255, 255, 255, 0.004);
+    -webkit-backdrop-filter: invert(1) hue-rotate(180deg);
+    backdrop-filter: invert(1) hue-rotate(180deg);
+  }
+}
+
+#dh-site-cursor.dh-site-cursor--link .dh-site-cursor__invert-ring {
+  transform: translate3d(-50%, -50%, 0) scale(calc(40 / 24));
+}
+
+#dh-site-cursor.dh-site-cursor--press .dh-site-cursor__invert-ring {
+  transform: translate3d(-50%, -50%, 0) scale(0.88);
+}
+
+#dh-site-cursor.dh-site-cursor--link.dh-site-cursor--press .dh-site-cursor__invert-ring {
+  transform: translate3d(-50%, -50%, 0) scale(calc(40 / 24 * 0.9));
+}
+
+.dh-site-cursor__inner {
+  display: none !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  border-radius: 50%;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  mix-blend-mode: normal;
+  transform: translate3d(-50%, -50%, 0) scale(1);
+  transform-origin: 50% 50%;
+  z-index: 1;
+  transition:
+    transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    width 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.25s ease;
+}
+
+#dh-site-cursor.dh-site-cursor--link .dh-site-cursor__inner {
+  width: 40px;
+  height: 40px;
+}
+
+#dh-site-cursor.dh-site-cursor--press .dh-site-cursor__inner {
+  transform: translate3d(-50%, -50%, 0) scale(0.88);
+}
+
+#dh-site-cursor.dh-site-cursor--link.dh-site-cursor--press .dh-site-cursor__inner {
+  transform: translate3d(-50%, -50%, 0) scale(0.9);
+}

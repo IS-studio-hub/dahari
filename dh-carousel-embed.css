@@ -1,0 +1,897 @@
+    .dh-carousel-embed {
+      --font-primary: "Rubik", system-ui, sans-serif;
+      --font-title: "Noto Sans Hebrew", "Noto Sans", system-ui, sans-serif;
+      --site-color-60: #fff5df;
+      --site-color-30: #99beff;
+      --site-color-10: #cfb682;
+      --dh-8bit-grid-dark: linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+        linear-gradient(rgba(0, 0, 0, 0.11) 1px, transparent 1px);
+      --dh-8bit-grid-light: linear-gradient(90deg, rgba(0, 0, 0, 0.038) 1px, transparent 1px),
+        linear-gradient(rgba(0, 0, 0, 0.022) 1px, transparent 1px);
+      --dh-8bit-grid-size: 4px 4px;
+      /* Arrow faces: chunky 2×2 “pixel” checker (bitmap fill) */
+      --dh-arrow-bmp-size: 3px 3px;
+      --dh-arrow-bmp-dark: repeating-conic-gradient(
+        #171717 0deg 90deg,
+        #2a2a2a 90deg 180deg,
+        #171717 180deg 270deg,
+        #262626 270deg 360deg
+      );
+      --dh-arrow-bmp-hover: repeating-conic-gradient(
+        #ffffff 0deg 90deg,
+        #d8d8d8 90deg 180deg,
+        #ffffff 180deg 270deg,
+        #e0e0e0 270deg 360deg
+      );
+      --dh-arrow-bmp-active: repeating-conic-gradient(
+        #f0f0f0 0deg 90deg,
+        #c8c8c8 90deg 180deg,
+        #f0f0f0 180deg 270deg,
+        #d0d0d0 270deg 360deg
+      );
+      --dh-arrow-hover-hop-duration: 0.52s;
+      --card-size: 200px;
+      /* Defaults to square; override --card-width / --card-height for slim (portrait) cards */
+      --card-width: var(--card-size);
+      --card-height: var(--card-size);
+      --card-radius: 0;
+      --card-inner-radius: 0;
+      --card-surface: #fff5df;
+      --card-back: #99beff;
+      --card-back-image: none;
+      --card-depth: 17px;
+      /* 3D edges / back: base #99BEFF + lighter/darker bands (same stripe rhythm) */
+      --card-edge-a: #99beff;
+      --card-edge-b: #7aa3e8;
+      --card-edge-c: #6b94dc;
+      --card-edge-top-a: #b8d4ff;
+      --card-edge-top-b: #99beff;
+      --card-back-highlight: #b8d4ff;
+      --card-back-shadow: #7aa3e8;
+      --vh: 1vh;
+      --component-height: 100dvh;
+      --container-offset: 80px;
+      box-sizing: border-box;
+      width: 100%;
+      height: var(--component-height);
+      min-height: var(--component-height);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: var(--font-primary);
+      font-size: 12px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow: hidden;
+      position: relative;
+      background-color: var(--site-color-60, #fff5df);
+      background-image: var(--dh-8bit-grid-light);
+      background-size: var(--dh-8bit-grid-size);
+      --embed-bubble-duration: 2.65s;
+      --embed-bubble-delay: 120ms;
+      --arrow-slide-duration: 1.05s;
+      --arrow-slide-delay: calc(var(--embed-bubble-duration) + var(--embed-bubble-delay) + 0.2s);
+      opacity: 0;
+      transform: scale(0.48);
+      transform-origin: 50% 44%;
+      -webkit-clip-path: circle(0% at 50% 44%);
+      clip-path: circle(0% at 50% 44%);
+      animation: dh-carousel-embed-bubble var(--embed-bubble-duration) cubic-bezier(0.3, 1.05, 0.48, 1)
+        var(--embed-bubble-delay) forwards;
+    }
+
+    /* Bubble: circular reveal from center + soft elastic overshoot (slow) */
+    @keyframes dh-carousel-embed-bubble {
+      0% {
+        opacity: 0.18;
+        transform: scale(0.4);
+        -webkit-clip-path: circle(0% at 50% 44%);
+        clip-path: circle(0% at 50% 44%);
+      }
+      36% {
+        opacity: 1;
+        transform: scale(1.05);
+        -webkit-clip-path: circle(48% at 50% 47%);
+        clip-path: circle(48% at 50% 47%);
+      }
+      58% {
+        transform: scale(0.98);
+        -webkit-clip-path: circle(72% at 50% 50%);
+        clip-path: circle(72% at 50% 50%);
+      }
+      100% {
+        opacity: 1;
+        transform: none;
+        -webkit-clip-path: none;
+        clip-path: none;
+      }
+    }
+
+    @keyframes dh-carousel-desk-arrow-prev-in {
+      from {
+        opacity: 0;
+        transform: translateY(-50%) translateX(-88px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0);
+      }
+    }
+
+    @keyframes dh-carousel-desk-arrow-next-in {
+      from {
+        opacity: 0;
+        transform: translateY(-50%) translateX(88px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0);
+      }
+    }
+
+    /* Chevron hop on hover: next exits right, re-enters from left; prev the mirror */
+    @keyframes dh-carousel-arrow-svg-next-hop {
+      0% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      40% {
+        transform: translateX(135%);
+        opacity: 0;
+      }
+      41% {
+        transform: translateX(-135%);
+        opacity: 0;
+      }
+      100% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes dh-carousel-arrow-svg-prev-hop {
+      0% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      40% {
+        transform: translateX(-135%);
+        opacity: 0;
+      }
+      41% {
+        transform: translateX(135%);
+        opacity: 0;
+      }
+      100% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .dh-carousel-embed.dh-carousel-embed--reduce-motion {
+      animation: none;
+      opacity: 1;
+      transform: none;
+      -webkit-clip-path: none;
+      clip-path: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .dh-carousel-embed {
+        animation: none;
+        opacity: 1;
+        transform: none;
+        -webkit-clip-path: none;
+        clip-path: none;
+      }
+
+      .dh-carousel__desk-arrow--prev,
+      .dh-carousel__desk-arrow--next {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: translateY(-50%) translateX(0) !important;
+      }
+
+      .dh-carousel__mobile-nav [data-mobile-prev],
+      .dh-carousel__mobile-nav [data-mobile-next] {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+
+      .dh-carousel__desk-arrow:hover svg,
+      .dh-carousel__mobile-arrow:not([disabled]):hover svg {
+        animation: none !important;
+      }
+    }
+
+    .dh-carousel-embed.dh-carousel-embed--reduce-motion .dh-carousel__desk-arrow--prev,
+    .dh-carousel-embed.dh-carousel-embed--reduce-motion .dh-carousel__desk-arrow--next {
+      animation: none;
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+    }
+
+    .dh-carousel-embed.dh-carousel-embed--reduce-motion .dh-carousel__mobile-nav [data-mobile-prev],
+    .dh-carousel-embed.dh-carousel-embed--reduce-motion .dh-carousel__mobile-nav [data-mobile-next] {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+
+    .dh-carousel-embed.dh-carousel-embed--reduce-motion .dh-carousel__desk-arrow:hover svg,
+    .dh-carousel-embed.dh-carousel-embed--reduce-motion .dh-carousel__mobile-arrow:not([disabled]):hover svg {
+      animation: none;
+    }
+
+    @supports not (height: 100dvh) {
+      .dh-carousel-embed {
+        --component-height: calc(var(--vh, 1vh) * 100);
+      }
+    }
+    .dh-carousel-embed *,
+    .dh-carousel-embed *::before,
+    .dh-carousel-embed *::after {
+      box-sizing: border-box;
+    }
+    .dh-carousel-embed a {
+      text-decoration: none;
+      color: inherit;
+    }
+    .dh-carousel-embed--lite .dh-carousel__shine {
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+    .dh-carousel-embed--lite .dh-carousel__mobile-arrow {
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      background-color: #fff;
+      background-image: var(--dh-arrow-bmp-hover);
+      background-size: var(--dh-arrow-bmp-size);
+    }
+    .dh-carousel-embed--lite .dh-carousel__stage,
+    .dh-carousel-embed--lite .dh-carousel__item {
+      will-change: auto;
+    }
+    .dh-carousel {
+      height: calc(var(--component-height) - var(--container-offset));
+      min-height: calc(max(var(--card-width), var(--card-height)) + 120px);
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 760px;
+      touch-action: none;
+      user-select: none;
+      position: relative;
+      flex: 1 0 0;
+      overscroll-behavior: none;
+    }
+    .dh-carousel:focus-visible {
+      outline: 3px solid var(--site-color-30, #99beff);
+      outline-offset: 3px;
+    }
+    .dh-carousel__link:focus-visible {
+      outline: 3px solid var(--site-color-30, #99beff);
+      outline-offset: 4px;
+      z-index: 50;
+    }
+    .dh-carousel__sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .dh-carousel-embed.dh-carousel-embed--reduce-motion .dh-carousel__link {
+      transition: none !important;
+    }
+    .dh-carousel-embed.dh-carousel-embed--reduce-motion .dh-carousel__shine {
+      transition: none !important;
+    }
+    .dh-carousel__stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: translateZ(0);
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+    .dh-carousel__item {
+      position: absolute;
+      width: var(--card-width);
+      height: var(--card-height);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      transform-origin: center center;
+      pointer-events: auto;
+      will-change: transform;
+      backface-visibility: visible;
+    }
+    .dh-carousel__link {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-origin: center center;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      transform: translateZ(0) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+      transition: transform 0.25s ease;
+      border-radius: var(--card-radius);
+      border: none;
+      overflow: visible;
+      background: transparent;
+      cursor: pointer;
+    }
+    .dh-carousel__card-front {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      transform: translate3d(0, 0, calc(var(--card-depth) / 2));
+      border-radius: var(--card-radius);
+      border: none;
+      overflow: visible;
+      background-color: var(--card-surface);
+      background-image: var(--dh-8bit-grid-light);
+      background-size: var(--dh-8bit-grid-size);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      box-shadow:
+        inset 0 2px 0 #fff,
+        inset 0 -2px 0 rgba(0, 0, 0, 0.08);
+    }
+    .dh-carousel__card-edge {
+      position: absolute;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      pointer-events: none;
+      background-color: var(--card-back);
+      background-image: linear-gradient(
+          155deg,
+          var(--card-back-highlight) 0%,
+          var(--card-back-highlight) 36%,
+          var(--card-back) 36%,
+          var(--card-back) 64%,
+          var(--card-back-shadow) 64%
+        ),
+        var(--dh-8bit-grid-light);
+      background-size: auto, var(--dh-8bit-grid-size);
+      background-position: center, 0 0;
+      background-repeat: no-repeat, repeat;
+    }
+    .dh-carousel__card-edge--right {
+      width: var(--card-depth);
+      height: var(--card-height);
+      left: 50%;
+      top: 50%;
+      margin-left: calc(var(--card-depth) / -2);
+      margin-top: calc(var(--card-height) / -2);
+      transform: rotateY(90deg) translateZ(calc(var(--card-width) / 2));
+    }
+    .dh-carousel__card-edge--left {
+      width: var(--card-depth);
+      height: var(--card-height);
+      left: 50%;
+      top: 50%;
+      margin-left: calc(var(--card-depth) / -2);
+      margin-top: calc(var(--card-height) / -2);
+      transform: rotateY(-90deg) translateZ(calc(var(--card-width) / 2));
+    }
+    .dh-carousel__card-edge--top {
+      width: var(--card-width);
+      height: var(--card-depth);
+      left: 50%;
+      top: 50%;
+      margin-left: calc(var(--card-width) / -2);
+      margin-top: calc(var(--card-depth) / -2);
+      transform: rotateX(90deg) translateZ(calc(var(--card-height) / 2));
+    }
+    .dh-carousel__card-edge--bottom {
+      width: var(--card-width);
+      height: var(--card-depth);
+      left: 50%;
+      top: 50%;
+      margin-left: calc(var(--card-width) / -2);
+      margin-top: calc(var(--card-depth) / -2);
+      transform: rotateX(-90deg) translateZ(calc(var(--card-height) / 2));
+    }
+    /* Card back: #99BEFF family — angled panels + subtle grid */
+    .dh-carousel__card-back {
+      position: absolute;
+      inset: 0;
+      background-color: var(--card-back);
+      background-image: linear-gradient(
+          155deg,
+          var(--card-back-highlight) 0%,
+          var(--card-back-highlight) 36%,
+          var(--card-back) 36%,
+          var(--card-back) 64%,
+          var(--card-back-shadow) 64%
+        ),
+        var(--dh-8bit-grid-light);
+      background-size: auto, var(--dh-8bit-grid-size);
+      background-position: center, 0 0;
+      background-repeat: no-repeat, repeat;
+      border-radius: var(--card-radius);
+      transform: rotateY(180deg) translate3d(0, 0, calc(var(--card-depth) / 2));
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      pointer-events: none;
+      border: none;
+      box-shadow:
+        inset 0 2px 0 rgba(255, 255, 255, 0.45),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.12);
+    }
+
+    .dh-carousel__video-wrap {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      background: #000;
+      overflow: hidden;
+      border-radius: var(--card-inner-radius);
+      isolation: isolate;
+    }
+    .dh-carousel__shine {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--card-inner-radius);
+      pointer-events: none;
+      z-index: 7;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      background: transparent;
+      backdrop-filter: saturate(1.85);
+      -webkit-backdrop-filter: saturate(1.85);
+      mask-image: radial-gradient(
+        circle 158px at var(--shine-x, 50%) var(--shine-y, 50%),
+        black 0%,
+        transparent 72%
+      );
+      -webkit-mask-image: radial-gradient(
+        circle 158px at var(--shine-x, 50%) var(--shine-y, 50%),
+        black 0%,
+        transparent 72%
+      );
+      mask-size: 100% 100%;
+      mask-position: 0 0;
+      -webkit-mask-size: 100% 100%;
+      -webkit-mask-position: 0 0;
+    }
+
+    .dh-carousel__card-front:has(.dh-carousel__video-wrap) .dh-carousel__shine {
+      display: none;
+    }
+    .dh-carousel__link:hover .dh-carousel__shine,
+    .dh-carousel__link.is-hovered .dh-carousel__shine {
+      opacity: 1;
+    }
+    .dh-carousel__media,
+    .dh-carousel__image {
+      display: block;
+      width: var(--card-width);
+      height: var(--card-height);
+      position: relative;
+      border-radius: var(--card-radius);
+    }
+    .dh-carousel__media {
+      overflow: visible;
+    }
+    .dh-carousel__image {
+      overflow: hidden;
+    }
+    .dh-carousel__video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      z-index: 1;
+      pointer-events: none;
+      background: #000;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .dh-carousel__video-wrap::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+      background: linear-gradient(128deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.15) 20%, transparent 20%),
+        linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0.08) 0%,
+          rgba(0, 0, 0, 0.08) 16%,
+          rgba(0, 0, 0, 0.02) 16%,
+          rgba(0, 0, 0, 0.02) 84%,
+          rgba(0, 0, 0, 0.09) 84%
+        );
+      border-radius: var(--card-inner-radius);
+    }
+    .dh-carousel__video-wrap::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 6;
+      pointer-events: none;
+      background: transparent;
+      border-radius: var(--card-inner-radius);
+    }
+    .dh-carousel__link.is-hovered .dh-carousel__video-wrap::after {
+      pointer-events: none;
+      cursor: default;
+    }
+    .dh-carousel__video-wrap.is-clicking::after {
+      pointer-events: none;
+    }
+    .dh-carousel__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      border-radius: var(--card-radius);
+    }
+    .dh-carousel__title {
+      position: absolute;
+      right: 16px;
+      bottom: 16px;
+      font-size: clamp(14px, 1.05vw, 18px);
+      font-weight: 700;
+      font-stretch: 75%;
+      color: #fff;
+      text-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.75),
+        0 0 1px rgba(0, 0, 0, 0.9);
+      pointer-events: none;
+      font-family: var(--font-title);
+      line-height: 1.25;
+      z-index: 8;
+      max-width: min(92%, 22rem);
+      text-align: end;
+    }
+    .dh-carousel__desk-nav {
+      display: none;
+    }
+    @media (min-width: 1024px) {
+      .dh-carousel__desk-nav {
+        display: block;
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 20;
+      }
+      .dh-carousel__desk-arrow {
+        margin-left: 40px;
+        position: absolute;
+        top: 66%;
+        width: 56px;
+        height: 56px;
+        border-radius: 999px;
+        border: 1px solid #2C2D66;
+        background-color: #fff;
+        background-image: var(--dh-arrow-bmp-hover);
+        background-size: var(--dh-arrow-bmp-size);
+        color: #2C2D66;
+        cursor: pointer;
+        pointer-events: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        overflow: hidden;
+        transition:
+          border-color 0.2s ease,
+          color 0.2s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .dh-carousel__desk-arrow--prev {
+        left: max(12px, env(safe-area-inset-left, 0px));
+        opacity: 0;
+        transform: translateY(-50%) translateX(-88px);
+        animation: dh-carousel-desk-arrow-prev-in var(--arrow-slide-duration) cubic-bezier(0.22, 1, 0.36, 1)
+          var(--arrow-slide-delay) forwards;
+      }
+      .dh-carousel__desk-arrow--next {
+        right: max(12px, env(safe-area-inset-right, 0px));
+        margin-left: 0;
+        margin-right: 40px;
+        opacity: 0;
+        transform: translateY(-50%) translateX(88px);
+        animation: dh-carousel-desk-arrow-next-in var(--arrow-slide-duration) cubic-bezier(0.22, 1, 0.36, 1)
+          var(--arrow-slide-delay) forwards;
+      }
+      .dh-carousel__desk-arrow:hover {
+        overflow: visible;
+        z-index: 26;
+      }
+
+      .dh-carousel__desk-arrow--next:hover svg {
+        animation: dh-carousel-arrow-svg-next-hop var(--dh-arrow-hover-hop-duration) cubic-bezier(0.45, 0, 0.2, 1) both;
+      }
+
+      .dh-carousel__desk-arrow--prev:hover svg {
+        animation: dh-carousel-arrow-svg-prev-hop var(--dh-arrow-hover-hop-duration) cubic-bezier(0.45, 0, 0.2, 1) both;
+      }
+
+      .dh-carousel__desk-arrow:active {
+        background-color: #f0f0f0;
+        background-image: var(--dh-arrow-bmp-active);
+        background-size: var(--dh-arrow-bmp-size);
+        border-color: #2C2D66;
+        color: #2C2D66;
+        transform: translateY(-50%) translateX(0) scale(0.96);
+      }
+      .dh-carousel__desk-arrow svg {
+        width: 26px;
+        height: 26px;
+        display: block;
+        transform: translateX(0);
+      }
+      .dh-carousel__desk-arrow:focus:not(:focus-visible) {
+        outline: none;
+      }
+      .dh-carousel__desk-arrow:focus-visible {
+        outline: 3px solid var(--site-color-30, #99beff);
+        outline-offset: 3px;
+        z-index: 25;
+      }
+    }
+    .dh-carousel__mobile-nav {
+      display: none;
+    }
+    .dh-carousel__mobile-title {
+      display: none;
+    }
+    @media (max-width: 1023px) {
+      .dh-carousel-embed {
+        height: var(--component-height);
+        min-height: var(--component-height);
+        position: relative;
+        width: 100%;
+        max-width: 100%;
+        /* Slide width = this box, not 100vw, so content stays clear of the floating rail */
+        container-type: inline-size;
+        container-name: dh-carousel-embed;
+      }
+      .dh-carousel {
+        perspective: none;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-x;
+        min-height: var(--component-height);
+        height: var(--component-height);
+        display: block;
+        scroll-behavior: smooth;
+        direction: ltr;
+        scrollbar-width: none;
+      }
+      .dh-carousel-embed--lite .dh-carousel {
+        scroll-behavior: auto;
+      }
+      .dh-carousel::-webkit-scrollbar {
+        display: none;
+      }
+      .dh-carousel__stage {
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        justify-content: flex-start;
+        width: max-content;
+        min-height: 100%;
+        height: 100%;
+        transform: none !important;
+        transform-style: flat;
+        direction: ltr;
+        padding: 0;
+        gap: 0;
+      }
+      /* Avoid 100vw (ignores parent rail padding). cqw = embed width when supported. */
+      .dh-carousel__item {
+        position: relative !important;
+        flex: 0 0 calc(100vw - 5.5rem);
+        width: calc(100vw - 5.5rem) !important;
+        min-width: calc(100vw - 5.5rem) !important;
+        max-width: calc(100vw - 5.5rem) !important;
+        height: var(--component-height) !important;
+        min-height: var(--component-height) !important;
+        transform: none !important;
+        margin: 0 !important;
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+        transition: none;
+      }
+      @supports (width: 1cqw) {
+        .dh-carousel__item {
+          flex: 0 0 100cqw;
+          width: 100cqw !important;
+          min-width: 100cqw !important;
+          max-width: 100cqw !important;
+        }
+      }
+      .dh-carousel__item.is-active {
+        transform: none !important;
+      }
+      .dh-carousel__link,
+      .dh-carousel__media,
+      .dh-carousel__image {
+        width: 100% !important;
+        height: 100% !important;
+        min-height: var(--component-height) !important;
+        aspect-ratio: auto !important;
+        border-radius: 0 !important;
+        border: none !important;
+      }
+      .dh-carousel__link {
+        transform: none !important;
+        overflow: hidden;
+        pointer-events: auto !important;
+      }
+      .dh-carousel__video-wrap,
+      .dh-carousel__video-wrap::before,
+      .dh-carousel__video-wrap::after,
+      .dh-carousel__card-back,
+      .dh-carousel__card-front,
+      .dh-carousel__card-edge {
+        border-radius: 0 !important;
+      }
+      .dh-carousel__card-edge {
+        display: none !important;
+      }
+      .dh-carousel__card-front {
+        transform: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+      }
+      .dh-carousel__card-back {
+        transform: rotateY(180deg) !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .dh-carousel__title {
+        display: none;
+      }
+      .dh-carousel__mobile-nav {
+        position: absolute;
+        right: max(calc(var(--rail-width-desktop, 54px) + 12px), env(safe-area-inset-right, 0px));
+        bottom: max(72px, calc(env(safe-area-inset-bottom, 0px) + 52px));
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+        pointer-events: auto;
+        z-index: 20;
+      }
+      .dh-carousel__mobile-nav-arrows {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        direction: ltr;
+        pointer-events: auto;
+      }
+      .dh-carousel__mobile-title {
+        display: inline-block;
+        color: #fff;
+        font-size: clamp(18px, 5.2vw, 24px);
+        font-weight: 700;
+        font-stretch: 75%;
+        line-height: 1.2;
+        margin-right: 10px;
+        max-width: min(72vw, 16rem);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
+        pointer-events: none;
+        font-family: var(--font-title);
+      }
+      .dh-carousel__mobile-arrow {
+        width: 58px;
+        height: 58px;
+        border: 1px solid #2C2D66;
+        border-radius: 999px;
+        background-color: #fff;
+        background-image: var(--dh-arrow-bmp-hover);
+        background-size: var(--dh-arrow-bmp-size);
+        color: #2C2D66;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        cursor: pointer;
+        padding: 0;
+        overflow: hidden;
+        transition:
+          border-color 0.2s ease,
+          color 0.2s ease;
+      }
+      .dh-carousel__mobile-arrow:focus:not(:focus-visible) {
+        outline: none;
+      }
+      .dh-carousel__mobile-arrow:focus-visible {
+        outline: 3px solid var(--site-color-30, #99beff);
+        outline-offset: 3px;
+      }
+      .dh-carousel__mobile-nav [data-mobile-prev] {
+        opacity: 1;
+        transform: translateX(0);
+      }
+      .dh-carousel__mobile-nav [data-mobile-next] {
+        opacity: 1;
+        transform: translateX(0);
+      }
+      .dh-carousel__mobile-arrow:not([disabled]):hover {
+        overflow: visible;
+        z-index: 26;
+      }
+
+      .dh-carousel__mobile-arrow[data-mobile-next]:not([disabled]):hover svg {
+        animation: dh-carousel-arrow-svg-next-hop var(--dh-arrow-hover-hop-duration) cubic-bezier(0.45, 0, 0.2, 1) both;
+      }
+
+      .dh-carousel__mobile-arrow[data-mobile-prev]:not([disabled]):hover svg {
+        animation: dh-carousel-arrow-svg-prev-hop var(--dh-arrow-hover-hop-duration) cubic-bezier(0.45, 0, 0.2, 1) both;
+      }
+      .dh-carousel__mobile-arrow:not([disabled]):active {
+        background-color: #f0f0f0;
+        background-image: var(--dh-arrow-bmp-active);
+        background-size: var(--dh-arrow-bmp-size);
+        border-color: #2C2D66;
+        color: #2C2D66;
+        transform: translateX(0) scale(0.96);
+      }
+      .dh-carousel__mobile-arrow[disabled] {
+        opacity: 0.45;
+        cursor: default;
+      }
+      .dh-carousel__mobile-arrow svg {
+        width: 26px;
+        height: 26px;
+        display: block;
+        transform: translateX(0);
+      }
+      .dh-carousel__video,
+      .dh-carousel__video-wrap::after {
+        pointer-events: none !important;
+      }
+    }
+    @media (min-width: 1024px) and (max-width: 1064.98px) {
+      .dh-carousel__media,
+      .dh-carousel__image {
+        width: min(100%, var(--card-width));
+        max-width: var(--card-width);
+        height: var(--card-height);
+        aspect-ratio: auto;
+      }
+    }
+  

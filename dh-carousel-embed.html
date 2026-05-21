@@ -1,0 +1,55 @@
+<div class="dh-carousel-embed" dir="rtl" lang="he">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@500;600;700&family=Rubik:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="dh-carousel-embed.css?v=32" />
+
+  <div
+    class="dh-carousel"
+    tabindex="0"
+    role="region"
+    aria-label="שקופיות נדל״ן; כשהאזור בפוקוס: חיצים לשקופית קודמת או הבאה, או גלגלת העכבר"
+    data-carousel-container
+  >
+    <span
+      id="dh-carousel-live"
+      class="dh-carousel__sr-only"
+      aria-live="polite"
+      aria-atomic="true"
+    ></span>
+    <div class="dh-carousel__stage" data-carousel-stage></div>
+    <div class="dh-carousel__desk-nav" role="toolbar" aria-label="סיבוב">
+      <button
+        type="button"
+        class="dh-carousel__desk-arrow dh-carousel__desk-arrow--prev"
+        data-desk-prev
+        aria-label="שקופית קודמת"
+      ></button
+      ><button
+        type="button"
+        class="dh-carousel__desk-arrow dh-carousel__desk-arrow--next"
+        data-desk-next
+        aria-label="שקופית הבאה"
+      ></button>
+    </div>
+  </div>
+  <div class="dh-carousel__mobile-nav" role="group" aria-labelledby="dh-carousel-mobile-heading">
+    <span class="dh-carousel__mobile-title" id="dh-carousel-mobile-heading"></span>
+    <div class="dh-carousel__mobile-nav-arrows" aria-label="חצים">
+      <button
+        class="dh-carousel__mobile-arrow"
+        type="button"
+        data-mobile-prev
+        aria-label="שקופית קודמת"
+      ></button
+      ><button
+        class="dh-carousel__mobile-arrow"
+        type="button"
+        data-mobile-next
+        aria-label="שקופית הבאה"
+      ></button>
+    </div>
+  </div>
+  <script src="dh-carousel-embed.js?v=25" defer></script>
+</div>

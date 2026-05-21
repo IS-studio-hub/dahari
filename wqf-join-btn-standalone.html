@@ -1,0 +1,242 @@
+
+<style>
+	@font-face {
+		font-display: swap;
+		font-family: "Azeret Mono";
+		font-style: normal;
+		font-weight: 500;
+		src: url("https://www.worldquantfoundry.com/assets/azeret-mono-regular.otf") format("opentype");
+	}
+
+	@keyframes wqf-join-btn-glitch-hover {
+		0% { opacity: 1; }
+		8% { opacity: 0.7; }
+		12% { opacity: 0.2; }
+		18% { opacity: 0.9; }
+		25% { opacity: 1; }
+		32% { opacity: 0.4; }
+		38% { opacity: 0.8; }
+		42% { opacity: 0.3; }
+		48% { opacity: 1; }
+		65% { opacity: 0.85; }
+		72% { opacity: 0.15; }
+		78% { opacity: 0.6; }
+		85% { opacity: 1; }
+		92% { opacity: 0.5; }
+		to { opacity: 1; }
+	}
+
+	.wqf-join-btn-embed555 {
+		--wqf-join-easing: cubic-bezier(0.62, 0.16, 0.13, 1.01);
+		--wqf-join-ink: #fff;
+		box-sizing: border-box;
+		-webkit-font-smoothing: antialiased;
+		display: inline-block;
+		max-width: 100%;
+		vertical-align: top;
+	}
+
+	.wqf-join-btn-embed555 *,
+	.wqf-join-btn-embed555 *::before,
+	.wqf-join-btn-embed555 *::after {
+		box-sizing: border-box;
+	}
+
+	.wqf-join-btn-embed555 .p2-mono555 {
+		font-family: "Azeret Mono", monospace;
+		font-size: 0.688rem;
+		line-height: 0.938rem;
+		text-transform: uppercase;
+	}
+
+	@media (min-width: 768px) {
+		.wqf-join-btn-embed555 .p2-mono555 {
+			font-size: 0.75rem;
+		}
+	}
+
+	.wqf-join-btn-embed555 .wqf-btn555 {
+		--inset: 0;
+		background: none;
+		border: none;
+		color: var(--wqf-join-ink);
+		cursor: pointer;
+		display: block;
+		font: inherit;
+		isolation: isolate;
+		padding: 0;
+		position: relative;
+	}
+
+	@media (hover: hover) {
+		.wqf-join-btn-embed555 .wqf-btn555:hover {
+			animation: wqf-join-btn-glitch-hover 0.3s linear;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.wqf-join-btn-embed555 .wqf-btn555:hover {
+			animation: none;
+		}
+	}
+
+	.wqf-join-btn-embed555 .wqf-btn-inner555 {
+		align-items: center;
+		display: flex;
+		gap: 24px;
+		flex-direction: row-reverse;
+		height: 40px;
+		justify-content: center;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+
+	.wqf-join-btn-embed555 .button--dot555 {
+		background: var(--wqf-join-ink);
+		border-radius: 3px;
+		flex-shrink: 0;
+		height: 10px;
+		width: 10px;
+		filter: blur(20px);
+		opacity: 0;
+		transform: translateX(24px);
+		transition: all 0.4s var(--wqf-join-easing);
+	}
+
+	@media (hover: hover) {
+		.wqf-join-btn-embed555 .wqf-btn555:hover .button--dot555,
+		.wqf-join-btn-embed555 .wqf-btn555:active .button--dot555 {
+			filter: blur(0);
+			opacity: 1;
+			transform: translateX(5px);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.wqf-join-btn-embed555 .button--dot555 {
+			display: none;
+		}
+	}
+
+	.wqf-join-btn-embed555 .wqf-btn-label555 {
+		color: var(--wqf-join-ink);
+		display: flex;
+		overflow: hidden;
+		position: relative;
+		transform: translateX(5px);
+		transition: transform 0.4s var(--wqf-join-easing);
+	}
+
+	@media (hover: hover) {
+		.wqf-join-btn-embed555 .wqf-btn555:hover .wqf-btn-label555,
+		.wqf-join-btn-embed555 .wqf-btn555:active .wqf-btn-label555 {
+			transform: translateX(-5px);
+		}
+	}
+
+	.wqf-join-btn-embed555 .wqf-btn-label555 span:first-child {
+		transition: transform 0.4s var(--wqf-join-easing);
+	}
+
+	.wqf-join-btn-embed555 .wqf-btn-label555 span.wqf-btn-label-dup555 {
+		inset: 0;
+		position: absolute;
+		transform: translateY(100%);
+		transition: transform 0.4s var(--wqf-join-easing);
+	}
+
+	@media (hover: hover) {
+		.wqf-join-btn-embed555 .wqf-btn555:hover .wqf-btn-label555 span:first-child,
+		.wqf-join-btn-embed555 .wqf-btn555:active .wqf-btn-label555 span:first-child {
+			transform: translateY(-100%);
+		}
+		.wqf-join-btn-embed555 .wqf-btn555:hover .wqf-btn-label555 span.wqf-btn-label-dup555,
+		.wqf-join-btn-embed555 .wqf-btn555:active .wqf-btn-label555 span.wqf-btn-label-dup555 {
+			transform: translateY(0);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.wqf-join-btn-embed555 .wqf-btn-label555 {
+			transform: none;
+		}
+		.wqf-join-btn-embed555 .wqf-btn-label555 span.wqf-btn-label-dup555 {
+			display: none;
+		}
+	}
+
+	.wqf-join-btn-embed555 .corner-accent555 {
+		color: var(--wqf-join-ink);
+		position: absolute;
+	}
+
+	.wqf-join-btn-embed555 .corner-accent555:first-of-type {
+		left: var(--inset, 0);
+		top: var(--inset, 0);
+	}
+	.wqf-join-btn-embed555 .corner-accent555:nth-of-type(2) {
+		right: var(--inset, 0);
+		top: var(--inset, 0);
+		transform: rotate(90deg);
+	}
+	.wqf-join-btn-embed555 .corner-accent555:nth-of-type(3) {
+		bottom: var(--inset, 0);
+		left: var(--inset, 0);
+		transform: rotate(270deg);
+	}
+	.wqf-join-btn-embed555 .corner-accent555:nth-of-type(4) {
+		bottom: var(--inset, 0);
+		right: var(--inset, 0);
+		transform: rotate(180deg);
+	}
+</style>
+
+<div class="wqf-join-btn-embed555">
+	<button
+		type="button"
+		class="wqf-btn555"
+		data-theme="light"
+		data-contact-target="#contact"
+		aria-label="Join us"
+	>
+		<div class="wqf-btn-inner555">
+			<div class="button--dot555" aria-hidden="true"></div>
+			<div class="wqf-btn-label555 p2-mono555">
+				<span>לפרטים נוספים</span>
+				<span class="wqf-btn-label-dup555" aria-hidden="true">לפרטים נוספים</span>
+			</div>
+		</div>
+		<svg class="corner-accent555" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M0.499951 0.199996L0.499952 9.2M0.199951 0.499995L9.19995 0.499995" stroke="currentColor"></path></svg>
+		<svg class="corner-accent555" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M0.499951 0.199996L0.499952 9.2M0.199951 0.499995L9.19995 0.499995" stroke="currentColor"></path></svg>
+		<svg class="corner-accent555" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M0.499951 0.199996L0.499952 9.2M0.199951 0.499995L9.19995 0.499995" stroke="currentColor"></path></svg>
+		<svg class="corner-accent555" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M0.499951 0.199996L0.499952 9.2M0.199951 0.499995L9.19995 0.499995" stroke="currentColor"></path></svg>
+	</button>
+</div>
+
+<script>
+(function () {
+	function bindJoinBtn(root) {
+		var btn = root.querySelector(".wqf-btn555");
+		if (!btn || btn.getAttribute("data-wqf-join-init") === "1") return;
+		btn.setAttribute("data-wqf-join-init", "1");
+		btn.addEventListener("click", function () {
+			var target = btn.getAttribute("data-contact-target") || "#contact";
+			btn.dispatchEvent(
+				new CustomEvent("contact-modal:open", {
+					bubbles: true,
+					detail: target,
+				})
+			);
+		});
+	}
+	function initWqfJoinBtns() {
+		document.querySelectorAll(".wqf-join-btn-embed555").forEach(bindJoinBtn);
+	}
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", initWqfJoinBtns);
+	} else {
+		initWqfJoinBtns();
+	}
+})();
+</script>
+

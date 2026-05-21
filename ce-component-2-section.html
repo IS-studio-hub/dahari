@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>אודות — דהרי</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Rubik:wght@400&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* Reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; background: transparent; }
+    
+    /* Component CSS — scoped tokens for contrast (EN 301 549 / WCAG-friendly defaults) */
+    .ce-component-2 {
+      --mtc-black: #0f1111;
+      --mtc-softgrey: #4b5563;
+      --mtc-midgrey: #6b7280;
+      --mtc-darkgrey: #374151;
+      --mtc-grey: #9ca3af;
+      --mtc-white: #ffffff;
+      --about-accent: #8b6914;
+      --about-accent-contrast: #1a1508;
+    }
+    .ce-component-2 .content_wrapper {
+      min-height: 100svh;
+    }
+    
+    .ce-component-2 .home, .ce-component-2 .about {
+      background: transparent;
+      overflow: hidden !important;
+    }
+    
+    .ce-component-2 img {
+      user-drag: none;
+      user-select: none;
+      -moz-user-select: none;
+      -webkit-user-drag: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      pointer-events: none;
+      -webkit-touch-callout: none;
+    }
+    
+    /* TYPOGRAPHY */
+    h1, .ce-component-2 h2, .ce-component-2 h3, .ce-component-2 h4, .ce-component-2 h5 {
+      padding: 0;
+      margin: 0;
+    }
+    
+    .ce-component-2 h5 {
+      font-family: "Abermono", ui-monospace, "Cascadia Mono", "Segoe UI Mono", monospace;
+      font-size: clamp(0.8rem, 0.85vw, 1rem);
+      line-height: 1.2;
+      font-weight: 400;
+      color: var(--mtc-softgrey);
+    }
+    
+    .ce-component-2 p {
+      font-size: clamp(0.95rem, 0.8vw, 1.05rem);
+      line-height: 1.75;
+      font-weight: 450 !important;
+      max-width: 65ch;
+    }
+    
+    /* BASICS */
+    .ce-component-2 .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100svh;
+      background: black;
+      z-index: 9999999 !important;
+      pointer-events: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .ce-component-2 .logo-loader img {
+      margin-right: 0;
+      min-width: 3.2vw;
+      max-width: 3.2vw;
+    }
+    
+    .ce-component-2 .logo img {
+      margin-right: 2vw;
+      min-width: 2.56vw;
+      max-width: 2.56vw;
+    }
+    
+    .ce-component-2 .email {
+      display: flex;
+      justify-content: start;
+      align-items: start;
+      grid-gap: 0.5vw;
+      /*
+      text-decoration-line: underline;
+      text-decoration-thickness: 0.5px;
+      text-underline-offset: 8px;
+      text-decoration-color: var(--mtc-darkgrey);
+      */
+    }
+    
+    .ce-component-2 .dot {
+      min-width: 0.45vw;
+      min-height: 0.45vw;
+      border-radius: 100%;
+      background: var(--mtc-grey);
+      margin-right: -0.15vw;
+      margin-bottom: 0.1vw;
+    }
+    
+    .ce-component-2 .email .dot {
+      margin-top: 0.55vw;
+    }
+    
+    .ce-component-2 p a {
+      display: inline-block;
+    }
+    
+    .ce-component-2 p a:after {
+      display: block;
+      content: "";
+      border-bottom: solid 0.05vw var(--mtc-black);
+      transform: scaleX(1);
+      transition: transform 500ms cubic-bezier(0.34, 0, 0, 0.99);
+      transform-origin: 0 50%;
+      margin-top: -0.1vw;
+    }
+    
+    .ce-component-2 p a:hover:after, .ce-component-2 .link-frame p a:hover:after {
+      transform: scaleX(0);
+      transform-origin: 100% 0%;
+    }
+    
+    .ce-component-2 .link-frame p a:after {
+      display: block;
+      content: "";
+      border-bottom: solid 0.05vw var(--mtc-midgrey);
+      transform: scaleX(1);
+      transition: transform 500ms cubic-bezier(0.34, 0, 0, 0.99);
+      transform-origin: 0 50%;
+      margin-top: -0.1vw;
+    }
+    
+    .ce-component-2 .nav-btn h6 span {
+      height: 0.8vw;
+      text-shadow: 0 0.8vw 0 rgba(255, 255, 255, 1);
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.28, 0, 0, 1);
+    }
+    
+    .ce-component-2 .nav-btn:hover h6 span {
+      transform: translateY(-100%);
+    }
+    
+    .ce-component-2 a {
+      color: inherit;
+      text-decoration: inherit;
+    }
+    
+    .ce-component-2 .hero-animation img {
+      pointer-events: none;
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      z-index: 1;
+    }
+    
+    .ce-component-2 .play-button img:nth-of-type(1) {
+      width: 2.8vw;
+    }
+    
+    .ce-component-2 .play-button img:nth-of-type(2) {
+      width: 0.4vw;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    
+    .ce-component-2 .big-marquee {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      top: -6vw;
+    }
+    
+    .ce-component-2 .big-marquee h1 {
+      font-size: 25vw;
+      text-transform: uppercase;
+      margin: 0;
+    }
+    
+    .ce-component-2 .track-horizontal {
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: flex-start;
+      width: max-content;
+      white-space: nowrap;
+      will-change: transform;
+      animation: marquee-horizontal 50s linear infinite;
+    }
+
+    .ce-component-2 .marquee-segment {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      flex-shrink: 0;
+      align-items: center;
+    }
+
+    .ce-component-2 .track-horizontal img {
+      flex-shrink: 0;
+      display: block;
+      width: 100vw;
+      min-width: 100vw;
+      max-width: 100vw;
+      height: auto;
+    }
+    
+    /* Marquee decorative strip */
+    .ce-component-2 .marquee-content::after {
+      content: "";
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+    
+    .ce-component-2 .about-us-text {
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+      grid-gap: 2vw;
+      position: absolute;
+      right: 5vw;
+      bottom: 4vw;
+      width: 39.6vw;
+      text-wrap: pretty;
+      color: var(--about-accent-contrast);
+      font-family: "Rubik", system-ui, -apple-system, sans-serif;
+      font-weight: 400;
+    }
+
+    .ce-component-2 .about-us-text p,
+    .ce-component-2 .about-us-text a,
+    .ce-component-2 .about-us-text span {
+      font-family: inherit;
+      font-weight: 400 !important;
+    }
+    
+    .ce-component-2 .about-us-text h5,
+    .ce-component-2 .about-us-text p,
+    .ce-component-2 .about-us-text a {
+      color: var(--about-accent-contrast);
+    }
+    
+    .ce-component-2 .about-us-text p a:after,
+    .ce-component-2 .about-us-text .link-frame p a:after {
+      border-bottom-color: var(--about-accent);
+    }
+    
+    .ce-component-2 .about-us-text img {
+      min-width: 2.3vw;
+      max-width: 2.3vw;
+    }
+
+    .ce-component-2 .about-us-text h5 {
+      font-family: "Rubik", system-ui, -apple-system, sans-serif;
+      font-size: clamp(0.9rem, 1.1vw, 1.15rem);
+      line-height: 1.25;
+      margin-top: 0;
+      margin-bottom: 0.35rem;
+      font-weight: 600;
+      color: var(--about-accent-contrast);
+    }
+    
+    .ce-component-2 .frame {
+      width: 100%;
+      height: 100svh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      top: 0;
+      left: 0;
+    }
+    
+    .ce-component-2 .contact-page, .ce-component-2 .case-link, .ce-component-2 .frame, .ce-component-2 .split-case-content {
+      transform: translateY(20vw);
+      animation: slideUp 1.1s cubic-bezier(0.74, 0, 0, 0.99) forwards 0s;
+    }
+    
+    .ce-component-2 .split-case-image img {
+      object-fit: cover;
+      height: 100svh;
+      width: 100%;
+    }
+    
+    .ce-component-2 .split-case-content h4 img {
+      min-width: 0.6vw;
+      max-width: 0.6vw;
+      min-height: 0.6vw;
+      max-height: 0.6vw;
+    }
+    
+    .ce-component-2 .case-close-button h5 {
+      overflow: hidden;
+      height: 0.8vw;
+    }
+    
+    .ce-component-2 .case-close-button h5 span {
+      height: 1vw;
+      text-shadow: 0 1vw 0 rgba(0, 0, 0, 1);
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.28, 0, 0, 1);
+    }
+    
+    .ce-component-2 .case-close-button h5:hover span {
+      transform: translateY(-100%);
+    }
+    
+    .ce-component-2 .case-head p {
+      margin-bottom: 0vw;
+    }
+    
+    .ce-component-2 .case-head img {
+      height: 26vw;
+      width: 100%;
+      object-fit: cover;
+    }
+    
+    .ce-component-2 .w-richtext figure img {
+      all: unset;
+      width: 55vw;
+      object-fit: cover;
+    }
+    
+    .ce-component-2 .contact-page div:nth-of-type(1) {
+      grid-column: 2 / span 2;
+    }
+    
+    .ce-component-2 .contact-page div:nth-of-type(2) {
+      grid-column: 6 / span 2;
+    }
+    
+    .ce-component-2 .contact-page div:nth-of-type(3) {
+      grid-column: 10 / span 2;
+    }
+    
+    .ce-component-2 .contact-page div:nth-of-type(4) {
+      display: flex;
+      position: absolute;
+      left: 42.4vw;
+      bottom: 1vw;
+    }
+    
+    .ce-component-2 a {
+      background-color:#0000
+    }
+    
+    .ce-component-2 a:focus-visible {
+      outline: 3px solid #2563eb;
+      outline-offset: 3px;
+    }
+    
+    .ce-component-2 img {
+      border:0
+    }
+    
+    .ce-component-2 img {
+      vertical-align:middle;max-width:100%;display:inline-block
+    }
+    
+    .ce-component-2 .w-webflow-badge, .ce-component-2 .w-webflow-badge>img {
+      box-sizing:unset;width:unset;height:unset;max-height:unset;max-width:unset;min-height:unset;min-width:unset;margin:unset;padding:unset;float:unset;clear:unset;border:unset;border-radius:unset;background:unset;background-image:unset;background-position:unset;background-size:unset;background-repeat:unset;background-origin:unset;background-clip:unset;background-attachment:unset;background-color:unset;box-shadow:unset;transform:unset;direction:unset;font-family:unset;font-weight:unset;color:unset;font-size:unset;line-height:unset;font-style:unset;font-variant:unset;text-align:unset;letter-spacing:unset;-webkit-text-decoration:unset;text-decoration:unset;text-indent:unset;text-transform:unset;list-style-type:unset;text-shadow:unset;vertical-align:unset;cursor:unset;white-space:unset;word-break:unset;word-spacing:unset;word-wrap:unset;transition:unset
+    }
+    
+    .ce-component-2 .w-webflow-badge>img {
+      position:unset;visibility:unset!important;opacity:1!important;vertical-align:middle!important;display:inline-block!important
+    }
+    
+    .ce-component-2 h5 {
+      margin-top:10px;font-size:14px;line-height:20px
+    }
+    
+    .ce-component-2 p {
+      margin-top:0;margin-bottom:10px
+    }
+    
+    .ce-component-2 .w-widget-map img {
+      max-width:inherit
+    }
+    
+    .ce-component-2 .w-slider-nav.w-round>div {
+      border-radius:100%
+    }
+    
+    .ce-component-2 .w-slider-nav.w-num>div {
+      font-size:inherit;line-height:inherit;width:auto;height:auto;padding:.2em .5em
+    }
+    
+    .ce-component-2 .w-slider-nav.w-shadow>div {
+      box-shadow:0 0 3px #3336
+    }
+    
+    .ce-component-2 .w-slider-nav-invert>div {
+      background-color:#2226
+    }
+    
+    .ce-component-2 .w-richtext .w-richtext-figure-selected.w-richtext-figure-type-video div:after, .ce-component-2 .w-richtext .w-richtext-figure-selected[data-rt-type=video] div:after, .ce-component-2 .w-richtext .w-richtext-figure-selected.w-richtext-figure-type-image div, .ce-component-2 .w-richtext .w-richtext-figure-selected[data-rt-type=image] div {
+      outline:2px solid #2895f7
+    }
+    
+    .ce-component-2 .w-richtext figure.w-richtext-figure-type-video>div:after, .ce-component-2 .w-richtext figure[data-rt-type=video]>div:after {
+      content:"";display:block;position:absolute;inset:0
+    }
+    
+    .ce-component-2 .w-richtext figure>div:before {
+      cursor:default!important
+    }
+    
+    .ce-component-2 .w-richtext figure img {
+      width:100%
+    }
+    
+    .ce-component-2 .w-richtext figure div {
+      color:#0000;font-size:0
+    }
+    
+    .ce-component-2 .w-richtext figure.w-richtext-figure-type-image>div, .ce-component-2 .w-richtext figure[data-rt-type=image]>div {
+      display:inline-block
+    }
+    
+    .ce-component-2 .w-richtext figure.w-richtext-figure-type-video>div, .ce-component-2 .w-richtext figure[data-rt-type=video]>div {
+      width:100%
+    }
+    
+    .ce-component-2 .w-richtext figure.w-richtext-align-center.w-richtext-figure-type-image>div, .ce-component-2 .w-richtext figure.w-richtext-align-center[data-rt-type=image]>div {
+      max-width:100%
+    }
+    
+    .ce-component-2 .w-richtext figure.w-richtext-align-fullwidth>div {
+      padding-bottom:inherit;display:inline-block
+    }
+    
+    .ce-component-2 .main {
+      flex-direction:row;width:100%;display:block;position:static
+    }
+    
+    .ce-component-2 .content_wrapper {
+      background-color:transparent;border-radius:0;justify-content:center;align-items:center;width:100%;text-decoration:none;display:flex;position:relative;top:auto
+    }
+    
+    .ce-component-2 .content_wrapper.work {
+      background-color:transparent
+    }
+    
+    .ce-component-2 .content_wrapper.archive {
+      background-color:transparent
+    }
+    
+    .ce-component-2 .overlay {
+      z-index:2;opacity:1;background-color:#00000080;position:fixed;inset:0%
+    }
+    
+    .ce-component-2 .main_wrap {
+      z-index:3;background-color:transparent;flex-direction:column;width:100%;padding:0;display:block;position:absolute;inset:0% 0% auto
+    }
+    
+    .ce-component-2 .dot {
+      height:0;display:block
+    }
+    
+    .ce-component-2 .email {
+      z-index:9999;display:block;position:static
+    }
+    
+    .ce-component-2 .grid {
+      grid-column-gap: 20px;
+      grid-row-gap: 20px;
+      grid-template-rows: auto;
+      grid-template-columns: repeat(12, 1fr);
+      grid-auto-columns: 1fr;
+      width: 100%;
+      display: grid;
+    }
+    
+    .ce-component-2 .paragraph {
+      margin-bottom:0
+    }
+    
+    /* direction:ltr — RTL root reverses flex; marquee + translateX(-50%) need a stable row. */
+    .ce-component-2 .marquee-horizontal {
+      z-index:200;background-color:#00f0;direction:ltr;justify-content:flex-start;align-items:center;width:100%;height:30vw;display:flex;position:relative;overflow:hidden
+    }
+    
+    .ce-component-2 #w-node-_81ddd08e-f166-87e0-3d25-31a7819c0d20-db8197a6 {
+      grid-area:span 1/span 12/span 1/span 12
+    }
+    
+    .ce-component-2 #w-node-_440e901f-e65b-456a-5948-ca40df5d70a6-db8197a6 {
+      grid-area:2/7/3/13
+    }
+    
+    @media only screen and (max-width: 767px) {
+      .ce-component-2 .content_wrapper {
+        overflow-x: hidden;
+        min-height: 100svh;
+      }
+      .ce-component-2 .about, .ce-component-2 .work {
+        overflow-y: auto;
+        min-height: 100svh;
+      }
+      .ce-component-2 h5 {
+        font-size: 2.2vw;
+        line-height: 1;
+        margin-bottom: 2vw;
+      }
+      .ce-component-2 p {
+        font-size: clamp(1rem, 2.8vw, 1.125rem);
+        line-height: 1.7;
+      }
+      .ce-component-2 /*
+        .hero-animation, .ce-component-2 .hero-animation img {
+        min-width: 130vw !important;
+            max-width: 130vw !important;
+            max-height: 130vw !important;
+            min-height: 130vw !important;
+      }
+      */
+      .ce-component-2 .hero-animation, .ce-component-2 .hero-animation img {
+        min-width: 63vh;
+        max-width: 63vh;
+        max-height: 63vh;
+        min-height: 63vh;
+      }
+      .ce-component-2 .play-button img:nth-of-type(1) {
+        width: 8.3vw;
+      }
+      .ce-component-2 .play-button img:nth-of-type(2) {
+        width: 1.3vw;
+      }
+      .ce-component-2 .logo-loader img {
+        min-width: 11vw;
+        max-width: 11vw;
+      }
+      .ce-component-2 /*
+        .logo div {
+        position:relative;
+          top:6vh;
+      }
+      */
+      .ce-component-2 .logo img {
+        margin-right: 4.5vw;
+        min-width: 8vw;
+        max-width: 8vw;
+      }
+      .ce-component-2 .email {
+        position: relative;
+        z-index: 99999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        grid-gap: 0.5vw;
+        text-decoration-line: underline;
+        text-decoration-thickness: 0.5px;
+        text-underline-offset: 8px;
+        text-decoration-color: var(--mtc-darkgrey);
+      }
+      .ce-component-2 /*
+        .home .email {
+        position:relative;
+          top:-17vw;
+      }
+      */
+      .ce-component-2 .dot {
+        width: 1.3vw;
+        height: 1.3vw;
+        margin-right: 1vw;
+        border-radius: 100%;
+        background: var(--mtc-grey);
+      }
+      .ce-component-2 .email .dot {
+        margin-right: 1vw;
+        margin-top: -2.5vw;
+      }
+      .ce-component-2 .nav-btn h6 span {
+        height: 2vw;
+        text-shadow: 0 2vw 0 rgba(255, 255, 255, 1);
+        display: inline-block;
+        transition: transform 0.4s cubic-bezier(0.28, 0, 0, 1);
+      }
+      .ce-component-2 .big-marquee {
+        position: relative;
+        top: -33vw;
+      }
+      .ce-component-2 .big-marquee h1 {
+        font-size: 40vw;
+      }
+      .ce-component-2 .big-marquee img {
+        flex-shrink: 0;
+        width: 180vw;
+        min-width: 180vw;
+        max-width: 180vw;
+      }
+      .ce-component-2 .about-us-text {
+        right: 6vw;
+        bottom: 30vw;
+        width: 70vw;
+        padding-right: 5vw;
+      }
+      .ce-component-2 .about-us-text img {
+        min-width: 5vw;
+        max-width: 5vw;
+        margin-bottom: 3vw;
+      }
+      .ce-component-2 .about-us-text .email {
+        margin-top: 6vw;
+      }
+      .ce-component-2 p a:after, .ce-component-2 .link-frame p a:after {
+        margin-top: -0.5vw;
+      }
+      .ce-component-2 .split-case-content h4 img {
+        min-width: 1.8vw;
+        max-width: 1.8vw;
+        min-height: 1.8vw;
+        max-height: 1.8vw;
+      }
+      .ce-component-2 .case-menu h5 {
+        mix-blend-mode: difference !important;
+        color: var(--mtc-white);
+      }
+      .ce-component-2 .case-close-button h5 {
+        overflow: visible !important;
+        height: 3vw;
+        mix-blend-mode: difference !important;
+        color: var(--mtc-white);
+      }
+      .ce-component-2 .case-close-button h5 span {
+        height: 3vw;
+        text-shadow: none;
+        display: inline-block;
+        transition: transform 0.4s cubic-bezier(0.28, 0, 0, 1);
+        mix-blend-mode: difference !important;
+        color: var(--mtc-white);
+      }
+      .ce-component-2 .case-close-button h5:hover span {
+        transform: unset;
+      }
+      .ce-component-2 .split-case-image img {
+        min-width: 100vw;
+      }
+      .ce-component-2 .case-head img {
+        height: 26vw;
+        width: 100%;
+        object-fit: cover;
+      }
+      .ce-component-2 .contact-page div:nth-of-type(1) {
+        grid-column: 2 / span 5;
+      }
+      .ce-component-2 .contact-page div:nth-of-type(2) {
+        grid-column: 7 / span 4;
+      }
+      .ce-component-2 .contact-page div:nth-of-type(3) {
+        grid-column: 2 / span 5;
+      }
+      .ce-component-2 .contact-page div:nth-of-type(4) {
+        grid-column: 2 / span 2;
+        position: unset;
+      }
+    }
+    
+    @keyframes marquee-horizontal {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(-50%);
+      }
+    }
+    
+    @keyframes slideUp {
+      to {
+        transform: translateY(0vw);
+      }
+    }
+
+    @keyframes blink-dot {
+      0%, 45% { opacity: 1; }
+      50%, 100% { opacity: 0.2; }
+    }
+
+    .ce-component-2 .email .dot {
+      animation: blink-dot 2.4s ease-in-out infinite;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ce-component-2 .track-horizontal {
+        animation-duration: 120s !important;
+      }
+      .ce-component-2 .contact-page,
+      .ce-component-2 .case-link,
+      .ce-component-2 .frame,
+      .ce-component-2 .split-case-content {
+        animation: none !important;
+        transform: none !important;
+      }
+      .ce-component-2 .email .dot {
+        animation: none !important;
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="ce-component-2">
+<main id="app" class="main" lang="he">
+  <div class="main_wrap">
+    <div class="section_wrapper">
+      <div class="content_wrapper about link-frame">
+        <div class="frame"><div class="grid">
+          <div id="w-node-_81ddd08e-f166-87e0-3d25-31a7819c0d20-db8197a6" class="big-marquee" aria-hidden="true">
+            <div class="marquee-horizontal"><div class="track-horizontal">
+              <div class="marquee-segment">
+                <img src="https://cdn.prod.website-files.com/669a53e0cba8630cdb81975b/66c755a8868b076c03847c53_weguidethebraves%20(3).svg" loading="lazy" alt="" role="presentation">
+                <img src="https://cdn.prod.website-files.com/669a53e0cba8630cdb81975b/66c755a8868b076c03847c53_weguidethebraves%20(3).svg" loading="lazy" alt="" role="presentation">
+                <img src="https://cdn.prod.website-files.com/669a53e0cba8630cdb81975b/66c755a8868b076c03847c53_weguidethebraves%20(3).svg" loading="lazy" alt="" role="presentation">
+                <img src="https://cdn.prod.website-files.com/669a53e0cba8630cdb81975b/66c755a8868b076c03847c53_weguidethebraves%20(3).svg" loading="lazy" alt="" role="presentation">
+                <img src="https://cdn.prod.website-files.com/669a53e0cba8630cdb81975b/66c755a8868b076c03847c53_weguidethebraves%20(3).svg" loading="lazy" alt="" role="presentation">
+                <img src="https://cdn.prod.website-files.com/669a53e0cba8630cdb81975b/66c755a8868b076c03847c53_weguidethebraves%20(3).svg" loading="lazy" alt="" role="presentation">
+                <img src="https://cdn.prod.website-files.com/669a53e0cba8630cdb81975b/66c755a8868b076c03847c53_weguidethebraves%20(3).svg" loading="lazy" alt="" role="presentation">
+              </div>
+              <div class="marquee-segment" aria-hidden="true">
+                <img src="https://cdn.prod.website-files.com/669a53e0cba8630cdb81975b/66c755a8868b076c03847c53_weguidethebraves%20(3).svg" loading="lazy" alt="" role="presentation">
+                <img src="https://cdn.prod.website-files.com/669a53e0cba8630cdb81975b/66c755a8868b076c03847c53_weguidethebraves%20(3).svg" loading="lazy" alt="" role="presentation">
+                <img src="https://cdn.prod.website-files.com/669a53e0cba8630cdb81975b/66c755a8868b076c03847c53_weguidethebraves%20(3).svg" loading="lazy" alt="" role="presentation">
+                <img src="https://cdn.prod.website-files.com/669a53e0cba8630cdb81975b/66c755a8868b076c03847c53_weguidethebraves%20(3).svg" loading="lazy" alt="" role="presentation">
+                <img src="https://cdn.prod.website-files.com/669a53e0cba8630cdb81975b/66c755a8868b076c03847c53_weguidethebraves%20(3).svg" loading="lazy" alt="" role="presentation">
+                <img src="https://cdn.prod.website-files.com/669a53e0cba8630cdb81975b/66c755a8868b076c03847c53_weguidethebraves%20(3).svg" loading="lazy" alt="" role="presentation">
+                <img src="https://cdn.prod.website-files.com/669a53e0cba8630cdb81975b/66c755a8868b076c03847c53_weguidethebraves%20(3).svg" loading="lazy" alt="" role="presentation">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="w-node-_440e901f-e65b-456a-5948-ca40df5d70a6-db8197a6" class="about-us-text" dir="rtl" lang="he">
+        <p class="paragraph">חברת דהרי מתמחה בנדל״ן מניב עם ניסיון עשיר ופרויקטים בפריסה ארצית. החברה מובילה עסקאות מגוונות בקני מידה שונים, הכוללות רכישת קרקעות ופיתוח יזמי המותאם לייעוד הקרקע – החל ממרכזי מסחר, מרכזים לוגיסטיים, מבני משרדים ועד בנייה עבור התעשייה. בנוסף, דהרי רוכשת ומשביחה מבנים מסחריים פעילים או נטושים, תוך יישום תכנון מחודש וחלוקה חכמה של חללים, שיפוץ פנימי וחיצוני מקיף, התקנת מדרגות נעות, חידוש חזיתות ושירותים, ועוד. בתוך חודשים ספורים, המבנה מקבל חיים חדשים ונראות ייחודית.</p><div class="email"><div class="dot" aria-hidden="true"></div><p><a href="/contact" data-about-cta="contact"><span>לשיחה עם הצוות — יצירת קשר</span></a></p></div></div></div></div></div></div></div></main>
+</div>
+
+</body>
+</html>
