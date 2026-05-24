@@ -3,13 +3,14 @@
 <html class="dh-page-contact" dir="rtl" lang="he">
 <head>
 <meta charset="utf-8"/>
+<script src="dh-page-transition-boot.js?v=1"></script>
 <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
 <meta content="יצירת קשר עם דהרי — טופס פנייה, פרטי משרד ושעות פעילות. נשמח ללוות אתכם בפרויקטים של נדל״ן, לוגיסטיקה ומגורים." name="description"/>
 <title>דהרי — יצירת קשר</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@500;600;700&amp;family=Rubik:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="index-layout.css?v=45" rel="stylesheet"/>
+<link href="index-layout.css?v=52" rel="stylesheet"/>
 <link href="dh-side-header888.css?v=59" rel="stylesheet"/>
-<link href="dh-contact-page.css?v=16" rel="stylesheet"/>
+<link href="dh-contact-page.css?v=24" rel="stylesheet"/>
 </head>
 <body>
 <a class="dh-skip-link" href="#dh-main-content">דלג לתוכן הראשי</a>
@@ -31,50 +32,10 @@
 <span aria-current="page" class="dh-breadcrumbs__current">יצירת קשר</span>
 </p>
 </nav>
+<div aria-hidden="true" class="dh-contact__page-banner" role="presentation"></div>
 <div class="dh-contact dh-contact--split" id="dh-contact-root">
 <div class="dh-contact__bg">
 <div class="dh-contact__inner">
-<figure class="dh-contact__hero-media">
-<video aria-label="סרטון הצגת המותג — דהרי" class="dh-contact__hero-video" muted playsinline preload="metadata" loop autoplay>
-<source src="assets/ContantUs/FINAL%201.mp4" type="video/mp4"/>
-</video>
-</figure>
-<div class="dh-contact__sidebar">
-<header class="dh-contact__intro">
-<div class="dh-contact__eyebrow-wrap">
-<p class="dh-contact__eyebrow" lang="en">Contact</p>
-</div>
-<h1 class="dh-contact__title">בואו נדבר על הצעד הבא</h1>
-<p class="dh-contact__lead">
-	                ספרו לנו במשפט מה אתם צריכים — נחזור אליכם עם איש קשר מתאים. אפשר גם לפנות ישירות בטלפון או בדוא״ל.
-	              </p>
-<ul class="dh-contact__chips" role="list">
-<li><span class="dh-contact__chip">תגובה מהירה</span></li>
-<li><span class="dh-contact__chip">ייעוץ ללא התחייבות</span></li>
-<li><span class="dh-contact__chip">מומחיות בנדל״ן</span></li>
-</ul>
-</header>
-<aside aria-label="דרכי קשר נוספות" class="dh-contact__aside">
-<div class="dh-contact__card">
-<h2 class="dh-contact__card-title">משרד ושעות</h2>
-<p class="dh-contact__hours">א׳–ה׳ 09:00–18:00 · ו׳ 09:00–13:00</p>
-<p class="dh-contact__map-note">רח׳ לדוגמה 00, תל אביב — ניתן לעדכן לפי החברה.</p>
-<ul class="dh-contact__links" role="list">
-<li>
-<a href="https://maps.google.com/?q=%D7%AA%D7%9C%20%D7%90%D7%91%D7%99%D7%91" rel="noopener noreferrer" target="_blank">פתיחה במפה</a>
-</li>
-</ul>
-</div>
-<div class="dh-contact__card">
-<h2 class="dh-contact__card-title">ישירות</h2>
-<ul class="dh-contact__links" role="list">
-<li><a dir="ltr" href="tel:+97235123456">+972-3-512-3456</a></li>
-<li><a dir="ltr" href="mailto:info@dahari.co.il">info@dahari.co.il</a></li>
-<li><a href="https://wa.me/972501234567" rel="noopener noreferrer" target="_blank">וואטסאפ</a></li>
-</ul>
-</div>
-</aside>
-</div>
 <div class="dh-contact__main">
 <div class="dh-contact__form-wrap">
 <h2 class="dh-contact__form-title">טופס פנייה</h2>
@@ -134,6 +95,47 @@
 </form>
 </div>
 </div>
+<div class="dh-contact__sidebar">
+<header class="dh-contact__intro">
+<div class="dh-contact__eyebrow-wrap">
+<p class="dh-contact__eyebrow" lang="en">Contact</p>
+</div>
+<h1 class="dh-contact__title">בואו נדבר על הצעד הבא</h1>
+<p class="dh-contact__lead">
+	                ספרו לנו במשפט מה אתם צריכים — נחזור אליכם עם איש קשר מתאים. אפשר גם לפנות ישירות בטלפון או בדוא״ל.
+	              </p>
+<ul class="dh-contact__chips" role="list">
+<li><span class="dh-contact__chip">תגובה מהירה</span></li>
+<li><span class="dh-contact__chip">ייעוץ ללא התחייבות</span></li>
+<li><span class="dh-contact__chip">מומחיות בנדל״ן</span></li>
+</ul>
+</header>
+<aside aria-label="דרכי קשר נוספות" class="dh-contact__aside">
+<div class="dh-contact__card">
+<h2 class="dh-contact__card-title">משרד ושעות</h2>
+<p class="dh-contact__hours">א׳–ה׳ 09:00–18:00 · ו׳ 09:00–13:00</p>
+<p class="dh-contact__map-note">רח׳ לדוגמה 00, תל אביב — ניתן לעדכן לפי החברה.</p>
+<ul class="dh-contact__links" role="list">
+<li>
+<a href="https://maps.google.com/?q=%D7%AA%D7%9C%20%D7%90%D7%91%D7%99%D7%91" rel="noopener noreferrer" target="_blank">פתיחה במפה</a>
+</li>
+</ul>
+</div>
+<div class="dh-contact__card">
+<h2 class="dh-contact__card-title">ישירות</h2>
+<ul class="dh-contact__links" role="list">
+<li><a dir="ltr" href="tel:+97235123456">+972-3-512-3456</a></li>
+<li><a dir="ltr" href="mailto:info@dahari.co.il">info@dahari.co.il</a></li>
+<li><a href="https://wa.me/972501234567" rel="noopener noreferrer" target="_blank">וואטסאפ</a></li>
+</ul>
+</div>
+</aside>
+</div>
+<figure class="dh-contact__hero-media">
+<video aria-label="סרטון הצגת המותג — דהרי" class="dh-contact__hero-video" muted playsinline preload="metadata" loop autoplay>
+<source src="assets/ContantUs/FINAL%201.mp4" type="video/mp4"/>
+</video>
+</figure>
 </div>
 </div>
 </div>
