@@ -501,8 +501,8 @@
       }
     }
 
-    /* ≤768px, all pages except home: 62px gutter beside the fixed rail (physical right in RTL) */
-    @media (max-width: 768px) {
+    /* ≤1023px, all pages except home: 62px gutter beside the fixed rail (physical right in RTL) */
+    @media (max-width: 1023px) {
       html:not(.dh-page-home) .dh-side-header888__content888 {
         padding-inline-start: calc(62px + max(0px, env(safe-area-inset-inline-start, 0px)));
         box-sizing: border-box;
