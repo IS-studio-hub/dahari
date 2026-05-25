@@ -1209,9 +1209,11 @@ html.dh-page-contact .dh-contact__map-note {
   padding-block: 0;
 }
 
-/* Breadcrumbs + contact card keep inset; banner stays full width */
-html.dh-page-contact .dh-main-content--contact > .dh-breadcrumbs {
-  padding-inline: max(0.65rem, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+/* Breadcrumbs + contact card keep inset on wider screens; banner stays full width */
+@media (min-width: 769px) {
+  html.dh-page-contact .dh-main-content--contact > .dh-breadcrumbs {
+    padding-inline: max(0.65rem, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+  }
 }
 
 html.dh-page-contact .dh-main-content--contact > #dh-contact-root {

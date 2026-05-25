@@ -12,6 +12,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   padding-inline: max(1rem, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
   overflow-x: clip;
   overflow-y: auto;
+  direction: rtl;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
   box-sizing: border-box;

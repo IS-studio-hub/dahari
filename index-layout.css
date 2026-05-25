@@ -34,6 +34,19 @@
       overscroll-behavior-x: none;
     }
 
+    /*
+      RTL scroll regions: vertical scrollbar on the physical left.
+      Applied on each overflow container (html[dir=rtl] alone is not always enough).
+    */
+    html[dir="rtl"] body,
+    html[dir="rtl"] .dh-main-content.dh-main-content--logistics-item,
+    html[dir="rtl"] .dh-main-content.dh-main-content--contact,
+    html[dir="rtl"] .dh-contact__inner,
+    html[dir="rtl"] .dh-side-header888__menu-nav888,
+    html[dir="rtl"] .dh-side-header888__menu-shell888 {
+      direction: rtl;
+    }
+
     /* Phones / small tablets: hide scrollbars; scrolling still works (touch / wheel / trackpad) */
     @media (max-width: 768px) {
       html,
@@ -484,6 +497,22 @@
       .dh-side-header888__content888 {
         padding-inline-start: calc(
           var(--rail-width-mobile, calc(44px + 10px)) + 12px + max(0px, env(safe-area-inset-inline-start, 0px))
+        );
+      }
+    }
+
+    /* ≤768px, all pages except home: 62px gutter beside the fixed rail (physical right in RTL) */
+    @media (max-width: 768px) {
+      html:not(.dh-page-home) .dh-side-header888__content888 {
+        padding-inline-start: calc(62px + max(0px, env(safe-area-inset-inline-start, 0px)));
+        box-sizing: border-box;
+      }
+
+      html:not(.dh-page-home) .dh-breadcrumbs {
+        inset-inline-start: calc(62px + max(0px, env(safe-area-inset-inline-start, 0px)));
+        max-width: min(
+          100%,
+          calc(100% - 62px - 3.5rem - max(0px, env(safe-area-inset-inline-start, 0px)))
         );
       }
     }
