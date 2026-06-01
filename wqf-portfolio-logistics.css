@@ -912,6 +912,19 @@
 
 #wqf-portfolio-root .wqf-word-inner {
   display: inline-block;
+  will-change: transform, opacity;
+}
+
+#wqf-portfolio-root .js-split-reveal {
+  overflow: hidden;
+}
+
+#wqf-portfolio-root .js-split-reveal.wqf-split-reveal--settled {
+  overflow: visible;
+}
+
+#wqf-portfolio-root .js-split-reveal.wqf-split-reveal--settled .wqf-word {
+  overflow: visible;
 }
 
 /* <768px: vertical stack + page scroll; Swiper destroyed in JS (class wqf-portfolio--mobile-stack) */

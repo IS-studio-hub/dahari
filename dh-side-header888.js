@@ -300,6 +300,41 @@
 	  })();
 
 (function () {
+	var html = document.documentElement;
+	var lockedPages = ['dh-page-home', 'dh-page-logistics-wqf', 'dh-page-wqf-inline', 'dh-page-property-item', 'dh-page-logistics-item', 'dh-page-contact'];
+	var isContactMobile = html.classList.contains('dh-page-contact') && window.matchMedia('(max-width: 899px)').matches;
+	var isScrollable = !lockedPages.some(function (c) { return html.classList.contains(c); });
+	if (!isScrollable && !isContactMobile) return;
+
+	var navFloat = document.querySelector('.dh-side-header888__nav-float888');
+	if (!navFloat) return;
+
+	var btn = document.createElement('button');
+	btn.className = 'dh-side-header888__back-to-top';
+	btn.setAttribute('aria-label', 'חזרה למעלה');
+	btn.setAttribute('type', 'button');
+	btn.innerHTML = '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>';
+	navFloat.appendChild(btn);
+
+	var visible = false;
+	function toggle() {
+		var scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+		var shouldShow = scrollTop > 200;
+		if (shouldShow !== visible) {
+			visible = shouldShow;
+			btn.classList.toggle('dh-side-header888__back-to-top--visible', visible);
+		}
+	}
+
+	btn.addEventListener('click', function () {
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	});
+
+	window.addEventListener('scroll', toggle, { passive: true });
+	toggle();
+})();
+
+(function () {
 	if (window.__dhCustomCursorScheduled) return;
 	if (document.querySelector("script[data-dh-custom-cursor]")) return;
 	if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;

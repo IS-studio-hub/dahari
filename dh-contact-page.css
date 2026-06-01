@@ -109,6 +109,31 @@ html.dh-page-contact .dh-main-content--contact:has(#dh-contact-root.dh-contact--
     flex: none;
   }
 
+  /* Logo + breadcrumbs flow with content on mobile */
+  html.dh-page-contact .dh-corner-logo {
+    position: relative;
+    top: auto;
+    inset-inline-end: auto;
+    margin-block-start: max(0.75rem, env(safe-area-inset-top, 0px));
+    margin-block-end: 0;
+    margin-inline-end: max(0.75rem, env(safe-area-inset-inline-end, 0px));
+    align-self: flex-end;
+  }
+
+  html.dh-page-contact .dh-breadcrumbs {
+    position: relative;
+    top: auto;
+    inset-inline-start: auto;
+    inset-inline-end: auto;
+    margin-block-start: -1.5rem;
+    margin-block-end: 0.75rem;
+    align-self: flex-start;
+  }
+
+  html.dh-page-contact main#dh-main-content:has(> .dh-breadcrumbs) {
+    padding-top: 0;
+  }
+
   html.dh-page-contact #dh-contact-root.dh-contact {
     max-height: none;
     overflow: visible;

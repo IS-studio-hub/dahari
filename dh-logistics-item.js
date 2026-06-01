@@ -1,187 +1,242 @@
 (() => {
   "use strict";
 
-  const sections = document.querySelectorAll(".dh-logistics-item__related");
-  if (!sections.length) return;
-
-  const icon = `
+  const arrowIcon = `
     <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
       <path d="M8.47 12 15.53 4.94 17 6.41 11.41 12 17 17.59 15.53 19.06z"></path>
     </svg>
   `;
-  const quoteIcon = `
-    <svg viewBox="0 0 50 38" aria-hidden="true" focusable="false">
-      <path d="M38.33,36.17c6.41,0,11.61-5.2,11.61-11.61,0-4.59-2.7-8.46-6.56-10.33-1.08-.52-.98-1.04-.59-1.79,1.36-2.65,2.65-5.34,3.21-7.03,1.59-4.81-3.98-6.5-7.66-3.8-4.02,2.94-11.61,11.74-11.61,22.95,0,6.41,5.2,11.61,11.61,11.61Z"></path>
-      <path d="M11.61,36.17c6.41,0,11.61-5.2,11.61-11.61,0-4.59-2.7-8.46-6.56-10.33-1.08-.52-.98-1.04-.59-1.79,1.36-2.65,2.65-5.34,3.21-7.03,1.59-4.81-3.98-6.5-7.66-3.8C7.59,4.56,0,13.35,0,24.56c0,6.41,5.2,11.61,11.61,11.61Z"></path>
+
+  const tksNavIcon = `
+    <svg viewBox="0 0 45 44" aria-hidden="true" focusable="false">
+      <rect width="45" height="44" rx="9" fill="#51b04c"></rect>
+      <g fill="#ffffff">
+        <rect x="24" y="13" width="3" height="3" rx="0.5"></rect>
+        <rect x="21" y="16" width="3" height="3" rx="0.5"></rect>
+        <rect x="18" y="19" width="3" height="3" rx="0.5"></rect>
+        <rect x="21" y="22" width="3" height="3" rx="0.5"></rect>
+        <rect x="24" y="25" width="3" height="3" rx="0.5"></rect>
+      </g>
     </svg>
   `;
 
-  sections.forEach((section) => {
+  function buildTrustCard(link, slideIndex, slideCount) {
+    if (link.dataset.tksBuilt === "1") return;
+    link.dataset.tksBuilt = "1";
+
+    const nameNode = link.querySelector(".dh-logistics-item__related-name");
+    const imageNode = link.querySelector(".dh-logistics-item__related-media img");
+    const name = nameNode ? nameNode.textContent.trim() : "";
+    const href = link.getAttribute("href") || "#";
+
+    link.classList.add("trust-leaders__card");
+    link.innerHTML = "";
+
+    const left = document.createElement("div");
+    left.className = "trust-leaders__left-col";
+
+    const head = document.createElement("div");
+    head.className = "trust-leaders__left-col-head";
+
+    const numWrap = document.createElement("div");
+    numWrap.className = "trust-leaders__num-nav-wrap";
+
+    const numNav = document.createElement("div");
+    numNav.className = "slider__num-nav";
+    numNav.innerHTML =
+      '<span class="slider__num-slide">' +
+      String(slideIndex + 1).padStart(2, "0") +
+      '</span><span class="slider__num-slash">/</span><span class="slider__total-slide">' +
+      String(slideCount).padStart(2, "0") +
+      "</span>";
+    numWrap.appendChild(numNav);
+
+    const headline = document.createElement("h4");
+    headline.className = "trust-leaders__headline";
+    headline.setAttribute("dir", "rtl");
+    headline.setAttribute("aria-label", name);
+    const headlineInner = document.createElement("span");
+    headlineInner.className = "trust-leaders__headline-inner";
+    headlineInner.textContent = name;
+    headline.appendChild(headlineInner);
+
+    const quote = document.createElement("p");
+    quote.className = "trust-leaders__quote";
+    quote.setAttribute("dir", "rtl");
+    quote.textContent =
+      "הפרויקט " +
+      name +
+      " משקף תכנון מוקפד, חשיבה מסחרית ותוצאה מדויקת שמתחברת לחוויית משתמש איכותית.";
+
+    head.appendChild(numWrap);
+    head.appendChild(headline);
+    head.appendChild(quote);
+
+    left.appendChild(head);
+
+    const right = document.createElement("div");
+    right.className = "trust-leaders__right-col";
+
+    const rightInner = document.createElement("div");
+    rightInner.className = "trust-leaders__right-inner";
+
+    const imgWrap = document.createElement("div");
+    imgWrap.className = "trust-leaders__img-wrap";
+    if (imageNode) {
+      const img = imageNode.cloneNode(true);
+      img.removeAttribute("width");
+      img.removeAttribute("height");
+      img.classList.add("trust-leaders__photo");
+      imgWrap.appendChild(img);
+    }
+
+    const personName = document.createElement("h5");
+    personName.className = "trust-leaders__name";
+    personName.setAttribute("dir", "rtl");
+    personName.textContent = name;
+
+    rightInner.appendChild(imgWrap);
+    rightInner.appendChild(personName);
+    right.appendChild(rightInner);
+
+    link.appendChild(right);
+    link.appendChild(left);
+    link.setAttribute("href", href);
+    link.setAttribute("aria-label", "מעבר לעמוד הפרויקט — " + name);
+  }
+
+  function initRelatedCarousel(section) {
     const grid = section.querySelector(".dh-logistics-item__related-grid");
     if (!grid) return;
 
-    const cards = Array.from(grid.children);
-    if (cards.length < 2) return;
+    const slides = Array.from(grid.children);
+    if (!slides.length) return;
 
-    cards.forEach((li) => {
-      const link = li.querySelector(".dh-logistics-item__related-card");
-      if (!link) return;
-      if (link.querySelector(".dh-logistics-item__testimonial-inner")) return;
-      const nameNode = link.querySelector(".dh-logistics-item__related-name");
-      const imageNode = link.querySelector(".dh-logistics-item__related-media img");
-      const name = nameNode ? nameNode.textContent.trim() : "";
-
-      const inner = document.createElement("div");
-      inner.className = "dh-logistics-item__testimonial-inner";
-
-      const quoteStart = document.createElement("span");
-      quoteStart.className = "dh-logistics-item__testimonial-quote";
-      quoteStart.innerHTML = quoteIcon;
-
-      const text = document.createElement("p");
-      text.className = "dh-logistics-item__testimonial-text";
-      text.textContent = "הפרויקט " + name + " משקף תכנון מוקפד, חשיבה מסחרית ותוצאה מדויקת שמתחברת לחוויית משתמש איכותית.";
-
-      const meta = document.createElement("span");
-      meta.className = "dh-logistics-item__testimonial-meta";
-
-      const avatar = document.createElement("span");
-      avatar.className = "dh-logistics-item__testimonial-avatar";
-      if (imageNode) {
-        const avatarImg = imageNode.cloneNode(true);
-        avatarImg.removeAttribute("width");
-        avatarImg.removeAttribute("height");
-        avatar.appendChild(avatarImg);
-      }
-
-      const author = document.createElement("span");
-      author.className = "dh-logistics-item__testimonial-name";
-      author.textContent = name;
-
-      meta.appendChild(avatar);
-      meta.appendChild(author);
-
-      const action = document.createElement("span");
-      action.className = "dh-logistics-item__testimonial-action";
-      action.textContent = "לצפייה בפרויקט";
-
-      const quoteEnd = document.createElement("span");
-      quoteEnd.className = "dh-logistics-item__testimonial-quote dh-logistics-item__testimonial-quote--end";
-      quoteEnd.innerHTML = quoteIcon;
-
-      inner.appendChild(quoteStart);
-      inner.appendChild(text);
-      inner.appendChild(meta);
-      inner.appendChild(action);
-      inner.appendChild(quoteEnd);
-      link.appendChild(inner);
+    const slideCount = slides.length;
+    slides.forEach((slide, idx) => {
+      slide.classList.add("cards-slider__slide");
+      const link = slide.querySelector(".dh-logistics-item__related-card");
+      if (link) buildTrustCard(link, idx, slideCount);
     });
 
-    const carousel = document.createElement("div");
-    carousel.className = "dh-logistics-item__related-carousel";
-    grid.parentNode.insertBefore(carousel, grid);
-    carousel.appendChild(grid);
+    const shell = document.createElement("div");
+    shell.className = "dh-logistics-item__cards-slider";
 
-    const prevBtn = document.createElement("button");
-    prevBtn.type = "button";
-    prevBtn.className = "dh-logistics-item__related-arrow dh-logistics-item__related-arrow--prev";
-    prevBtn.setAttribute("aria-label", "גלילה לפרויקט הבא");
-    prevBtn.innerHTML = icon;
-    prevBtn.style.transform = "rotate(180deg)";
+    const bg = document.createElement("div");
+    bg.className = "dh-logistics-item__related-bg";
+    bg.setAttribute("aria-hidden", "true");
 
-    const nextBtn = document.createElement("button");
-    nextBtn.type = "button";
-    nextBtn.className = "dh-logistics-item__related-arrow dh-logistics-item__related-arrow--next";
-    nextBtn.setAttribute("aria-label", "גלילה לפרויקט הקודם");
-    nextBtn.innerHTML = icon;
+    grid.parentNode.insertBefore(shell, grid);
+    shell.appendChild(bg);
+    shell.appendChild(grid);
 
-    carousel.appendChild(prevBtn);
-    carousel.appendChild(nextBtn);
+    let index = 0;
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchActive = false;
 
-    const dots = document.createElement("div");
-    dots.className = "dh-logistics-item__related-dots";
-    section.appendChild(dots);
+    let prevBtn = null;
+    let nextBtn = null;
 
-    const count = document.createElement("p");
-    count.className = "dh-logistics-item__related-count";
-    section.appendChild(count);
-
-    const slideCount = cards.length;
-    const dotCount = Math.min(4, slideCount);
-    const dotButtons = Array.from({ length: dotCount }, (_, idx) => {
-      const dot = document.createElement("button");
-      dot.type = "button";
-      dot.className = "dh-logistics-item__related-dot";
-      dot.setAttribute("aria-label", "מעבר לשקופית " + (idx + 1));
-      dot.setAttribute("aria-current", idx === 0 ? "true" : "false");
-      dots.appendChild(dot);
-      return dot;
-    });
-
-    const maxScroll = () => Math.max(0, grid.scrollWidth - grid.clientWidth);
-    const toPhysical = (idx) => {
-      const target = cards[Math.max(0, Math.min(slideCount - 1, idx))];
-      if (!target) return;
-      grid.scrollTo({ left: Math.min(maxScroll(), target.offsetLeft), behavior: "smooth" });
+    const updateCounters = () => {
+      slides.forEach((slide, idx) => {
+        const num = slide.querySelector(".slider__num-slide");
+        if (num) num.textContent = String(index + 1).padStart(2, "0");
+      });
     };
-    const activePhysical = () => {
-      let best = 0;
-      let delta = Number.POSITIVE_INFINITY;
-      const x = grid.scrollLeft;
-      cards.forEach((card, idx) => {
-        const d = Math.abs(card.offsetLeft - x);
-        if (d < delta) {
-          delta = d;
-          best = idx;
+
+    const updateStates = () => {
+      slides.forEach((slide, idx) => {
+        slide.classList.remove("is-active", "is-next", "is-next-next", "is-old");
+        const diff = idx - index;
+        if (diff === 0) {
+          slide.classList.add("is-active");
+          slide.classList.remove("is-reveal");
+          void slide.offsetWidth;
+          slide.classList.add("is-reveal");
+        } else if (diff === 1) {
+          slide.classList.add("is-next");
+        } else if (diff === 2) {
+          slide.classList.add("is-next-next");
+        } else if (diff < 0) {
+          slide.classList.add("is-old");
         }
       });
-      return best;
-    };
-    const activeLogical = () => slideCount - 1 - activePhysical();
-    const toLogical = (idx) => {
-      const logical = Math.max(0, Math.min(slideCount - 1, idx));
-      toPhysical(slideCount - 1 - logical);
-    };
-    const dotToLogical = (dotIdx) => {
-      if (dotCount <= 1) return 0;
-      return Math.round((dotIdx / (dotCount - 1)) * (slideCount - 1));
-    };
-    const logicalToDot = (logicalIdx) => {
-      if (slideCount <= 1) return 0;
-      return Math.round((logicalIdx / (slideCount - 1)) * (dotCount - 1));
+      updateCounters();
+      if (prevBtn) prevBtn.disabled = index <= 0;
+      if (nextBtn) nextBtn.disabled = index >= slideCount - 1;
     };
 
-    const updateButtons = () => {
-      const page = activeLogical();
-      const dotPage = logicalToDot(page);
-      prevBtn.disabled = page >= slideCount - 1;
-      nextBtn.disabled = page <= 0;
-      dotButtons.forEach((dot, idx) => {
-        dot.setAttribute("aria-current", idx === dotPage ? "true" : "false");
+    const goTo = (nextIndex) => {
+      index = Math.max(0, Math.min(slideCount - 1, nextIndex));
+      updateStates();
+    };
+
+    if (slideCount > 1) {
+      const nav = document.createElement("div");
+      nav.className = "cards-slider__nav";
+
+      prevBtn = document.createElement("button");
+      prevBtn.type = "button";
+      prevBtn.className = "slider__button-prev";
+      prevBtn.setAttribute("aria-label", "פרויקט קודם");
+      prevBtn.innerHTML = tksNavIcon;
+
+      nextBtn = document.createElement("button");
+      nextBtn.type = "button";
+      nextBtn.className = "slider__button-next";
+      nextBtn.setAttribute("aria-label", "פרויקט הבא");
+      nextBtn.innerHTML = tksNavIcon;
+
+      nav.appendChild(prevBtn);
+      nav.appendChild(nextBtn);
+      shell.appendChild(nav);
+
+      prevBtn.addEventListener("click", () => goTo(index - 1));
+      nextBtn.addEventListener("click", () => goTo(index + 1));
+
+      shell.addEventListener(
+        "touchstart",
+        (event) => {
+          if (!event.touches.length) return;
+          touchActive = true;
+          touchStartX = event.touches[0].clientX;
+          touchStartY = event.touches[0].clientY;
+        },
+        { passive: true }
+      );
+
+      shell.addEventListener(
+        "touchend",
+        (event) => {
+          if (!touchActive || !event.changedTouches.length) return;
+          touchActive = false;
+          const deltaX = event.changedTouches[0].clientX - touchStartX;
+          const deltaY = event.changedTouches[0].clientY - touchStartY;
+          if (Math.abs(deltaX) < 48 || Math.abs(deltaX) < Math.abs(deltaY)) return;
+          if (deltaX < 0) goTo(index + 1);
+          else goTo(index - 1);
+        },
+        { passive: true }
+      );
+
+      section.setAttribute("tabindex", "0");
+      section.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          goTo(index + 1);
+        } else if (event.key === "ArrowRight") {
+          event.preventDefault();
+          goTo(index - 1);
+        }
       });
-      count.textContent = (page + 1) + " / " + slideCount;
-    };
+    }
 
-    prevBtn.addEventListener("click", () => {
-      toLogical(activeLogical() + 1);
-    });
+    goTo(0);
+  }
 
-    nextBtn.addEventListener("click", () => {
-      toLogical(activeLogical() - 1);
-    });
-
-    dotButtons.forEach((dot, idx) => {
-      dot.addEventListener("click", () => {
-        toLogical(dotToLogical(idx));
-      });
-    });
-
-    grid.addEventListener("scroll", updateButtons, { passive: true });
-    window.addEventListener("resize", updateButtons);
-    requestAnimationFrame(() => {
-      toLogical(0);
-      updateButtons();
-    });
+  document.querySelectorAll(".dh-logistics-item__related").forEach((section) => {
+    initRelatedCarousel(section);
   });
 })();
 
