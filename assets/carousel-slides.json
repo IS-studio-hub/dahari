@@ -1,15 +1,9 @@
 [
   {
-    "href": "logistics.html",
-    "src": "assets/Homepagevids/logistics.mp4",
-    "titleHe": "לוגיסטיקה",
-    "titleEn": "Logistics"
-  },
-  {
     "href": "offices.html",
     "src": "assets/Homepagevids/office.mp4",
-    "titleHe": "משרדים",
-    "titleEn": "Offices"
+    "titleHe": "פרוייקטים בהקמה",
+    "titleEn": "Under construction"
   },
   {
     "href": "residences.html",
