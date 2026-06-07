@@ -624,6 +624,10 @@
   width: 100%;
 }
 
+#wqf-portfolio-root .wqf-logo-img.dh-img-placeholder {
+  background-color: #b8bcc4;
+}
+
 #wqf-portfolio-root .wqf-slide-card svg:not(.wqf-slide-meta-icon) path {
   transition: fill 0.3s var(--easing);
   fill: #111;

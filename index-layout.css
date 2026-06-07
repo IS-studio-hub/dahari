@@ -4,6 +4,9 @@
       --site-color-60: #fff5df;
       --site-color-30: #99beff;
       --site-color-10: #cfb682;
+      --dh-header-edge-gutter: 44px;
+      --dh-header-gutter-inline-start: max(44px, env(safe-area-inset-inline-start, 0px));
+      --dh-header-gutter-inline-end: max(44px, env(safe-area-inset-inline-end, 0px));
       /* 8-bit: ordered grid dither on fills (no blur) */
       --dh-8bit-grid-dark: linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px),
         linear-gradient(rgba(0, 0, 0, 0.11) 1px, transparent 1px);
@@ -512,10 +515,10 @@
       }
 
       html:not(.dh-page-home):not(.dh-page-property-item):not(.dh-page-logistics-item) .dh-breadcrumbs {
-        inset-inline-start: calc(62px + max(0px, env(safe-area-inset-inline-start, 0px)));
+        inset-inline-start: var(--dh-header-gutter-inline-start);
         max-width: min(
           100%,
-          calc(100% - 62px - 3.5rem - max(0px, env(safe-area-inset-inline-start, 0px)))
+          calc(100% - var(--dh-header-edge-gutter) - 3.5rem - max(0px, env(safe-area-inset-inline-start, 0px)))
         );
       }
 
@@ -579,7 +582,7 @@
       position: absolute;
       z-index: 25;
       top: var(--dh-top-bar-y);
-      inset-inline-end: max(0.75rem, 4vw, 32px, env(safe-area-inset-inline-end, 0px));
+      inset-inline-end: var(--dh-header-gutter-inline-end);
       display: flex;
       align-items: center;
       min-height: 1.5rem;
@@ -671,12 +674,12 @@
       }
     }
 
-    /* Breadcrumbs: same row as corner logo; 1.5rem from inline-start (= physical right in RTL) */
+    /* Breadcrumbs: same row as corner logo; 44px from inline-start (= physical right in RTL) */
     .dh-breadcrumbs {
       position: absolute;
       z-index: 24;
       top: var(--dh-top-bar-y);
-      inset-inline-start: max(1.5rem, env(safe-area-inset-inline-start, 0px));
+      inset-inline-start: var(--dh-header-gutter-inline-start);
       inset-inline-end: auto;
       margin: 0;
       padding: 0;
@@ -727,7 +730,7 @@
       inset-inline-end: auto;
       margin-block-start: max(0.75rem, env(safe-area-inset-top, 0px));
       margin-block-end: 0;
-      margin-inline-end: max(0.75rem, env(safe-area-inset-inline-end, 0px));
+      margin-inline-end: var(--dh-header-gutter-inline-end);
       align-self: flex-end;
     }
 
@@ -738,6 +741,7 @@
       inset-inline-end: auto;
       margin-block-start: -1.5rem;
       margin-block-end: 2rem;
+      margin-inline-start: var(--dh-header-gutter-inline-start);
       align-self: flex-start;
     }
 

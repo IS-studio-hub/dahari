@@ -84,8 +84,11 @@
 		--rail-width-tablet: var(--rail-width-desktop);
 		--rail-width-mobile: var(--rail-width-desktop);
 		--overlay-anchor-width: var(--rail-width-desktop);
-		/* Slim drawer ≈ 20% viewport; floor so labels stay readable */
-		--menu-panel-width: min(100%, max(15rem, 20vw));
+		/* Slim drawer ≈ 20% viewport; floor fits five social icons + horizontal padding */
+		--menu-panel-width: min(100%, max(22rem, 20vw));
+		--menu-social-icon-size: 44px;
+		--menu-social-gap: clamp(6px, 1.5vw, 14px);
+		--menu-close-inset-right: 12px;
   
 		--shell-padding-x: clamp(12px, min(2.4vw, 2.8vmin), 28px);
 		--shell-padding-bottom: clamp(16px, min(2.2vw, 2.6vmin), 28px);
@@ -256,10 +259,10 @@
 		}
 	  }
 
-	  /* Horizontal tablets / small desktop: slimmer drawer so main column + rail stay balanced */
-	  @media (min-width: 1024px) and (max-width: 1279px) {
+	  /* Small desktop: extra drawer width so nav labels + social row breathe */
+	  @media (min-width: 1024px) and (max-width: 1439px) {
 		.dh-side-header888 {
-		  --menu-panel-width: min(100%, max(14rem, min(19vw, 22rem)));
+		  --menu-panel-width: min(100%, max(25rem, min(22vw, 28rem)));
 		  --shell-padding-x: clamp(12px, min(2.1vw, 2.5vmin), 24px);
 		  --menu-font-size: clamp(13px, min(2.35vw, 3.1vmin), 24px);
 		}
@@ -271,6 +274,16 @@
 		  --menu-panel-width: 100%;
 		  --shell-padding-x: clamp(10px, min(4.2vw, 5vmin), 22px);
 		  --menu-font-size: clamp(13px, min(4.2vw, 4.8vmin), 22px);
+		  --menu-social-icon-size: 42px;
+		  --menu-social-gap: 10px;
+		}
+	  }
+
+	  /* Ultra-narrow phones: slightly smaller social targets so five icons stay on one row */
+	  @media (max-width: 360px) {
+		.dh-side-header888 {
+		  --menu-social-icon-size: 38px;
+		  --menu-social-gap: 6px;
 		}
 	  }
 
@@ -704,18 +717,19 @@
 		margin: 0;
 		padding: 0;
 		display: flex;
-		flex-wrap: wrap;
+		flex-wrap: nowrap;
 		align-items: center;
 		justify-content: flex-start;
-		gap: clamp(6px, 1.5vw, 14px);
+		gap: var(--menu-social-gap);
 	  }
 
 	  .dh-side-header888__menu-social888-link {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 44px;
-		height: 44px;
+		width: var(--menu-social-icon-size);
+		height: var(--menu-social-icon-size);
+		flex: 0 0 var(--menu-social-icon-size);
 		color: var(--menu-text);
 		border-radius: 10px;
 		text-decoration: none;
@@ -868,7 +882,6 @@
 	  .dh-side-header888__overlay888.is-active888 .dh-side-header888__menu-link888:nth-child(4) .dh-side-header888__menu-link-text888 { transition-delay: 330ms; }
 	  .dh-side-header888__overlay888.is-active888 .dh-side-header888__menu-link888:nth-child(5) .dh-side-header888__menu-link-text888 { transition-delay: 410ms; }
 	  .dh-side-header888__overlay888.is-active888 .dh-side-header888__menu-link888:nth-child(6) .dh-side-header888__menu-link-text888 { transition-delay: 490ms; }
-	  .dh-side-header888__overlay888.is-active888 .dh-side-header888__menu-link888:nth-child(7) .dh-side-header888__menu-link-text888 { transition-delay: 570ms; }
   
 	  .dh-side-header888__icon-btn888.is-active888 {
 		background-color: rgba(0, 0, 0, 0.06);
@@ -910,6 +923,11 @@
 
 	  .dh-side-header888--menu-open .dh-side-header888__icon-btn888.is-active888 .dh-side-header888__icon-btn-icons888 svg {
 		stroke: #2C2D66;
+	  }
+
+	  /* Nudge close (X) inward from the physical right edge when menu is open */
+	  .dh-side-header888--menu-open .dh-side-header888__nav-float888 {
+		right: calc(env(safe-area-inset-right, 0px) + var(--menu-close-inset-right));
 	  }
   
 	  /* Ultra-narrow (≈350px+): keep tap targets without reflow */
@@ -1041,12 +1059,9 @@
 
 		.dh-side-header888__menu-social-list888 {
 		  justify-content: center;
-		  gap: 10px;
 		}
 
 		.dh-side-header888__menu-social888-link {
-		  width: 42px;
-		  height: 42px;
 		  border-radius: 12px;
 		  background-color: rgba(255, 255, 255, 0.6);
 		}

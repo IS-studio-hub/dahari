@@ -38,8 +38,7 @@
    * Override list in assets/carousel-slides.json.
    */
   const DEFAULT_SLIDES = [
-    { href: "logistics.html", src: "assets/Homepagevids/logistics.mp4", titleHe: "לוגיסטיקה", titleEn: "Logistics" },
-    { href: "offices.html", src: "assets/Homepagevids/office.mp4", titleHe: "משרדים", titleEn: "Offices" },
+    { href: "offices.html", src: "assets/Homepagevids/office.mp4", titleHe: "פרוייקטים בהקמה", titleEn: "Under construction" },
     { href: "residences.html", src: "assets/Homepagevids/residences.mp4", titleHe: "מגורים", titleEn: "Residences" },
     { href: "commerce.html", src: "assets/Homepagevids/commercial.mp4", titleHe: "נדל״ן מסחרי", titleEn: "Commercial" },
     { href: "about.html", src: "assets/Homepagevids/%D7%90%D7%95%D7%93%D7%95%D7%AA%20V3.mp4", titleHe: "אודות", titleEn: "About" },

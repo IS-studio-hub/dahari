@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regenerate *-item-*.html and portfolio pages from Excel + assets/RealEstate."""
+"""Regenerate *-item-*.html and portfolio pages from Excel + RealEstate assets."""
 
 import html
 import re
@@ -9,58 +9,21 @@ from pathlib import Path
 from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parents[1]
-RE = ROOT / "assets/RealEstate"
 XLSX = Path("/Users/shamrikin/Downloads/Dahari Real-Estates.xlsx")
-IMG_EXT = {".jpg", ".jpeg", ".png", ".webp"}
-VID_EXT = {".mp4", ".mov", ".MP4", ".MOV"}
-DEFAULT_VIDEO = "assets/RealEstate/Raw%20Vid/f9ca90bb-0085-4c32-8a2d-e6aa4d7471d0.mp4?v=1"
+REAL_ESTATE = ROOT / "assets" / "RealEstate"
+GREY_PLACEHOLDER = "assets/placeholders/grey-placeholder.svg"
+IMAGE_EXT = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
+INQUIRY_MAILTO = "info@dahari.co.il"
 
 CORNER_SVG = (
     '<svg aria-hidden="true" class="corner-accent" fill="none" height="10" viewbox="0 0 10 10" width="10">'
     '<path d="M0.499951 0.199996L0.499952 9.2M0.199951 0.499995L9.19995 0.499995" stroke="currentColor"></path></svg>'
 )
 
-# slug -> image search roots (relative to RealEstate), tried in order
-IMAGE_ROOTS = {
-    "commerce-hamlaacha-30": [
-        "Client Image/מבולגן/המלאכה 30",
-        "commerce/Baby star",
-    ],
-    "commerce-kapulsky": ["commerce/Kapulsky"],
-    "commerce-alpina": ["commerce/Alpina"],
-    "commerce-baby-star": ["commerce/Baby star"],
-    "commerce-kado-home": ["commerce/Kado home"],
-    "commerce-haterufa-4": ["Client Image/התרופה 4", "Client Image/מבולגן/התרופה 4"],
-    "commerce-wolt-market": ["commerce/wolt market"],
-    "commerce-hamlaacha-15": [
-        "Client Image/מבולגן/מלאכה 15",
-        "Client Image/מבולגן/המלאכה 15 אולם תצוגה קרקע",
-    ],
-    "commerce-sne": ["commerce/SNE"],
-    "logistics-lotus": ["logistic/Lotus"],
-    "logistics-neuralgourd": ["offices/Neuralgourd"],
-    "logistics-addon-optics": ["offices/Addon optics"],
-    "logistics-synerg": ["offices/Synerg"],
-    "offices-swiss": ["offices/Swiss"],
-    "offices-sygma": ["offices/Sygma"],
-    "offices-beit-lid": ["logistic/בית ליד"],
-    "logistics-dgania": ["דגניה-1.jpg"],
-    "logistics-hamlaacha-4": ["Raw Vid/המלאכה 4 א.ת פולג נתניה"],
-    "residences-bar-ilan-31": ["resednsice/בר אילן 31 נתניה", "Client Image/מבולגן/מובחרות סטילס לאתר מאייפון/בר אילן 31"],
-    "residences-chen-14": ["Client Image/מבולגן/המלאכה 30"],
-    "residences-shapira-24": ["שפירא.pdf"],
-    "residences-weizmann-raanana": ["Client Image/מבולגן/המלאכה 30"],
-}
-
-VIDEO_HINTS = {
-    "commerce-hamlaacha-30": ["המלאכה 30", "בייבי", "baby"],
-    "commerce-baby-star": ["בייבי", "baby", "המלאכה 30"],
-    "commerce-sne": ["SNE"],
-    "commerce-kapulsky": ["קפולסקי", "Kapulsky"],
-    "logistics-hamlaacha-4": ["המלאכה 4"],
-    "offices-beit-lid": ["בית ליד"],
-    "commerce-haterufa-4": ["התרופה", "דהרי"],
-    "commerce-hamlaacha-15": ["המלאכה 15", "דהרי"],
+CATEGORY_MAP = {
+    "נדל״ן מסחרי": "commerce",
+    "פרוייקטים בהקמה": "offices",
+    "מגורים": "residences",
 }
 
 SECTION_META = {
@@ -70,29 +33,17 @@ SECTION_META = {
         "cat_he": "נדל״ן מסחרי",
         "cat_html": "commerce.html",
         "title_prefix": "דהרי — נדל״ן מסחרי",
-        "related_label": "עוד פרויקטים בנדל״ן המסחרי",
         "portfolio_head": "נכסים מסחריים במיקומים שמזינים צמיחה.",
         "portfolio_aria": "פורטפוליו מסחרי",
-    },
-    "logistics": {
-        "prefix": "logistics",
-        "page_class": "dh-page-logistics-item",
-        "cat_he": "לוגיסטיקה",
-        "cat_html": "logistics.html",
-        "title_prefix": "דהרי — לוגיסטיקה",
-        "related_label": "עוד פרויקטים בלוגיסטיקה",
-        "portfolio_head": "החברות שלנו לא רק נכנסות לשוק<br/>הן מגדירות אותו.",
-        "portfolio_aria": "הפורטפוליו שלנו",
     },
     "offices": {
         "prefix": "offices",
         "page_class": "dh-page-property-item",
-        "cat_he": "משרדים",
+        "cat_he": "פרוייקטים בהקמה",
         "cat_html": "offices.html",
-        "title_prefix": "דהרי — משרדים",
-        "related_label": "עוד פרויקטים במשרדים",
-        "portfolio_head": "חללי עבודה שמאפשרים צמיחה ארגונית.",
-        "portfolio_aria": "פורטפוליו משרדים",
+        "title_prefix": "דהרי — פרוייקטים בהקמה",
+        "portfolio_head": "פרויקטים חדשים בהקמה — פרטים נוספים בקרוב.",
+        "portfolio_aria": "פורטפוליו פרוייקטים בהקמה",
     },
     "residences": {
         "prefix": "residences",
@@ -100,37 +51,10 @@ SECTION_META = {
         "cat_he": "מגורים",
         "cat_html": "residences.html",
         "title_prefix": "דהרי — מגורים",
-        "related_label": "עוד פרויקטים במגורים",
         "portfolio_head": "פרויקטי מגורים באיכות גבוהה ובמיקומים מבוקשים.",
         "portfolio_aria": "פורטפוליו מגורים",
     },
 }
-
-# Excel address -> slug + section override
-PROJECTS = [
-    {"slug": "commerce-hamlaacha-30", "section": "commerce", "address_key": "דהרי המלאכה 30"},
-    {"slug": "commerce-kapulsky", "section": "commerce", "address_key": "קפולסקי"},
-    {"slug": "commerce-alpina", "section": "commerce", "address_key": "Alpina"},
-    {"slug": "logistics-lotus", "section": "logistics", "address_key": "Lotus"},
-    {"slug": "logistics-neuralgourd", "section": "logistics", "address_key": "Neuralgourd"},
-    {"slug": "logistics-addon-optics", "section": "logistics", "address_key": "Addon optics"},
-    {"slug": "commerce-baby-star", "section": "commerce", "address_key": "Baby star"},
-    {"slug": "commerce-kado-home", "section": "commerce", "address_key": "Kado home"},
-    {"slug": "commerce-haterufa-4", "section": "commerce", "address_key": "דהרי התרופה 4"},
-    {"slug": "commerce-wolt-market", "section": "commerce", "address_key": "wolt market"},
-    {"slug": "offices-swiss", "section": "offices", "address_key": "Swiss"},
-    {"slug": "logistics-synerg", "section": "logistics", "address_key": "Synerg"},
-    {"slug": "commerce-hamlaacha-15", "section": "commerce", "address_key": "דהרי המלאכה 15"},
-    {"slug": "commerce-sne", "section": "commerce", "address_key": "SNE"},
-    {"slug": "offices-sygma", "section": "offices", "address_key": "Sygma"},
-    {"slug": "offices-beit-lid", "section": "offices", "address_key": "דהרי בית ליד"},
-    {"slug": "logistics-dgania", "section": "logistics", "address_key": "דהרי דגניה"},
-    {"slug": "residences-bar-ilan-31", "section": "residences", "address_key": "דהרי – בר אילן 31"},
-    {"slug": "residences-chen-14", "section": "residences", "address_key": "שדרות חן 14"},
-    {"slug": "residences-shapira-24", "section": "residences", "address_key": "משה שפירא 24"},
-    {"slug": "logistics-hamlaacha-4", "section": "logistics", "address_key": "המלאכה 4"},
-    {"slug": "residences-weizmann-raanana", "section": "residences", "address_key": "ויצמן"},
-]
 
 
 def read_xlsx(path):
@@ -161,8 +85,8 @@ def read_xlsx(path):
 def clean_text(s):
     if not s:
         return ""
-    s = s.replace("\xa0", " ").strip()
-    s = re.sub(r"\s+", " ", s)
+    s = str(s).replace("\xa0", " ").strip()
+    s = re.sub(r"[ \t]+", " ", s)
     return s
 
 
@@ -174,23 +98,69 @@ def first_line(s):
 
 
 def body_text(long_desc, short_desc):
+    """Plain-text fallback (legacy)."""
     long_desc = (long_desc or "").strip()
     short_desc = clean_text(short_desc)
     if long_desc:
-        parts = [p.strip() for p in re.split(r"\n\s*\n", long_desc) if p.strip()]
-        return " ".join(parts[:3]) if parts else long_desc.replace("\n", " ")
+        return long_desc.replace("\n\n", " ").replace("\n", " ")
     return short_desc
 
 
+def lines_to_html(text):
+    """Escape text and preserve line breaks for display in a single block."""
+    text = clean_text(text) if not text else str(text).replace("\xa0", " ").strip()
+    if not text:
+        return ""
+    lines = [line.strip() for line in text.split("\n") if line.strip()]
+    if len(lines) <= 1:
+        return html.escape(text)
+    return "<br/>".join(html.escape(line) for line in lines)
+
+
+def format_card_desc(short_desc, fallback=""):
+    """Portfolio card copy from תיאור קצר."""
+    text = (short_desc or "").strip() or clean_text(fallback)
+    return lines_to_html(text)
+
+
+def format_body_html(long_desc, short_desc=""):
+    """Product page body from full תיאור ארוך."""
+    text = (long_desc or "").strip()
+    if not text:
+        text = clean_text(short_desc)
+    if not text:
+        return '<p class="dh-logistics-item__body"></p>'
+    parts = [p.strip() for p in re.split(r"\n\s*\n", text) if p.strip()]
+    if not parts:
+        parts = [text]
+    blocks = []
+    for part in parts:
+        inner = lines_to_html(part)
+        blocks.append(f'<p class="dh-logistics-item__body">{inner}</p>')
+    return "\n".join(blocks)
+
+
 def area_text(built, area):
-    for val in (built, area):
-        v = clean_text(val)
-        if v:
-            line = v.split("\n")[0]
-            if "מ" in line or "מר" in line or "מ״ר" in line:
-                return line
-    v = clean_text(built) or clean_text(area)
-    return v.split("\n")[0] if v else ""
+    """Combined label for portfolio card tags."""
+    built = clean_text(built)
+    area = clean_text(area)
+    if built and area and built != area:
+        return f"{built} · {area}"
+    return built or area or "—"
+
+
+def meta_area_rows(built, plot_area):
+    """Separate שטח בנוי / גודל שטח rows for product pages."""
+    built_val = clean_text(built) or "—"
+    plot_val = clean_text(plot_area) or "—"
+    return (
+        f'<div class="dh-logistics-item__meta-row" role="listitem">'
+        f'<span class="dh-logistics-item__meta-label">שטח בנוי</span>'
+        f"<span>{html.escape(built_val)}</span></div>\n"
+        f'<div class="dh-logistics-item__meta-row" role="listitem">'
+        f'<span class="dh-logistics-item__meta-label">גודל שטח</span>'
+        f"<span>{html.escape(plot_val)}</span></div>\n"
+    )
 
 
 def display_title(address):
@@ -204,77 +174,423 @@ def is_latin_title(title):
     return bool(re.match(r"^[A-Za-z0-9][A-Za-z0-9\s\.\-&']*$", title))
 
 
-def url_path(rel):
-    parts = rel.replace("\\", "/").split("/")
-    return "/".join(quote(p, safe="") for p in parts)
+def slug_part(text, max_len=40):
+    text = clean_text(text).lower()
+    text = text.replace("דהרי", "")
+    latin = re.findall(r"[a-z0-9]+", text)
+    if latin:
+        return "-".join(latin)[:max_len].strip("-")
+    hebrew = re.sub(r"[^\u0590-\u05FF\s]", "", text)
+    hebrew = re.sub(r"\s+", "-", hebrew.strip())[:max_len].strip("-")
+    return hebrew or "project"
 
 
-def collect_images(rel_path):
-    p = RE / rel_path
-    if p.is_file() and p.suffix.lower() in IMG_EXT:
-        return [p]
-    if not p.exists():
+def make_slug(section, idx, row):
+    prefix = SECTION_META[section]["prefix"]
+    addr = row["address"]
+    short = first_line(row["short_desc"])
+    detail = row["detail"]
+
+    latin_addr = re.findall(r"[A-Za-z][A-Za-z0-9\s&.-]{1,30}", addr)
+    nums = re.findall(r"\d+", addr)
+    latin_short = re.findall(r"[A-Za-z][A-Za-z0-9\s-]{1,20}", short)
+    latin_detail = re.findall(r"[A-Za-z][A-Za-z0-9\s-]{1,20}", detail)
+
+    parts = []
+    if latin_short:
+        parts.append(slug_part(latin_short[0], 24))
+    elif latin_addr:
+        parts.append(slug_part(latin_addr[0], 24))
+    elif nums:
+        parts.append("-".join(nums[:2]))
+
+    if latin_detail:
+        parts.append(slug_part(latin_detail[0], 20))
+    elif detail and not parts:
+        parts.append(slug_part(detail, 24))
+    elif short and not parts:
+        parts.append(slug_part(short, 24))
+
+    if not parts:
+        parts.append(f"{idx:02d}")
+
+    slug = "-".join(p for p in parts if p)[:56].strip("-")
+    return f"{prefix}-item-{slug}"
+
+
+def asset_href(rel_path):
+    rel_path = str(rel_path).replace("\\", "/").lstrip("/")
+    return "/".join(quote(part, safe="") for part in rel_path.split("/"))
+
+
+def _natural_sort_key(path):
+    name = path.name.lower()
+    parts = re.split(r"(\d+)", name)
+    return [int(p) if p.isdigit() else p for p in parts]
+
+
+def _list_image_files(folder):
+    if not folder.is_dir():
         return []
-    files = [
-        f
-        for f in p.rglob("*")
-        if f.is_file()
-        and f.suffix.lower() in IMG_EXT
-        and "small" not in f.name.lower()
-    ]
-    files.sort(key=lambda f: (-f.stat().st_size, f.name.lower()))
-    return files
+    files = [p for p in folder.iterdir() if p.is_file() and p.suffix.lower() in IMAGE_EXT]
+    primary = [p for p in files if "small" not in p.stem.lower()]
+    secondary = [p for p in files if "small" in p.stem.lower()]
+    primary.sort(key=_natural_sort_key)
+    secondary.sort(key=_natural_sort_key)
+    return primary + secondary
 
 
-def asset_url(path: Path) -> str:
-    rel = path.relative_to(RE).as_posix()
-    return url_path("assets/RealEstate/" + rel)
+def _paths_from_sources(*sources):
+    paths = []
+    seen = set()
+    for source in sources:
+        candidate = REAL_ESTATE / source if not str(source).startswith("assets/") else ROOT / source
+        if candidate.is_file():
+            items = [candidate]
+        elif candidate.is_dir():
+            items = _list_image_files(candidate)
+        else:
+            continue
+        for item in items:
+            key = item.resolve()
+            if key in seen:
+                continue
+            seen.add(key)
+            paths.append(item)
+    return paths
 
 
-def find_images(slug):
-    roots = IMAGE_ROOTS.get(slug, [])
-    for rel in roots:
-        if rel.endswith((".jpg", ".jpeg", ".png", ".webp", ".JPG", ".JPEG")):
-            p = RE / rel
-            if p.is_file():
-                return [asset_url(p)]
-        imgs = collect_images(rel)
-        if imgs:
-            return [asset_url(f) for f in imgs[:7]]
-    tokens = [t for t in re.split(r"[-\s]+", slug) if len(t) > 2]
-    best = []
-    for f in RE.rglob("*"):
-        if f.is_file() and f.suffix.lower() in IMG_EXT:
-            path_l = str(f).lower()
-            if any(t in path_l for t in tokens):
-                best.append(f)
-    best.sort(key=lambda x: -x.stat().st_size)
-    if best:
-        return [asset_url(best[0])]
-    fallback = RE / "DJI_0708.jpg"
-    if fallback.exists():
-        return [asset_url(fallback)]
-    return [url_path("assets/placeholders/logistics-biotech-lab.jpg")]
+def _match_text(*parts):
+    return clean_text(" ".join(p for p in parts if p)).lower()
 
 
-def find_video(slug):
-    hints = VIDEO_HINTS.get(slug, [])
-    videos = [f for f in RE.rglob("*") if f.is_file() and f.suffix in VID_EXT]
-    if hints:
-        for f in videos:
-            name = str(f)
-            if any(h.lower() in name.lower() for h in hints):
-                return asset_url(f)
-    for f in videos:
-        if slug.replace("-", " ") in str(f).lower():
-            return asset_url(f)
-    return DEFAULT_VIDEO
+def _match_head(row, title):
+    return _match_text(title, row.get("short_desc"), row.get("detail"), row.get("address"))
+
+
+def _short_key(row):
+    return first_line(row.get("short_desc") or "")
+
+
+# Curated image sets — matched by reviewing assets/RealEstate image content.
+CURATED_IMAGE_SOURCES = {
+    ("commerce", "פטיסרי וקפה"): [
+        "commerce/Kapulsky/T2.png",
+        "commerce/Kapulsky/S2.png",
+        "commerce/Kapulsky/J2small.png",
+    ],
+    ("commerce", "חנות תאורה"): [
+        "commerce/Kado home/C2.png",
+        "commerce/Kado home/C2small.png",
+        "commerce/Alpina/D2.png",
+        "commerce/Alpina/21.png",
+        "commerce/Alpina/P2.png",
+        "commerce/Alpina/22.png",
+        "commerce/Alpina/23.png",
+    ],
+    ("commerce", "מוצרי נוי וצמחיה מלאכותית"): [
+        "commerce/O2.png",
+        "commerce/O2small.png",
+        "commerce/11.png",
+        "commerce/N2.png",
+        "commerce/R2.png",
+        "commerce/U2.png",
+    ],
+    ("commerce", "מעבדות ומשרדי פיתוח בתחום האבטחה. נכס תעשייתי המשלב פיתוח ומערכות ניטור מתקדמות. חדרי ישיבות, ייצור ופיתוח מתקדמים."): [
+        "commerce/SNE",
+    ],
+    ("commerce", "חללי עבודה נקיים המשלבים ייצור ופיתוח בתחום האופטיקה.\nהשטח כולל חדרים נקיים, חללי עבודה והרכבה וכן חדר ישיבות ומשרדי פיתוח."): [
+        "commerce/Alpina",
+    ],
+    ("commerce", "חנות מוצרי תינוקות חלל גדול מואר ורחב , נגיש מאד. \nחנות בעלת חשיפה אדירה לכביש החוף ,גישה נוחה ללקוחות וחניה פרטית לעשרות כלי רכב."): [
+        "commerce/Baby star",
+        "commerce/Kado home/C2.png",
+    ],
+    ("commerce", "חנות ריהוט ועיצוב הבית חנות גבוהה יפה ומוארת, חזית רחבה ונגישה.\nחשיפה אדירה לכביש החוף וחניות פרטיות צמודות לכל לקוחות החנות."): [
+        "commerce/Kapulsky/J2.png",
+        "commerce/17.png",
+        "commerce/18.png",
+        "commerce/19.png",
+        "commerce/H2.png",
+        "commerce/I2.png",
+    ],
+    ("commerce", "חלל רחב ופתוח המשמש כסופר מרקט של חברת wolt.\nתקרות גבוהות ואפשרות נוחה לפריקה וטעינה של סחורה.\nחניות צמודות ומיקום מנצח."): [
+        "commerce/13.png",
+        "commerce/wolt market",
+    ],
+    ("commerce", "חדרי ישיבות ומשרדים לרבות חלל תצוגה של מוצרי החברה."): [
+        "commerce/התרופה 4 נתניה הדמיה.jpg",
+        "commerce/R2.png",
+        "commerce/U2.png",
+        "commerce/4.png",
+        "commerce/8.png",
+        "commerce/10.png",
+    ],
+    ("commerce", "חדרי ייצור והרכבה של מוצרים המופקים ע״י מדפסות תלת-מימד.\nמשרדים מרווחים ויפים, מרחק מספר דקות הליכה מהרכבת, מאפשרים נגישות בתחבורה ציבורית מכל רחבי הארץ."): [
+        "commerce/13.png",
+        "commerce/6.png",
+        "commerce/8.png",
+        "commerce/20.png",
+        "commerce/I2.png",
+    ],
+    ("commerce", "Prime location\nחנות עם חזית רחבה לרחוב המלאכה ,מוארת, גבוהה.\nחלל תצוגה רחב ונגיש,חניות צמודות ומשרדים מכירות נלווים לפעילות העסק."): [
+        "commerce/15.png",
+        "commerce/A2.png",
+        "commerce/G2.png",
+        "commerce/16.png",
+        "commerce/11.png",
+    ],
+    ("commerce", "משרדים במיקום מעולה ,מרחק הליכה מהרכבת.\nחללים מוארים הכוללים חדרי ישיבות ,מרחב מוגן קומתי ובניה בסטנדרט גבוה."): [
+        "commerce/16.png",
+        "commerce/17.png",
+        "commerce/20.png",
+        "commerce/18.png",
+        "commerce/15.png",
+    ],
+    ("offices", "12 דונם למסחר, לוגיסטיקה ומשרדים בכפר יונה.\nמיקום אסטרטגי בלב השרון, עם גישה ישירה לכבישים 2, 4 ו-6. כ-40,000 מ\"ר בתכנון, עם שוכרים בינלאומיים שכבר הבטיחו את מקומם."): [
+        "about/living-building-1024x480.jpg",
+        "about/IMG_3756.JPEG",
+        "commerce/A2.png",
+        "about/P2.png",
+        "about/23.png",
+        "about/F2.png",
+    ],
+    ("offices", "הקרקע מושכרת לחברה הציבורית \"מטרופלין״ לאחסנה פתוחה הקרקע, במקביל מתוכנן ומקודם מבנה למסחר ואחסנה שישרת את כל תושבי שכונת קריית השרון בנתניה והסביבה."): [
+        "commerce/19.png",
+        "commerce/18.png",
+        "commerce/20.png",
+        "about/J2small.png",
+        "about/F2.png",
+    ],
+    ("residences", "הבניין נבנה בסטנדרט בניה גבוה מאוד הכולל חיפוי שיש, מעקות זכוכית, אריחים 120*120, מערכות חשמל חכמות, כלים סניטרים תוצרת איטליה, ונגרות בהתאמה אישית."): [
+        "resednsice/E2.png",
+        "resednsice/living-building-1024x480.jpg",
+        "about/living-building-1024x480.jpg",
+    ],
+    ("residences", "קרקע במיקום אסטרטגי קרובה לים ולמוקדי הבילוי בעיר. כיום ישנו בניין בן 4 דירות שבנויות על שטח של דונם.\n\nבימים אלו אנו עובדים על תכנון להקמת מגדל מגורים בסטנדרט גבוה עם נוף לים."): [
+        "resednsice/living-building-1024x480.jpg",
+        "about/living-building-1024x480.jpg",
+        "resednsice/E2.png",
+    ],
+    ("residences", "מחצית זכויות במגרש מגורים ברחוב משה שפירא 24 בנתניה, שטח מיוחס כ-492 מ״ר, עם פוטנציאל השבחה תכנוני והנכס מושכר כיום."): [
+        "resednsice/משה-שפירא-1024x576.jpg",
+        "about/משה-שפירא-1024x576.jpg",
+    ],
+    ("residences", "פרויקט מגורים מתוכנן ברעננה מערב, רחוב ויצמן: כ-4.7 דונם, 158 יח״ד, 13 קומות כולל קרקע וגג, שטח עיקרי כ-15,010 מ״ר ותכנון בשתי חלופות עיקריות."): [
+        "resednsice/living-building-1024x480.jpg",
+        "about/living-building-1024x480.jpg",
+    ],
+    ("residences", "קרקע לתעשייה בפארק התעשיות שח״ק (חריש–קציר), כ-3,919 מ״ר קרקע עם בקשה להיתר למבנה תעשייה בשטח של כ-2,029 מ״ר."): [
+        "commerce/A2.png",
+        "commerce/13.png",
+        "commerce/התרופה 4 נתניה הדמיה.jpg",
+        "commerce/O2.png",
+        "commerce/9.png",
+    ],
+}
+
+
+def _curated_sources(section, row):
+    short = (row.get("short_desc") or "").strip()
+    if short:
+        key = (section, short)
+        if key in CURATED_IMAGE_SOURCES:
+            return CURATED_IMAGE_SOURCES[key]
+
+    short_line = _short_key(row)
+    if short_line:
+        key = (section, short_line)
+        if key in CURATED_IMAGE_SOURCES:
+            return CURATED_IMAGE_SOURCES[key]
+
+    return None
+
+
+def _address_fallback_sources(section, row, title):
+    text = _match_text(title, row.get("short_desc"), row.get("long_desc"), row.get("detail"), row.get("address"))
+
+    if section == "commerce" and ("המלאכה 4" in text or "המלאכה4" in text.replace(" ", "")):
+        return [
+            "commerce/4.png",
+            "commerce/8.png",
+            "commerce/9.png",
+            "commerce/10.png",
+            "commerce/5.png",
+            "commerce/7.png",
+        ]
+
+    if section == "offices" and ("דגניה" in text or "יהלום" in text):
+        return [
+            "commerce/19.png",
+            "commerce/18.png",
+            "about/F2.png",
+            "commerce/20.png",
+        ]
+
+    return None
+
+
+def resolve_project_images(section, row, title):
+    sources = _curated_sources(section, row)
+    if not sources:
+        sources = _address_fallback_sources(section, row, title)
+
+    if not sources:
+        text = _match_text(title, row.get("short_desc"), row.get("long_desc"), row.get("detail"), row.get("address"))
+        head = _match_head(row, title)
+        sources = []
+
+        if section == "commerce":
+            if "wolt" in head or "וולט" in head:
+                sources = ["commerce/13.png", "commerce/wolt market"]
+            elif "תינוק" in head or "baby" in head:
+                sources = ["commerce/Baby star"]
+            elif "תאור" in head:
+                sources = ["commerce/Kado home", "commerce/Alpina"]
+            elif "אבטח" in head or "sne" in head or "ניטור" in head:
+                sources = ["commerce/SNE"]
+            elif "אופטיק" in head or "alpina" in head:
+                sources = ["commerce/Alpina"]
+            elif "נוי" in head or "צמח" in head:
+                sources = ["commerce/O2.png", "commerce/O2small.png", "commerce/11.png", "commerce/N2.png"]
+            elif "ריהוט" in head or "עיצוב" in head:
+                sources = ["commerce/Kapulsky/J2.png", "commerce/17.png", "commerce/18.png", "commerce/H2.png"]
+            elif "פטיסר" in head or "קפולסק" in head or ("קפה" in head and "30" in head):
+                sources = ["commerce/Kapulsky/T2.png", "commerce/Kapulsky/S2.png"]
+            elif "prime location" in head:
+                sources = ["commerce/15.png", "commerce/A2.png", "commerce/G2.png"]
+            elif "המלאכה 15" in head and "משרד" in head:
+                sources = ["commerce/16.png", "commerce/17.png", "commerce/20.png"]
+            elif "התרופה 4" in head:
+                sources = ["commerce/התרופה 4 נתניה הדמיה.jpg", "commerce/R2.png", "commerce/4.png"]
+            else:
+                sources = ["commerce/A2.png", "commerce/G2.png", "commerce/H2.png"]
+        elif section == "offices":
+            if "בית ליד" in text or "כפר יונה" in text:
+                sources = ["about/living-building-1024x480.jpg", "about/IMG_3756.JPEG", "commerce/A2.png"]
+            else:
+                sources = ["about/A2.png", "about/P2.png", "about/F2.png"]
+        elif section == "residences":
+            if "בר אילן" in text:
+                sources = ["resednsice/E2.png"]
+            elif "שדרות חן" in text:
+                sources = ["resednsice/living-building-1024x480.jpg"]
+            elif "משה שפיר" in text or "שפירא" in text:
+                sources = ["resednsice/משה-שפירא-1024x576.jpg"]
+            elif "ויצמן" in text or "רעננה" in text:
+                sources = ["resednsice/living-building-1024x480.jpg"]
+            elif "חריש" in text or "קציר" in text or "תעשי" in text:
+                sources = ["commerce/A2.png", "commerce/13.png", "commerce/O2.png"]
+            else:
+                sources = ["resednsice/E2.png", "resednsice/living-building-1024x480.jpg"]
+
+    paths = _paths_from_sources(*sources)
+    if not paths:
+        fallback = {
+            "commerce": ["commerce/A2.png", "commerce/G2.png", "commerce/H2.png"],
+            "offices": ["about/A2.png", "about/P2.png", "about/F2.png"],
+            "residences": ["resednsice/E2.png", "resednsice/living-building-1024x480.jpg"],
+        }
+        paths = _paths_from_sources(*fallback.get(section, [GREY_PLACEHOLDER]))
+
+    hrefs = [asset_href(p.relative_to(ROOT).as_posix()) for p in paths[:7]]
+    while len(hrefs) < 7:
+        hrefs.append(GREY_PLACEHOLDER if not hrefs else hrefs[-1])
+    return hrefs[:7]
+
+
+def img_class(src):
+    return "dh-img-placeholder" if src == GREY_PLACEHOLDER else ""
+
+
+def project_title(row):
+    short = first_line(row["short_desc"])
+    if short and len(short) >= 4:
+        return short[:120]
+    detail = clean_text(row["detail"])
+    if detail:
+        return detail[:120]
+    return display_title(row["address"]) or "פרויקט"
+
+
+def row_has_content(row):
+    return any(
+        clean_text(row.get(k))
+        for k in ("address", "detail", "short_desc", "long_desc", "built", "area")
+    )
+
+
+def parse_excel_rows(rows):
+    projects = []
+    section_counts = {}
+    seen_slugs = set()
+
+    for excel_row in rows[1:]:
+        cat = clean_text(excel_row[0] if len(excel_row) > 0 else "")
+        section = CATEGORY_MAP.get(cat)
+        if not section:
+            continue
+
+        row = {
+            "category": cat,
+            "detail": clean_text(excel_row[1] if len(excel_row) > 1 else ""),
+            "address": clean_text(excel_row[2] if len(excel_row) > 2 else ""),
+            "floor": clean_text(excel_row[3] if len(excel_row) > 3 else ""),
+            "built": excel_row[4] if len(excel_row) > 4 else "",
+            "area": excel_row[5] if len(excel_row) > 5 else "",
+            "long_desc": excel_row[6] if len(excel_row) > 6 else "",
+            "short_desc": excel_row[7] if len(excel_row) > 7 else "",
+        }
+        if not row_has_content(row):
+            continue
+
+        section_counts[section] = section_counts.get(section, 0) + 1
+        idx = section_counts[section]
+        prefix = SECTION_META[section]["prefix"]
+
+        base_slug = make_slug(section, idx, row).replace(".html", "")
+        slug = base_slug
+        if slug in seen_slugs:
+            slug = f"{base_slug}-{idx:02d}"
+        seen_slugs.add(slug)
+        filename = f"{slug}.html"
+
+        title = project_title(row)
+        short_desc = (row["short_desc"] or "").strip()
+        long_desc = (row["long_desc"] or "").strip()
+        body_html = format_body_html(long_desc, short_desc)
+        tagline = row["detail"] or first_line(short_desc) or title
+        built = clean_text(row["built"])
+        plot_area = clean_text(row["area"])
+        card_area = area_text(row["built"], row["area"])
+        images = resolve_project_images(section, row, title)
+
+        projects.append(
+            {
+                "slug": slug.replace(".html", ""),
+                "section": section,
+                "title": title,
+                "tagline": tagline,
+                "short_desc": short_desc,
+                "long_desc": long_desc,
+                "body_html": body_html,
+                "address": row["address"] or title,
+                "built": built,
+                "plot_area": plot_area,
+                "area": card_area,
+                "floor": row["floor"],
+                "images": images,
+                "filename": filename,
+            }
+        )
+
+    return projects
 
 
 def title_html(title):
     if is_latin_title(title):
         return f'<h2 class="dh-logistics-item__title"><span dir="ltr" lang="en">{html.escape(title)}</span></h2>'
-    return f"<h2 class=\"dh-logistics-item__title\">{html.escape(title)}</h2>"
+    return f'<h2 class="dh-logistics-item__title">{html.escape(title)}</h2>'
 
 
 def breadcrumb_current(title):
@@ -283,44 +599,73 @@ def breadcrumb_current(title):
     return f'<span aria-current="page" class="dh-breadcrumbs__current">{html.escape(title)}</span>'
 
 
+def build_inquiry_section(project, meta):
+    title = html.escape(project["title"])
+    tagline = html.escape(project.get("tagline", ""))
+    address = html.escape(project["address"])
+    category = html.escape(meta["cat_he"])
+    filename = html.escape(project["filename"])
+    built = html.escape(project.get("built", ""))
+    plot_area = html.escape(project.get("plot_area", ""))
+    floor = html.escape(project.get("floor", ""))
+    mailto = html.escape(INQUIRY_MAILTO)
+    return f"""<section aria-label="יצירת קשר לגבי הנכס" class="dh-logistics-item__inquiry">
+<h3 class="dh-logistics-item__inquiry-title">מעוניינים בנכס?</h3>
+<p class="dh-logistics-item__inquiry-hint">השאירו דוא״ל — נשלח אליכם פנייה עם פרטי הנכס הזה.</p>
+<div aria-live="assertive" class="dh-logistics-item__inquiry-alert" hidden="" id="dh-item-inquiry-alert" role="alert" tabindex="-1"></div>
+<form class="dh-logistics-item__inquiry-form" data-mailto="{mailto}" data-product-address="{address}" data-product-built="{built}" data-product-category="{category}" data-product-floor="{floor}" data-product-plot="{plot_area}" data-product-tagline="{tagline}" data-product-title="{title}" data-product-url="{filename}" id="dh-item-inquiry-form" lang="he" novalidate="">
+<div class="dh-logistics-item__inquiry-inline">
+<label class="dh-logistics-item__inquiry-label dh-sr-only" for="dh-item-inquiry-email">דוא״ל</label>
+<input aria-label="דוא״ל" aria-required="true" autocomplete="email" class="dh-logistics-item__inquiry-input" dir="ltr" id="dh-item-inquiry-email" inputmode="email" name="email" placeholder="name@domain.co.il" required="" type="email"/>
+<button class="dh-logistics-item__inquiry-submit" type="submit">שליחה</button>
+</div>
+</form>
+</section>"""
+
+
+def img_attrs_class(src, extra=""):
+    cls = " ".join(part for part in [img_class(src), extra] if part)
+    return f' class="{cls}"' if cls else ""
+
+
 def build_item_page(project, all_in_section):
     meta = SECTION_META[project["section"]]
-    filename = project["filename"]
-
     title = project["title"]
     tagline = project["tagline"]
-    body = project["body"]
+    body_html = project["body_html"]
     address = project["address"]
-    area = project["area"]
+    built = project.get("built", "")
+    plot_area = project.get("plot_area", "")
     images = project["images"]
-    video = project["video"]
-    hero = images[0]
-    gallery = images[1:7]
-    if len(gallery) < 6:
-        gallery = (gallery + images * 6)[:6]
+    gallery_images = images[:7]
 
-    related = [p for p in all_in_section if p["slug"] != project["slug"]][:3]
-    related_html = []
+    related = [p for p in all_in_section if p["slug"] != project["slug"]][:5]
+    also_like_html = []
     for r in related:
-        related_html.append(
+        card_label = r["address"]
+        also_like_html.append(
             f"""<li role="listitem">
-<a aria-label="מעבר לעמוד הפרויקט — {html.escape(r['title'])}" class="dh-logistics-item__related-card" href="{html.escape(r['filename'])}">
-<span class="dh-logistics-item__related-media">
-<img alt="" decoding="async" height="540" loading="lazy" referrerpolicy="no-referrer" src="{html.escape(r['images'][0])}" width="960"/>
+<a aria-label="מעבר לעמוד הפרויקט — {html.escape(card_label)}" class="dh-logistics-item__also-like-card" href="{html.escape(r['filename'])}">
+<span class="dh-logistics-item__also-like-media">
+<img alt=""{img_attrs_class(r['images'][0])} decoding="async" height="200" loading="lazy" referrerpolicy="no-referrer" src="{html.escape(r['images'][0])}" width="200"/>
 </span>
-<span class="dh-logistics-item__related-name">{html.escape(r['title'])}</span>
+<span class="dh-logistics-item__also-like-body">
+<span class="dh-logistics-item__also-like-name">{html.escape(card_label)}</span>
+</span>
 </a>
 </li>"""
         )
 
     gallery_li = "\n".join(
-        f'<li role="listitem"><img alt="" decoding="async" height="600" loading="lazy" referrerpolicy="no-referrer" src="{html.escape(src)}" width="960"/></li>'
-        for src in gallery
+        f'<li role="listitem"><img alt=""{img_attrs_class(src)} decoding="async" height="600" loading="lazy" referrerpolicy="no-referrer" src="{html.escape(src)}" width="960"/></li>'
+        for src in gallery_images
     )
 
     floor_row = ""
     if project.get("floor"):
         floor_row = f'<div class="dh-logistics-item__meta-row" role="listitem"><span class="dh-logistics-item__meta-label">קומה</span><span>{html.escape(project["floor"])}</span></div>\n'
+    area_rows = meta_area_rows(built, plot_area)
+    inquiry_html = build_inquiry_section(project, meta)
 
     page = f"""<!DOCTYPE html>
 
@@ -331,9 +676,9 @@ def build_item_page(project, all_in_section):
 <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
 <title>{html.escape(meta['title_prefix'])} — {html.escape(title)}</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@500;600;700&amp;family=Rubik:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="index-layout.css?v=62" rel="stylesheet"/>
-<link href="dh-side-header888.css?v=62" rel="stylesheet"/>
-<link href="dh-logistics-item.css?v=49" rel="stylesheet"/>
+<link href="index-layout.css?v=63" rel="stylesheet"/>
+<link href="dh-side-header888.css?v=66" rel="stylesheet"/>
+<link href="dh-logistics-item.css?v=73" rel="stylesheet"/>
 </head>
 <body>
 <a class="dh-skip-link" href="#dh-main-content">דלג לתוכן הראשי</a>
@@ -355,40 +700,44 @@ def build_item_page(project, all_in_section):
 <span aria-hidden="true" class="dh-breadcrumbs__sep">·</span>
 <a href="{meta['cat_html']}">{meta['cat_he']}</a>
 <span aria-hidden="true" class="dh-breadcrumbs__sep">·</span>
-{breadcrumb_current(title)}
+{breadcrumb_current(address)}
 </p>
 </nav>
 <article class="dh-logistics-item" dir="rtl" lang="he">
-
+<div class="dh-logistics-item__split">
+<div class="dh-logistics-item__content-col">
+<div class="dh-logistics-item__content-main">
 {title_html(title)}
 <p class="dh-logistics-item__tagline">{html.escape(tagline)}</p>
-<p class="dh-logistics-item__body">{html.escape(body)}</p>
-<div class="dh-logistics-item__hero">
-<figure class="dh-logistics-item__media">
-<img alt="" decoding="async" height="675" loading="lazy" referrerpolicy="no-referrer" src="{html.escape(hero)}" width="1200"/>
-</figure>
-<div class="dh-logistics-item__video-side">
-<div class="dh-logistics-item__video-wrap">
-<video aria-label="סרטון הדגמה לפרויקט" class="dh-logistics-item__video" controls="" autoplay="" muted="" playsinline="" poster="{html.escape(hero)}" preload="auto">
-<source src="{html.escape(video)}" type="video/mp4"/>
-</video>
+<div class="dh-logistics-item__details-split">
+<div class="dh-logistics-item__description">
+{body_html}
 </div>
 <div class="dh-logistics-item__meta" role="list">
 <div class="dh-logistics-item__meta-row" role="listitem"><span class="dh-logistics-item__meta-label">כתובת</span><span>{html.escape(address)}</span></div>
-{floor_row}<div class="dh-logistics-item__meta-row" role="listitem"><span class="dh-logistics-item__meta-label">שטח</span><span>{html.escape(area)}</span></div>
+{floor_row}{area_rows}
 </div>
 </div>
+{inquiry_html}
 </div>
+<section aria-label="אולי יעניין אותך גם" class="dh-logistics-item__also-like">
+<h3 class="dh-logistics-item__also-like-title">
+<span class="dh-logistics-item__also-like-title-he">אולי יעניין אותך גם</span>
+<span class="dh-logistics-item__also-like-title-en" lang="he">נכסים נוספים באותה הכתובת</span>
+</h3>
+<ul class="dh-logistics-item__also-like-grid" role="list">
+{"".join(also_like_html)}
+</ul>
+</section>
+</div>
+<div class="dh-logistics-item__media-col">
 <div aria-label="גלריה" class="dh-logistics-item__gallery">
 <ul class="dh-logistics-item__gallery-grid" role="list">
 {gallery_li}
 </ul>
 </div>
-<section aria-label="פרויקטים נוספים" class="dh-logistics-item__related">
-<ul class="dh-logistics-item__related-grid" role="list">
-{"".join(related_html)}
-</ul>
-</section>
+</div>
+</div>
 </article>
 </main>
 </div>
@@ -402,33 +751,28 @@ def build_item_page(project, all_in_section):
 <span class="dh-side-header888__menu-link-text888">עמוד הבית</span>
 <span class="dh-side-header888__menu-link-subtle888" lang="en">Home</span>
 </a>
-<a class="dh-side-header888__menu-link888" href="logistics.html">
-<span aria-hidden="true" class="dh-side-header888__menu-link-index888">02</span>
-<span class="dh-side-header888__menu-link-text888">לוגיסטיקה</span>
-<span class="dh-side-header888__menu-link-subtle888" lang="en">Logistics</span>
-</a>
 <a class="dh-side-header888__menu-link888" href="offices.html">
-<span aria-hidden="true" class="dh-side-header888__menu-link-index888">03</span>
-<span class="dh-side-header888__menu-link-text888">משרדים</span>
-<span class="dh-side-header888__menu-link-subtle888" lang="en">Offices</span>
+<span aria-hidden="true" class="dh-side-header888__menu-link-index888">02</span>
+<span class="dh-side-header888__menu-link-text888">פרוייקטים בהקמה</span>
+<span class="dh-side-header888__menu-link-subtle888" lang="en">Under construction</span>
 </a>
 <a class="dh-side-header888__menu-link888" href="residences.html">
-<span aria-hidden="true" class="dh-side-header888__menu-link-index888">04</span>
+<span aria-hidden="true" class="dh-side-header888__menu-link-index888">03</span>
 <span class="dh-side-header888__menu-link-text888">מגורים</span>
 <span class="dh-side-header888__menu-link-subtle888" lang="en">Residences</span>
 </a>
 <a class="dh-side-header888__menu-link888" href="commerce.html">
-<span aria-hidden="true" class="dh-side-header888__menu-link-index888">05</span>
+<span aria-hidden="true" class="dh-side-header888__menu-link-index888">04</span>
 <span class="dh-side-header888__menu-link-text888">נדל״ן מסחרי</span>
 <span class="dh-side-header888__menu-link-subtle888" lang="en">Commercial</span>
 </a>
 <a class="dh-side-header888__menu-link888" href="about.html">
-<span aria-hidden="true" class="dh-side-header888__menu-link-index888">06</span>
+<span aria-hidden="true" class="dh-side-header888__menu-link-index888">05</span>
 <span class="dh-side-header888__menu-link-text888">אודות</span>
 <span class="dh-side-header888__menu-link-subtle888" lang="en">About</span>
 </a>
 <a class="dh-side-header888__menu-link888" href="contact.html">
-<span aria-hidden="true" class="dh-side-header888__menu-link-index888">07</span>
+<span aria-hidden="true" class="dh-side-header888__menu-link-index888">06</span>
 <span class="dh-side-header888__menu-link-text888">יצירת קשר</span>
 <span class="dh-side-header888__menu-link-subtle888" lang="en">Contact</span>
 </a>
@@ -484,17 +828,17 @@ def build_item_page(project, all_in_section):
 <script defer="" src="dh-side-header888.js?v=12"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-<script defer="" src="dh-logistics-item.js?v=34"></script>
+<script defer="" src="dh-logistics-item.js?v=37"></script>
 </div>
 </body>
 </html>
 """
-    return filename, page
+    return project["filename"], page
 
 
-def build_portfolio_slide(project, index, total, iframe=False):
+def build_portfolio_slide(project, iframe=False):
     target = ' rel="noopener" target="_parent"' if iframe else ' rel="noopener"'
-    desc = html.escape(first_line(project["tagline"]))
+    desc = format_card_desc(project.get("short_desc", ""), project.get("long_desc", "") or project["title"])
     location = html.escape(project["address"])
     area = html.escape(project["area"])
     img = html.escape(project["images"][0])
@@ -504,7 +848,7 @@ def build_portfolio_slide(project, index, total, iframe=False):
     return f"""<div class="swiper-slide wqf-slide">
 <div class="wqf-slide-card" style="--hover-logo-color: #dadada;">
 <div class="wqf-logo">
-<img alt="" class="wqf-logo-img" decoding="async" height="540" loading="lazy" referrerpolicy="no-referrer" src="{img}" width="960"/>
+<img alt=""{img_attrs_class(project["images"][0], "wqf-logo-img")} decoding="async" height="540" loading="lazy" referrerpolicy="no-referrer" src="{img}" width="960"/>
 <a class="wqf-area-tag" href="{href}"{target}><img alt="" aria-hidden="true" class="wqf-slide-meta-icon" decoding="async" height="20" src="assets/Icons/House.svg" width="20"/><span class="wqf-slide-meta-text">{area}</span></a></div><div class="wqf-slide-copy"><p class="wqf-slide-location">{location}</p><div class="wqf-slide-desc">
 <p class="p2-mono wqf-desc">{desc}</p>
 </div></div>
@@ -530,7 +874,7 @@ def build_portfolio_slide(project, index, total, iframe=False):
 def update_portfolio_file(path, section, projects, iframe=False):
     text = path.read_text(encoding="utf-8")
     meta = SECTION_META[section]
-    slides = "\n".join(build_portfolio_slide(p, i, len(projects), iframe=iframe) for i, p in enumerate(projects))
+    slides = "\n".join(build_portfolio_slide(p, iframe=iframe) for p in projects)
     total = len(projects)
     counter = f'<span class="js-wqf-current">01</span> / {total:02d}'
 
@@ -555,6 +899,13 @@ def update_portfolio_file(path, section, projects, iframe=False):
             count=1,
             flags=re.DOTALL,
         )
+    if 'aria-label="פורטפוליו' in text or "portfolio_aria" in meta:
+        text = re.sub(
+            r'aria-label="[^"]*" class="wqf-section"',
+            f'aria-label="{meta["portfolio_aria"]}" class="wqf-section"',
+            text,
+            count=1,
+        )
     path.write_text(text, encoding="utf-8")
 
 
@@ -563,69 +914,8 @@ def main():
         raise SystemExit(f"Missing Excel file: {XLSX}")
 
     rows = read_xlsx(XLSX)
-    excel_by_key = {}
-    for r in rows[1:]:
-        addr = clean_text(r[2] if len(r) > 2 else "")
-        if not addr:
-            continue
-        excel_by_key[addr] = {
-            "detail": clean_text(r[1] if len(r) > 1 else ""),
-            "address": addr,
-            "floor": clean_text(r[3] if len(r) > 3 else ""),
-            "built": r[4] if len(r) > 4 else "",
-            "area": r[5] if len(r) > 5 else "",
-            "long_desc": r[6] if len(r) > 6 else "",
-            "short_desc": r[7] if len(r) > 7 else "",
-        }
+    built_projects = parse_excel_rows(rows)
 
-    # fuzzy match excel rows to PROJECTS
-    built_projects = []
-    for spec in PROJECTS:
-        row = None
-        key = spec["address_key"]
-        for addr, data in excel_by_key.items():
-            if key in addr or addr in key or key.replace("דהרי ", "") in addr:
-                row = data
-                break
-        if not row:
-            print("WARN: no excel row for", spec["slug"])
-            continue
-
-        slug = spec["slug"]
-        section = spec["section"]
-        address = row["address"]
-        title = display_title(address)
-        body = body_text(row["long_desc"], row["short_desc"])
-        tagline = first_line(row["short_desc"])
-        if not tagline or tagline == row["detail"] or len(tagline) < 12:
-            tagline = first_line(body)[:160] if body else title
-        if tagline == body:
-            tagline = first_line(row["long_desc"])[:160] or title
-        area = area_text(row["built"], row["area"]) or "—"
-        images = find_images(slug)
-        video = find_video(slug)
-
-        prefix = SECTION_META[section]["prefix"]
-        part = slug.split("-", 1)[1]
-        filename = f"{prefix}-item-{part}.html"
-
-        built_projects.append(
-            {
-                "slug": slug,
-                "section": section,
-                "title": title,
-                "tagline": tagline,
-                "body": body,
-                "address": address,
-                "area": area,
-                "floor": row["floor"],
-                "images": images,
-                "video": video,
-                "filename": filename,
-            }
-        )
-
-    # Remove old item pages
     for old in ROOT.glob("*-item-*.html"):
         old.unlink()
         print("Removed", old.name)
@@ -638,19 +928,18 @@ def main():
         for p in items:
             fname, content = build_item_page(p, items)
             (ROOT / fname).write_text(content, encoding="utf-8")
-            p["filename"] = fname
             print("Wrote", fname)
-
-    update_portfolio_file(ROOT / "logistics-portfolio-page.html", "logistics", by_section.get("logistics", []), iframe=True)
-    print("Updated logistics-portfolio-page.html")
 
     for section in ("commerce", "offices", "residences"):
         path = ROOT / f"{section}.html"
-        if path.exists():
-            update_portfolio_file(path, section, by_section.get(section, []), iframe=False)
-            print("Updated", path.name)
+        items = by_section.get(section, [])
+        if path.exists() and items:
+            update_portfolio_file(path, section, items, iframe=False)
+            print("Updated", path.name, f"({len(items)} slides)")
 
     print(f"\nDone: {len(built_projects)} project pages generated.")
+    for section, items in by_section.items():
+        print(f"  {section}: {len(items)}")
 
 
 if __name__ == "__main__":
