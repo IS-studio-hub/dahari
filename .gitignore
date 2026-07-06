@@ -1,0 +1,13 @@
+.DS_Store
+contentstorage/
+
+# Large media — keep locally, not on GitHub
+*.mp4
+*.mov
+*.MP4
+*.MOV
+*.avi
+*.mkv
+
+**/__pycache__/
+*.pyc

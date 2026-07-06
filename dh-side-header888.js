@@ -303,8 +303,13 @@
 	var html = document.documentElement;
 	var lockedPages = ['dh-page-home', 'dh-page-logistics-wqf', 'dh-page-wqf-inline', 'dh-page-property-item', 'dh-page-logistics-item', 'dh-page-contact'];
 	var isContactMobile = html.classList.contains('dh-page-contact') && window.matchMedia('(max-width: 899px)').matches;
+	var isPropertyMobile =
+		(html.classList.contains('dh-page-property-item') || html.classList.contains('dh-page-logistics-item')) &&
+		window.matchMedia('(max-width: 899px)').matches;
+	var isWqfInlineMobile =
+		html.classList.contains('dh-page-wqf-inline') && window.matchMedia('(max-width: 899px)').matches;
 	var isScrollable = !lockedPages.some(function (c) { return html.classList.contains(c); });
-	if (!isScrollable && !isContactMobile) return;
+	if (!isScrollable && !isContactMobile && !isPropertyMobile && !isWqfInlineMobile) return;
 
 	var navFloat = document.querySelector('.dh-side-header888__nav-float888');
 	if (!navFloat) return;
@@ -332,6 +337,37 @@
 
 	window.addEventListener('scroll', toggle, { passive: true });
 	toggle();
+})();
+
+(function () {
+	var LOGO_SRC = 'assets/black%20logo.svg';
+	var LOGO_HOME = 'index.html';
+	var LOGO_LABEL = 'דהרי — עמוד הבית';
+
+	document.querySelectorAll('.dh-side-header888').forEach(function (component) {
+		var shell = component.querySelector('.dh-side-header888__menu-shell888');
+		if (!shell || shell.querySelector('.dh-side-header888__menu-logo')) return;
+
+		var pageLogo = component.querySelector('.dh-side-header888__content888 > .dh-corner-logo');
+		var menuLogo;
+
+		if (pageLogo) {
+			menuLogo = pageLogo.cloneNode(true);
+			menuLogo.classList.remove('dh-corner-logo');
+		} else {
+			menuLogo = document.createElement('a');
+			menuLogo.href = LOGO_HOME;
+			menuLogo.setAttribute('aria-label', LOGO_LABEL);
+			var img = document.createElement('img');
+			img.src = LOGO_SRC;
+			img.alt = '';
+			img.decoding = 'async';
+			menuLogo.appendChild(img);
+		}
+
+		menuLogo.classList.add('dh-side-header888__menu-logo');
+		shell.insertBefore(menuLogo, shell.firstChild);
+	});
 })();
 
 (function () {

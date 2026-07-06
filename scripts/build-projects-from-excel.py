@@ -229,274 +229,163 @@ def _natural_sort_key(path):
     return [int(p) if p.isdigit() else p for p in parts]
 
 
-def _list_image_files(folder):
-    if not folder.is_dir():
+VIDEO_DIR_HINTS = ("וידאו", "video")
+MAX_GALLERY = 7
+
+# Fallback render sets (used only to enrich a project that has too few real photos)
+SECTION_GENERIC = {
+    "commerce": ["Commerce/המלאכה 30"],
+    "offices": [
+        "about/A2.png",
+        "about/P2.png",
+        "about/F2.png",
+        "about/23.png",
+        "about/living-building-1024x480.jpg",
+    ],
+    "residences": [
+        "Residences/living-building-1024x480.jpg",
+        "Residences/E2.png",
+        "about/living-building-1024x480.jpg",
+    ],
+}
+
+
+def _collect_from(rel):
+    """Return image files under a RealEstate folder (recursive) or a single file.
+
+    Curated top-level renders/photos come first (shallowest depth), drone
+    "stills" in nested folders last; "small" variants are always last. Video
+    folders are skipped.
+    """
+    base = REAL_ESTATE / rel
+    if base.is_file():
+        return [base] if base.suffix.lower() in IMAGE_EXT else []
+    if not base.is_dir():
         return []
-    files = [p for p in folder.iterdir() if p.is_file() and p.suffix.lower() in IMAGE_EXT]
-    primary = [p for p in files if "small" not in p.stem.lower()]
-    secondary = [p for p in files if "small" in p.stem.lower()]
-    primary.sort(key=_natural_sort_key)
-    secondary.sort(key=_natural_sort_key)
-    return primary + secondary
 
-
-def _paths_from_sources(*sources):
-    paths = []
-    seen = set()
-    for source in sources:
-        candidate = REAL_ESTATE / source if not str(source).startswith("assets/") else ROOT / source
-        if candidate.is_file():
-            items = [candidate]
-        elif candidate.is_dir():
-            items = _list_image_files(candidate)
-        else:
+    items = []
+    for p in base.rglob("*"):
+        if not p.is_file() or p.suffix.lower() not in IMAGE_EXT:
             continue
-        for item in items:
-            key = item.resolve()
-            if key in seen:
-                continue
-            seen.add(key)
-            paths.append(item)
-    return paths
+        if any(hint in part for part in p.parts for hint in VIDEO_DIR_HINTS):
+            continue
+        depth = len(p.relative_to(base).parts) - 1
+        items.append((depth, p))
+
+    def sort_key(item):
+        depth, path = item
+        is_small = 1 if "small" in path.stem.lower() else 0
+        return (is_small, depth, _natural_sort_key(path))
+
+    items.sort(key=sort_key)
+    return [p for _, p in items]
 
 
 def _match_text(*parts):
     return clean_text(" ".join(p for p in parts if p)).lower()
 
 
-def _match_head(row, title):
-    return _match_text(title, row.get("short_desc"), row.get("detail"), row.get("address"))
+def project_image_candidates(section, address, floor, head):
+    """Ordered list of RealEstate folders/files for a project, matched by
+    use → address → property/business → floor (mirrors the asset tree).
 
+    `head` is title + detail only (NOT the long description, which routinely
+    name-drops neighbouring businesses like "קפולסקי" and would mismatch).
+    """
+    addr = address or ""
+    floor = floor or ""
+    cands = []
 
-def _short_key(row):
-    return first_line(row.get("short_desc") or "")
+    def add(*parts):
+        rel = "/".join(parts)
+        if rel not in cands:
+            cands.append(rel)
 
+    # ---- Residential projects (section-gated: some addresses contain
+    #      strings like "בית ליד" that would otherwise hit office plots) ----
+    if section == "residences":
+        if "בר אילן" in addr or "בר-אילן" in addr.replace(" ", ""):
+            add("Residences", "בר אילן 31 נתניה")
+        elif "שפיר" in addr:
+            add("Residences/משה-שפירא-1024x576.jpg")
+        return cands
 
-# Curated image sets — matched by reviewing assets/RealEstate image content.
-CURATED_IMAGE_SOURCES = {
-    ("commerce", "פטיסרי וקפה"): [
-        "commerce/Kapulsky/T2.png",
-        "commerce/Kapulsky/S2.png",
-        "commerce/Kapulsky/J2small.png",
-    ],
-    ("commerce", "חנות תאורה"): [
-        "commerce/Kado home/C2.png",
-        "commerce/Kado home/C2small.png",
-        "commerce/Alpina/D2.png",
-        "commerce/Alpina/21.png",
-        "commerce/Alpina/P2.png",
-        "commerce/Alpina/22.png",
-        "commerce/Alpina/23.png",
-    ],
-    ("commerce", "מוצרי נוי וצמחיה מלאכותית"): [
-        "commerce/O2.png",
-        "commerce/O2small.png",
-        "commerce/11.png",
-        "commerce/N2.png",
-        "commerce/R2.png",
-        "commerce/U2.png",
-    ],
-    ("commerce", "מעבדות ומשרדי פיתוח בתחום האבטחה. נכס תעשייתי המשלב פיתוח ומערכות ניטור מתקדמות. חדרי ישיבות, ייצור ופיתוח מתקדמים."): [
-        "commerce/SNE",
-    ],
-    ("commerce", "חללי עבודה נקיים המשלבים ייצור ופיתוח בתחום האופטיקה.\nהשטח כולל חדרים נקיים, חללי עבודה והרכבה וכן חדר ישיבות ומשרדי פיתוח."): [
-        "commerce/Alpina",
-    ],
-    ("commerce", "חנות מוצרי תינוקות חלל גדול מואר ורחב , נגיש מאד. \nחנות בעלת חשיפה אדירה לכביש החוף ,גישה נוחה ללקוחות וחניה פרטית לעשרות כלי רכב."): [
-        "commerce/Baby star",
-        "commerce/Kado home/C2.png",
-    ],
-    ("commerce", "חנות ריהוט ועיצוב הבית חנות גבוהה יפה ומוארת, חזית רחבה ונגישה.\nחשיפה אדירה לכביש החוף וחניות פרטיות צמודות לכל לקוחות החנות."): [
-        "commerce/Kapulsky/J2.png",
-        "commerce/17.png",
-        "commerce/18.png",
-        "commerce/19.png",
-        "commerce/H2.png",
-        "commerce/I2.png",
-    ],
-    ("commerce", "חלל רחב ופתוח המשמש כסופר מרקט של חברת wolt.\nתקרות גבוהות ואפשרות נוחה לפריקה וטעינה של סחורה.\nחניות צמודות ומיקום מנצח."): [
-        "commerce/13.png",
-        "commerce/wolt market",
-    ],
-    ("commerce", "חדרי ישיבות ומשרדים לרבות חלל תצוגה של מוצרי החברה."): [
-        "commerce/התרופה 4 נתניה הדמיה.jpg",
-        "commerce/R2.png",
-        "commerce/U2.png",
-        "commerce/4.png",
-        "commerce/8.png",
-        "commerce/10.png",
-    ],
-    ("commerce", "חדרי ייצור והרכבה של מוצרים המופקים ע״י מדפסות תלת-מימד.\nמשרדים מרווחים ויפים, מרחק מספר דקות הליכה מהרכבת, מאפשרים נגישות בתחבורה ציבורית מכל רחבי הארץ."): [
-        "commerce/13.png",
-        "commerce/6.png",
-        "commerce/8.png",
-        "commerce/20.png",
-        "commerce/I2.png",
-    ],
-    ("commerce", "Prime location\nחנות עם חזית רחבה לרחוב המלאכה ,מוארת, גבוהה.\nחלל תצוגה רחב ונגיש,חניות צמודות ומשרדים מכירות נלווים לפעילות העסק."): [
-        "commerce/15.png",
-        "commerce/A2.png",
-        "commerce/G2.png",
-        "commerce/16.png",
-        "commerce/11.png",
-    ],
-    ("commerce", "משרדים במיקום מעולה ,מרחק הליכה מהרכבת.\nחללים מוארים הכוללים חדרי ישיבות ,מרחב מוגן קומתי ובניה בסטנדרט גבוה."): [
-        "commerce/16.png",
-        "commerce/17.png",
-        "commerce/20.png",
-        "commerce/18.png",
-        "commerce/15.png",
-    ],
-    ("offices", "12 דונם למסחר, לוגיסטיקה ומשרדים בכפר יונה.\nמיקום אסטרטגי בלב השרון, עם גישה ישירה לכבישים 2, 4 ו-6. כ-40,000 מ\"ר בתכנון, עם שוכרים בינלאומיים שכבר הבטיחו את מקומם."): [
-        "about/living-building-1024x480.jpg",
-        "about/IMG_3756.JPEG",
-        "commerce/A2.png",
-        "about/P2.png",
-        "about/23.png",
-        "about/F2.png",
-    ],
-    ("offices", "הקרקע מושכרת לחברה הציבורית \"מטרופלין״ לאחסנה פתוחה הקרקע, במקביל מתוכנן ומקודם מבנה למסחר ואחסנה שישרת את כל תושבי שכונת קריית השרון בנתניה והסביבה."): [
-        "commerce/19.png",
-        "commerce/18.png",
-        "commerce/20.png",
-        "about/J2small.png",
-        "about/F2.png",
-    ],
-    ("residences", "הבניין נבנה בסטנדרט בניה גבוה מאוד הכולל חיפוי שיש, מעקות זכוכית, אריחים 120*120, מערכות חשמל חכמות, כלים סניטרים תוצרת איטליה, ונגרות בהתאמה אישית."): [
-        "resednsice/E2.png",
-        "resednsice/living-building-1024x480.jpg",
-        "about/living-building-1024x480.jpg",
-    ],
-    ("residences", "קרקע במיקום אסטרטגי קרובה לים ולמוקדי הבילוי בעיר. כיום ישנו בניין בן 4 דירות שבנויות על שטח של דונם.\n\nבימים אלו אנו עובדים על תכנון להקמת מגדל מגורים בסטנדרט גבוה עם נוף לים."): [
-        "resednsice/living-building-1024x480.jpg",
-        "about/living-building-1024x480.jpg",
-        "resednsice/E2.png",
-    ],
-    ("residences", "מחצית זכויות במגרש מגורים ברחוב משה שפירא 24 בנתניה, שטח מיוחס כ-492 מ״ר, עם פוטנציאל השבחה תכנוני והנכס מושכר כיום."): [
-        "resednsice/משה-שפירא-1024x576.jpg",
-        "about/משה-שפירא-1024x576.jpg",
-    ],
-    ("residences", "פרויקט מגורים מתוכנן ברעננה מערב, רחוב ויצמן: כ-4.7 דונם, 158 יח״ד, 13 קומות כולל קרקע וגג, שטח עיקרי כ-15,010 מ״ר ותכנון בשתי חלופות עיקריות."): [
-        "resednsice/living-building-1024x480.jpg",
-        "about/living-building-1024x480.jpg",
-    ],
-    ("residences", "קרקע לתעשייה בפארק התעשיות שח״ק (חריש–קציר), כ-3,919 מ״ר קרקע עם בקשה להיתר למבנה תעשייה בשטח של כ-2,029 מ״ר."): [
-        "commerce/A2.png",
-        "commerce/13.png",
-        "commerce/התרופה 4 נתניה הדמיה.jpg",
-        "commerce/O2.png",
-        "commerce/9.png",
-    ],
-}
+    # ---- Projects under construction / land plots ----
+    if section == "offices":
+        if "בית ליד" in addr or "כפר יונה" in addr:
+            add("Inprogress", "בית ליד")
+        elif "דגניה" in addr or "יהלום" in addr:
+            add("Logistic", "דגניה, אזור תעשייה קריית יהלום")
+        return cands
 
+    # ---- Commercial properties, by address → business/property → floor ----
+    if "המלאכה 30" in addr:
+        if any(k in head for k in ("פטיסר", "קפולסק", "קפה")):
+            add("Commerce", "המלאכה 30", "Kapulsky")
+        elif any(k in head for k in ("תינוק", "baby")):
+            add("Commerce", "המלאכה 30", "Baby star")
+        elif any(k in head for k in ("אופטיק", "alpina", "עדש")):
+            add("Commerce", "המלאכה 30", "Alpina")
+            add("Offices", "המלאכה 30", "Addon optics")
+        elif any(k in head for k in ("ריהוט", "עיצוב", "נוי", "צמח")):
+            add("Commerce", "המלאכה 30", "Kado home")
+        elif "תאור" in head:
+            add("Commerce", "המלאכה 30", "לוטוס")
+        elif any(k in head for k in ("אבטח", "ניטור", "הייטק", "מעבד", "פיתוח", "sne")):
+            add("Offices", "המלאכה 30", "Neuralgourd")
+        add("Commerce", "המלאכה 30")
+    elif "התרופה 4" in addr:
+        if "קרקע" in floor or any(k in head for k in ("wolt", "וולט", "סופר")):
+            add("Commerce", "התרופה 4", "wolt market", "התרופה 4 קרקע")
+            add("Commerce", "התרופה 4", "wolt market")
+        elif "קומה ב" in floor or any(k in head for k in ("ייצור", "הרכבה", "מדפס", "תלת")):
+            add("Offices", "התרופה 4", "סינרגי", "התרופה 4 קומה ב")
+            add("Offices", "התרופה 4", "סינרגי")
+        elif "קומה א" in floor or any(k in head for k in ("ישיב", "תצוג", "משרד")):
+            add("Offices", "התרופה 4", "פולוסוויס", "התרופה 4 קומה א")
+            add("Offices", "התרופה 4", "פולוסוויס")
+        add("Offices", "התרופה 4")
+    elif "המלאכה 15" in addr:
+        if "משרד" in head or "קומה א" in floor:
+            add("Offices", "המלאכה 15")
+            add("Commerce", "המלאכה 15", "מלאכה 15")
+        else:
+            add("Commerce", "המלאכה 15", "SNE", "המלאכה 15 אולם תצוגה קרקע")
+            add("Commerce", "המלאכה 15", "מלאכה 15")
+        add("Commerce", "המלאכה 15")
+    elif "המלאכה 4" in addr:
+        add("Commerce", "המלאכה 4", "המלאכה 4 א.ת פולג נתניה")
+        add("Commerce", "המלאכה 4", "אלבר")
+        add("Commerce", "המלאכה 4")
 
-def _curated_sources(section, row):
-    short = (row.get("short_desc") or "").strip()
-    if short:
-        key = (section, short)
-        if key in CURATED_IMAGE_SOURCES:
-            return CURATED_IMAGE_SOURCES[key]
-
-    short_line = _short_key(row)
-    if short_line:
-        key = (section, short_line)
-        if key in CURATED_IMAGE_SOURCES:
-            return CURATED_IMAGE_SOURCES[key]
-
-    return None
-
-
-def _address_fallback_sources(section, row, title):
-    text = _match_text(title, row.get("short_desc"), row.get("long_desc"), row.get("detail"), row.get("address"))
-
-    if section == "commerce" and ("המלאכה 4" in text or "המלאכה4" in text.replace(" ", "")):
-        return [
-            "commerce/4.png",
-            "commerce/8.png",
-            "commerce/9.png",
-            "commerce/10.png",
-            "commerce/5.png",
-            "commerce/7.png",
-        ]
-
-    if section == "offices" and ("דגניה" in text or "יהלום" in text):
-        return [
-            "commerce/19.png",
-            "commerce/18.png",
-            "about/F2.png",
-            "commerce/20.png",
-        ]
-
-    return None
+    return cands
 
 
 def resolve_project_images(section, row, title):
-    sources = _curated_sources(section, row)
-    if not sources:
-        sources = _address_fallback_sources(section, row, title)
+    address = clean_text(row.get("address"))
+    floor = clean_text(row.get("floor"))
+    head = _match_text(title, row.get("detail"))
 
-    if not sources:
-        text = _match_text(title, row.get("short_desc"), row.get("long_desc"), row.get("detail"), row.get("address"))
-        head = _match_head(row, title)
-        sources = []
+    collected = []
+    seen = set()
 
-        if section == "commerce":
-            if "wolt" in head or "וולט" in head:
-                sources = ["commerce/13.png", "commerce/wolt market"]
-            elif "תינוק" in head or "baby" in head:
-                sources = ["commerce/Baby star"]
-            elif "תאור" in head:
-                sources = ["commerce/Kado home", "commerce/Alpina"]
-            elif "אבטח" in head or "sne" in head or "ניטור" in head:
-                sources = ["commerce/SNE"]
-            elif "אופטיק" in head or "alpina" in head:
-                sources = ["commerce/Alpina"]
-            elif "נוי" in head or "צמח" in head:
-                sources = ["commerce/O2.png", "commerce/O2small.png", "commerce/11.png", "commerce/N2.png"]
-            elif "ריהוט" in head or "עיצוב" in head:
-                sources = ["commerce/Kapulsky/J2.png", "commerce/17.png", "commerce/18.png", "commerce/H2.png"]
-            elif "פטיסר" in head or "קפולסק" in head or ("קפה" in head and "30" in head):
-                sources = ["commerce/Kapulsky/T2.png", "commerce/Kapulsky/S2.png"]
-            elif "prime location" in head:
-                sources = ["commerce/15.png", "commerce/A2.png", "commerce/G2.png"]
-            elif "המלאכה 15" in head and "משרד" in head:
-                sources = ["commerce/16.png", "commerce/17.png", "commerce/20.png"]
-            elif "התרופה 4" in head:
-                sources = ["commerce/התרופה 4 נתניה הדמיה.jpg", "commerce/R2.png", "commerce/4.png"]
-            else:
-                sources = ["commerce/A2.png", "commerce/G2.png", "commerce/H2.png"]
-        elif section == "offices":
-            if "בית ליד" in text or "כפר יונה" in text:
-                sources = ["about/living-building-1024x480.jpg", "about/IMG_3756.JPEG", "commerce/A2.png"]
-            else:
-                sources = ["about/A2.png", "about/P2.png", "about/F2.png"]
-        elif section == "residences":
-            if "בר אילן" in text:
-                sources = ["resednsice/E2.png"]
-            elif "שדרות חן" in text:
-                sources = ["resednsice/living-building-1024x480.jpg"]
-            elif "משה שפיר" in text or "שפירא" in text:
-                sources = ["resednsice/משה-שפירא-1024x576.jpg"]
-            elif "ויצמן" in text or "רעננה" in text:
-                sources = ["resednsice/living-building-1024x480.jpg"]
-            elif "חריש" in text or "קציר" in text or "תעשי" in text:
-                sources = ["commerce/A2.png", "commerce/13.png", "commerce/O2.png"]
-            else:
-                sources = ["resednsice/E2.png", "resednsice/living-building-1024x480.jpg"]
+    def take(rels, limit):
+        for rel in rels:
+            for path in _collect_from(rel):
+                key = path.resolve()
+                if key in seen:
+                    continue
+                seen.add(key)
+                collected.append(path)
+                if len(collected) >= limit:
+                    return
 
-    paths = _paths_from_sources(*sources)
-    if not paths:
-        fallback = {
-            "commerce": ["commerce/A2.png", "commerce/G2.png", "commerce/H2.png"],
-            "offices": ["about/A2.png", "about/P2.png", "about/F2.png"],
-            "residences": ["resednsice/E2.png", "resednsice/living-building-1024x480.jpg"],
-        }
-        paths = _paths_from_sources(*fallback.get(section, [GREY_PLACEHOLDER]))
+    take(project_image_candidates(section, address, floor, head), MAX_GALLERY)
+    if len(collected) < 4:
+        take(SECTION_GENERIC.get(section, []), MAX_GALLERY)
 
-    hrefs = [asset_href(p.relative_to(ROOT).as_posix()) for p in paths[:7]]
-    while len(hrefs) < 7:
-        hrefs.append(GREY_PLACEHOLDER if not hrefs else hrefs[-1])
-    return hrefs[:7]
+    hrefs = [asset_href(p.relative_to(ROOT).as_posix()) for p in collected[:MAX_GALLERY]]
+    return hrefs or [GREY_PLACEHOLDER]
 
 
 def img_class(src):
@@ -676,9 +565,9 @@ def build_item_page(project, all_in_section):
 <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
 <title>{html.escape(meta['title_prefix'])} — {html.escape(title)}</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@500;600;700&amp;family=Rubik:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="index-layout.css?v=63" rel="stylesheet"/>
-<link href="dh-side-header888.css?v=66" rel="stylesheet"/>
-<link href="dh-logistics-item.css?v=73" rel="stylesheet"/>
+<link href="index-layout.css?v=73" rel="stylesheet"/>
+<link href="dh-side-header888.css?v=70" rel="stylesheet"/>
+<link href="dh-logistics-item.css?v=77" rel="stylesheet"/>
 </head>
 <body>
 <a class="dh-skip-link" href="#dh-main-content">דלג לתוכן הראשי</a>
@@ -713,12 +602,14 @@ def build_item_page(project, all_in_section):
 <div class="dh-logistics-item__description">
 {body_html}
 </div>
+<div class="dh-logistics-item__meta-side">
 <div class="dh-logistics-item__meta" role="list">
 <div class="dh-logistics-item__meta-row" role="listitem"><span class="dh-logistics-item__meta-label">כתובת</span><span>{html.escape(address)}</span></div>
 {floor_row}{area_rows}
 </div>
-</div>
 {inquiry_html}
+</div>
+</div>
 </div>
 <section aria-label="אולי יעניין אותך גם" class="dh-logistics-item__also-like">
 <h3 class="dh-logistics-item__also-like-title">
@@ -825,7 +716,7 @@ def build_item_page(project, all_in_section):
 </div>
 </nav>
 </div>
-<script defer="" src="dh-side-header888.js?v=12"></script>
+<script defer="" src="dh-side-header888.js?v=15"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script defer="" src="dh-logistics-item.js?v=37"></script>

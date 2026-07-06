@@ -100,7 +100,7 @@
       return String(num).padStart(2, "0");
     };
 
-    const mqDesktop = window.matchMedia("(min-width: 768px)");
+    const mqDesktop = window.matchMedia("(min-width: 900px)");
     const isRtl = document.documentElement.getAttribute("dir") === "rtl";
 
     function clearWrapperHeightLock() {

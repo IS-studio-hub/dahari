@@ -44,6 +44,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 .dh-logistics-item {
   margin-inline: 0;
   width: 100%;
+  padding-top: 64px;
   padding-inline: clamp(1rem, 3.5vw, 2.75rem);
   box-sizing: border-box;
 }
@@ -159,6 +160,19 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
     margin: 0;
     gap: 0.3rem;
     grid-template-columns: 1fr;
+  }
+
+  .dh-logistics-item__content-col .dh-logistics-item__meta-side {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    min-width: 0;
+  }
+
+  .dh-logistics-item__content-col .dh-logistics-item__meta-side .dh-logistics-item__inquiry {
+    width: 100%;
+    max-width: none;
+    margin-top: 0.15rem;
   }
 
   .dh-logistics-item__content-col .dh-logistics-item__meta-row {
@@ -415,6 +429,23 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   min-width: 0;
 }
 
+.dh-logistics-item__meta-side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.dh-logistics-item__meta-side .dh-logistics-item__meta {
+  margin-block-end: 0;
+}
+
+.dh-logistics-item__meta-side .dh-logistics-item__inquiry {
+  width: 100%;
+  max-width: none;
+  margin-top: 0;
+}
+
 /* Stat chips — single column */
 .dh-logistics-item__meta {
   display: grid;
@@ -592,8 +623,8 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 
 /* Product inquiry — mailto lead form */
 .dh-logistics-item__inquiry {
-  width: 50%;
-  max-width: 50%;
+  width: 100%;
+  max-width: none;
   box-sizing: border-box;
   margin: 0.5rem 0 0.35rem;
   padding: 0.75rem 0.85rem;
@@ -819,7 +850,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 @media (max-width: 899px) {
   html.dh-page-property-item .dh-side-header888__content888,
   html.dh-page-logistics-item .dh-side-header888__content888 {
-    overflow-y: auto;
+    overflow: visible;
   }
 
   .dh-logistics-item__media-col {
@@ -863,5 +894,28 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   .dh-logistics-item__also-like-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     max-width: none;
+  }
+}
+
+/* Mobile: gallery before "also like" recommendations */
+@media (max-width: 767px) {
+  .dh-logistics-item__content-col {
+    display: contents;
+  }
+
+  .dh-logistics-item__content-main {
+    order: 1;
+    width: 100%;
+  }
+
+  .dh-logistics-item__media-col {
+    order: 2;
+    width: 100%;
+  }
+
+  .dh-logistics-item__also-like {
+    order: 3;
+    width: 100%;
+    margin-top: clamp(1.5rem, 4vw, 2rem);
   }
 }

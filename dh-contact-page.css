@@ -24,16 +24,21 @@ html.dh-page-contact body::before {
   background-repeat: no-repeat;
 }
 
-/* Fit inside site shell (100dvh column): one fold, no page scroll */
+/* Fit inside site shell (100dvh column): one fold, no page scroll on desktop */
 html.dh-page-contact .dh-main-content.dh-main-content--contact {
   flex: 1 1 auto;
   min-height: 0;
-  max-height: 100%;
-  overflow: hidden;
   padding-block: 0;
   display: flex;
   flex-direction: column;
   gap: 0;
+}
+
+@media (min-width: 900px) {
+  html.dh-page-contact .dh-main-content.dh-main-content--contact {
+    max-height: 100%;
+    overflow: hidden;
+  }
 }
 
 /* Full-bleed empty spacer (reserved height, no image) */
@@ -67,15 +72,15 @@ html.dh-page-contact .dh-main-content--contact:has(#dh-contact-root.dh-contact--
     display: none;
   }
 
-  /* Unlock the viewport-locked shell so the page can scroll */
+  /* Unlock the viewport-locked shell so the page can scroll on the document */
   html.dh-page-contact,
   html.dh-page-contact body {
     height: auto !important;
     max-height: none !important;
     min-height: 100dvh;
     min-height: 100svh;
-    overflow: visible !important;
-    overflow-x: hidden !important;
+    overflow-x: clip !important;
+    overflow-y: visible !important;
     overscroll-behavior: auto !important;
   }
 
@@ -93,6 +98,7 @@ html.dh-page-contact .dh-main-content--contact:has(#dh-contact-root.dh-contact--
     min-height: 100svh;
     max-height: none !important;
     overflow: visible !important;
+    align-items: flex-start;
   }
 
   html.dh-page-contact .dh-side-header888__content888 {
@@ -100,6 +106,9 @@ html.dh-page-contact .dh-main-content--contact:has(#dh-contact-root.dh-contact--
     max-height: none !important;
     min-height: auto !important;
     overflow: visible !important;
+    flex: none;
+    align-self: auto;
+    width: 100%;
   }
 
   html.dh-page-contact .dh-main-content.dh-main-content--contact {
@@ -262,10 +271,6 @@ html.dh-page-contact .dh-main-content--contact:has(#dh-contact-root.dh-contact--
 }
 
 html.dh-page-contact #dh-contact-root.dh-contact {
-  flex: 1 1 auto;
-  min-width: 0;
-  min-height: 0;
-  max-height: 100%;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -275,11 +280,25 @@ html.dh-page-contact #dh-contact-root.dh-contact {
   padding-inline: max(0.65rem, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
 }
 
+@media (min-width: 900px) {
+  html.dh-page-contact #dh-contact-root.dh-contact {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    max-height: 100%;
+  }
+}
+
 html.dh-page-contact .dh-contact__bg {
-  flex: 1 1 auto;
-  min-height: 0;
   display: flex;
   flex-direction: column;
+}
+
+@media (min-width: 900px) {
+  html.dh-page-contact .dh-contact__bg {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
 }
 
 @keyframes dh-contact-mesh-drift {
@@ -598,10 +617,15 @@ html.dh-page-contact .dh-contact__hero-video {
 html.dh-page-contact .dh-contact__sidebar {
   flex: 1 1 auto;
   gap: clamp(0.28rem, 0.85vh, 0.55rem);
-  overflow: hidden;
   justify-content: flex-start;
   padding-inline-end: 0;
   border-inline-end: none;
+}
+
+@media (min-width: 900px) {
+  html.dh-page-contact .dh-contact__sidebar {
+    overflow: hidden;
+  }
 }
 
 .dh-contact__main {
@@ -610,7 +634,12 @@ html.dh-page-contact .dh-contact__sidebar {
   gap: clamp(0.25rem, 0.9vh, 0.55rem);
   min-width: 0;
   min-height: 0;
-  overflow: hidden;
+}
+
+@media (min-width: 900px) {
+  .dh-contact__main {
+    overflow: hidden;
+  }
 }
 
 html.dh-page-contact .dh-contact__main {
@@ -939,13 +968,18 @@ html.dh-page-contact .dh-contact__links a {
 }
 
 html.dh-page-contact .dh-contact__form-wrap {
-  flex: 1 1 auto;
-  min-height: 0;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
   padding: clamp(0.45rem, 1.1vh, 0.65rem) clamp(0.5rem, 1.4vw, 0.85rem);
   border-radius: 14px;
+}
+
+@media (min-width: 900px) {
+  html.dh-page-contact .dh-contact__form-wrap {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+  }
 }
 
 .dh-contact__form-wrap::before {
@@ -1000,10 +1034,15 @@ html.dh-page-contact .dh-contact__form-hint {
 }
 
 html.dh-page-contact .dh-contact__form {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow: hidden;
   gap: 0.38rem;
+}
+
+@media (min-width: 900px) {
+  html.dh-page-contact .dh-contact__form {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+  }
 }
 
 .dh-contact__field {

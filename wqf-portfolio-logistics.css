@@ -115,7 +115,7 @@
 
 #wqf-portfolio-root .wqf-section {
   overflow: hidden;
-  padding-top: 72px;
+  padding-top: 64px;
   padding-bottom: 120px;
 }
 
@@ -931,7 +931,11 @@
   overflow: visible;
 }
 
-/* <768px: vertical stack + page scroll; Swiper destroyed in JS (class wqf-portfolio--mobile-stack) */
+/* <900px: vertical stack + page scroll; Swiper destroyed in JS (class wqf-portfolio--mobile-stack) */
+#wqf-portfolio-root.wqf-portfolio--mobile-stack .wqf-section {
+  overflow: visible;
+}
+
 #wqf-portfolio-root.wqf-portfolio--mobile-stack .wqf-nav {
   display: none;
 }

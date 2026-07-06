@@ -525,7 +525,155 @@
       /* Item pages: rail is in flex — no extra gutter on the content column */
       html.dh-page-property-item .dh-side-header888__content888,
       html.dh-page-logistics-item .dh-side-header888__content888 {
-        padding-inline-start: max(0.75rem, env(safe-area-inset-inline-start, 0px));
+        /* padding-inline-start: max(0.75rem, env(safe-area-inset-inline-start, 0px)); */
+      }
+    }
+
+    /*
+      Mobile (≤899px): product pages stack and need normal document scroll
+      (desktop keeps a locked viewport with an internal scrolling column).
+    */
+    @media (max-width: 899px) {
+      html.dh-page-property-item,
+      html.dh-page-property-item body,
+      html.dh-page-logistics-item,
+      html.dh-page-logistics-item body {
+        height: auto !important;
+        max-height: none !important;
+        min-height: 100dvh;
+        min-height: 100svh;
+        overflow-x: clip !important;
+        overflow-y: auto !important;
+        overscroll-behavior: auto !important;
+      }
+
+      html.dh-page-contact,
+      html.dh-page-contact body {
+        height: auto !important;
+        max-height: none !important;
+        min-height: 100dvh;
+        min-height: 100svh;
+        overflow-x: clip !important;
+        overflow-y: visible !important;
+        overscroll-behavior: auto !important;
+      }
+
+      html.dh-page-property-item .dh-side-header888,
+      html.dh-page-logistics-item .dh-side-header888,
+      html.dh-page-contact .dh-side-header888 {
+        height: auto !important;
+        min-height: 100dvh !important;
+        min-height: 100svh !important;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+
+      html.dh-page-property-item .dh-side-header888__layout888,
+      html.dh-page-logistics-item .dh-side-header888__layout888,
+      html.dh-page-contact .dh-side-header888__layout888 {
+        height: auto !important;
+        min-height: 100dvh;
+        min-height: 100svh;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+
+      html.dh-page-property-item .dh-side-header888__content888,
+      html.dh-page-logistics-item .dh-side-header888__content888,
+      html.dh-page-contact .dh-side-header888__content888 {
+        height: auto !important;
+        max-height: none !important;
+        min-height: auto !important;
+        overflow: visible !important;
+        flex: none;
+      }
+
+      html.dh-page-contact .dh-side-header888__layout888 {
+        align-items: flex-start;
+      }
+
+      html.dh-page-contact .dh-side-header888__content888 {
+        align-self: auto;
+        width: 100%;
+      }
+
+      html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item,
+      html.dh-page-logistics-item .dh-main-content.dh-main-content--logistics-item {
+        max-height: none !important;
+        overflow: visible !important;
+        height: auto;
+        flex: none;
+      }
+
+      html.dh-page-property-item .dh-logistics-item,
+      html.dh-page-logistics-item .dh-logistics-item {
+        overflow: visible;
+        min-height: auto;
+        flex: none;
+      }
+
+      html.dh-page-wqf-inline,
+      html.dh-page-wqf-inline body {
+        height: auto !important;
+        max-height: none !important;
+        min-height: 100dvh;
+        min-height: 100svh;
+        overflow-x: clip !important;
+        overflow-y: auto !important;
+        overscroll-behavior: auto !important;
+      }
+
+      html.dh-page-wqf-inline .dh-side-header888 {
+        height: auto !important;
+        min-height: 100dvh !important;
+        min-height: 100svh !important;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+
+      html.dh-page-wqf-inline .dh-side-header888__layout888 {
+        height: auto !important;
+        min-height: 100dvh;
+        min-height: 100svh;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+
+      html.dh-page-wqf-inline .dh-side-header888__content888 {
+        height: auto !important;
+        max-height: none !important;
+        min-height: auto !important;
+        overflow: visible !important;
+        flex: none;
+      }
+
+      html.dh-page-wqf-inline main#dh-main-content {
+        max-height: none !important;
+        overflow: visible !important;
+        height: auto;
+        flex: none;
+      }
+
+      html.dh-page-wqf-inline .dh-wqf-portfolio-host,
+      html.dh-page-wqf-inline .dh-wqf-portfolio-host #wqf-portfolio-root {
+        flex: none;
+        min-height: auto;
+        overflow: visible;
+      }
+    }
+
+    /* Mobile: sidebar hidden — content uses full width beside floating menu only */
+    @media (max-width: 767px) {
+      html:not(.dh-page-home):not(.dh-page-property-item):not(.dh-page-logistics-item) .dh-side-header888__content888 {
+        padding-top: 64px;
+        padding-inline-start: 0;
+      }
+
+      html:not(.dh-page-home):not(.dh-page-property-item):not(.dh-page-logistics-item) .dh-breadcrumbs {
+        max-width: min(
+          100%,
+          calc(100% - var(--dh-header-edge-gutter) - var(--rail-width-desktop, 54px) - max(0px, env(safe-area-inset-inline-start, 0px)))
+        );
       }
     }
 
@@ -747,6 +895,24 @@
 
     html:not(.dh-page-home):not(.dh-page-logistics-wqf):not(.dh-page-wqf-inline):not(.dh-page-contact) main#dh-main-content:has(> .dh-breadcrumbs) {
       padding-top: 0;
+    }
+
+    /* Mobile: no logo or breadcrumbs on the page — logo lives in the open menu */
+    @media (max-width: 767px) {
+      .dh-breadcrumbs {
+        display: none !important;
+      }
+
+      .dh-side-header888__content888 > .dh-corner-logo {
+        display: none !important;
+      }
+
+      html.dh-page-home main#dh-main-content:has(> .dh-breadcrumbs),
+      html.dh-page-logistics-wqf main#dh-main-content:has(> .dh-breadcrumbs),
+      html.dh-page-wqf-inline main#dh-main-content:has(> .dh-breadcrumbs),
+      html.dh-page-contact main#dh-main-content:has(> .dh-breadcrumbs) {
+        padding-top: max(0.5rem, env(safe-area-inset-top, 0px));
+      }
     }
 
     .dh-breadcrumbs__track {

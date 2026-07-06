@@ -1010,6 +1010,47 @@
 		  gap: 10px;
 		}
 
+		.dh-side-header888__menu-logo {
+		  position: absolute;
+		  z-index: 4;
+		  top: max(10px, env(safe-area-inset-top, 0px));
+		  height: var(--rail-icon-btn-size, 44px);
+		  inset-inline-end: max(env(safe-area-inset-inline-end, 0px), 12px);
+		  inset-inline-start: auto;
+		  display: none;
+		  align-items: center;
+		  line-height: 0;
+		  text-decoration: none;
+		  opacity: 0.96;
+		  pointer-events: auto;
+		  max-width: min(42vw, 88px);
+		}
+
+		.dh-side-header888__overlay888.is-active888 .dh-side-header888__menu-logo {
+		  display: flex;
+		}
+
+		.dh-side-header888__menu-logo:hover {
+		  opacity: 1;
+		}
+
+		.dh-side-header888__menu-logo:focus:not(:focus-visible) {
+		  outline: none;
+		}
+
+		.dh-side-header888__menu-logo:focus-visible {
+		  outline: 3px solid var(--site-color-30, #99beff);
+		  outline-offset: 4px;
+		  border-radius: 2px;
+		}
+
+		.dh-side-header888__menu-logo img {
+		  display: block;
+		  width: clamp(64px, 26vw, 80px);
+		  height: auto;
+		  max-height: clamp(14px, 3.8vmin, 22px);
+		}
+
 		.dh-side-header888__menu-nav888 {
 		  gap: 6px;
 		  padding-block: 4px;
@@ -1064,6 +1105,12 @@
 		.dh-side-header888__menu-social888-link {
 		  border-radius: 12px;
 		  background-color: rgba(255, 255, 255, 0.6);
+		}
+	  }
+
+	  @media (min-width: 768px) {
+		.dh-side-header888__menu-logo {
+		  display: none !important;
 		}
 	  }
   
@@ -1214,6 +1261,38 @@
 		background-image: none;
 		background-size: auto;
 		background-repeat: no-repeat;
+	  }
+
+	  /* Mobile: hide the sidebar strip; keep menu + back-to-top fixed in place */
+	  @media (max-width: 767px) {
+		.dh-side-header888::before,
+		.dh-side-header888--menu-open::before {
+		  display: none;
+		}
+
+		.dh-side-header888__rail888 {
+		  display: none;
+		  width: 0;
+		  min-width: 0;
+		  overflow: visible;
+		  pointer-events: none;
+		}
+
+		.dh-side-header888__nav-float888 {
+		  position: fixed;
+		  top: max(10px, env(safe-area-inset-top, 0px));
+		  right: env(safe-area-inset-right, 0px);
+		  width: var(--rail-width-desktop);
+		  z-index: 70;
+		}
+
+		.dh-side-header888__back-to-top {
+		  position: fixed;
+		  bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
+		  right: env(safe-area-inset-right, 0px);
+		  width: var(--rail-width-desktop);
+		  z-index: 70;
+		}
 	  }
 
 	
