@@ -18,7 +18,7 @@ html.dh-page-contact body::before {
   z-index: -1;
   pointer-events: none;
   background-color: #eef4fc;
-  background-image: url("assets/4.png");
+  background-image: url("assets/4.webp");
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;

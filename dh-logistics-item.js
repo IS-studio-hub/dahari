@@ -27,13 +27,14 @@
           var onlyImages = media.filter(function (item) {
             return item.type !== "video";
           });
-          galleryGrid.innerHTML = videos
-            .concat(onlyImages)
+          // Images first so the page stays usable; videos load on demand.
+          galleryGrid.innerHTML = onlyImages
+            .concat(videos)
             .map(function (item) {
               if (item.type === "video") {
                 return (
                   '<li role="listitem"><video class="dh-logistics-item__gallery-video" controls playsinline ' +
-                  'preload="metadata" src="' +
+                  'preload="none" src="' +
                   item.src +
                   '"></video></li>'
                 );
