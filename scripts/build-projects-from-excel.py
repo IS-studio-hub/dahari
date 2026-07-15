@@ -11,9 +11,173 @@ from urllib.parse import quote
 ROOT = Path(__file__).resolve().parents[1]
 XLSX = Path("/Users/shamrikin/Downloads/Dahari Real-Estates.xlsx")
 REAL_ESTATE = ROOT / "assets" / "RealEstate"
+CONTENT_STORAGE = ROOT / "contentstorage"
 GREY_PLACEHOLDER = "assets/placeholders/grey-placeholder.svg"
 IMAGE_EXT = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
+VIDEO_EXT = {".mp4", ".mov", ".webm", ".m4v"}
+MEDIA_EXT = IMAGE_EXT | VIDEO_EXT
 INQUIRY_MAILTO = "info@dahari.co.il"
+
+# Product pages that load gallery media from a folder (path relative to site root).
+# Add or remove files, then run: python3 scripts/sync-contentstorage-galleries.py
+# For live updates while editing: python3 scripts/sync-contentstorage-galleries.py --watch
+GALLERY_FOLDER_SOURCES = {
+    "commerce-item-15.html": (
+        "assets/RealEstate/Commerce/המלאכה 15/המלאכה 15 קומה 1 + אחסנה"
+    ),
+    "commerce-item-prime-location.html": (
+        "assets/RealEstate/Commerce/המלאכה 15/המלאכה 15 קומה 2 + גג"
+    ),
+    "commerce-item-30-07.html": (
+        "assets/RealEstate/Commerce/המלאכה 30/המלאכה 30 חנות חזית צד שמאל"
+    ),
+    "commerce-item-30-06.html": (
+        "assets/RealEstate/Commerce/המלאכה 30/המלאכה 30 חנות חזית צד ימין"
+    ),
+    "commerce-item-30.html": (
+        "assets/RealEstate/Commerce/המלאכה 30/המלאכה 30 חנות אחורית צד ימין"
+    ),
+    "commerce-item-30-02.html": (
+        "assets/RealEstate/Commerce/המלאכה 30/המלאכה 30 חנות אחורית צד שמאל"
+    ),
+    "commerce-item-30-05.html": (
+        "assets/RealEstate/Commerce/המלאכה 30/המלאכה 30 משרדים אופטיק"
+    ),
+    "commerce-item-30-04.html": (
+        "assets/RealEstate/Commerce/המלאכה 30/המלאכה 30 נורלגרונד משרדים"
+    ),
+    "commerce-item-wolt.html": (
+        "assets/RealEstate/Commerce/התרופה 4/התרופה 4 וולט אחסנה"
+    ),
+    "commerce-item-4.html": (
+        "assets/RealEstate/Commerce/התרופה 4/התרופה 4 פולוסוויס משרדים"
+    ),
+    "commerce-item-4-10.html": (
+        "assets/RealEstate/Commerce/התרופה 4/התרופה 4 סינרגי משרדים"
+    ),
+}
+
+# Card / hero image overrides (path relative to site root) — only when not using contentstorage.
+CARD_IMAGE_OVERRIDES = {}
+
+# Portfolio card copy / area tag overrides.
+CARD_DESC_OVERRIDES = {
+    "commerce-item-prime-location.html": (
+        "משרדים במיקום מעולה ,מרחק הליכה מהרכבת.\n"
+        "קומה שנייה וגג בלבד.\n"
+        "חללים מוארים הכוללים חדרי ישיבות ,מרחב מוגן קומתי ובניה בסטנדרט גבוה."
+    ),
+    "commerce-item-15.html": (
+        "חללי תצוגה וקומת אחסנה במיקום מעולה.\n"
+        "קומה ראשונה וקומה מתחת לאדמה בלבד — שטח בנוי כ-550 מ\"ר."
+    ),
+}
+
+PRODUCT_PAGE_OVERRIDES = {
+    "commerce-item-prime-location.html": {
+        "title": "משרדים במיקום מעולה ,מרחק הליכה מהרכבת.",
+        "tagline": "משרדים",
+        "long_desc": (
+            "חלל משרדים משודרג בבניין מסחר, משרדים ואחסנה, המתפרס על שטח בנוי של כ-450 מ\"ר בקומת קרקע. "
+            "ממוקם באזור התעשייה פולג, נתניה, הנכס נהנה ממיקום אסטרטגי עם נגישות מעולה – קרבה לתחנת הרכבת וחניות צמודות.\n\n"
+            "היסטוריה ושדרוגים:\n\n"
+            "הנכס, ששימש בעבר כמתקן ייצור לתעשיות מתכת וציוד כבד (ברגים ושרשראות), "
+            "עבר שיפוץ יסודי כדי להתאים אותו לשימושים מודרניים במשרדים.\n\n"
+            "עבודות השיפוץ כללו:\n\n"
+            "• שיפוץ יסודי ומלא של החלל.\n"
+            "• החלפת מערכות תשתית: חשמל, תקשורת, מים ומערכות גילוי אש מתקדמות.\n"
+            "• עיצוב פנימי חדש עם חלוקה חכמה של החללים ליצירת סביבת עבודה מודרנית ונגישה.\n"
+            "• חדרי ישיבות, אזורי עבודה פתוחים ומרחב מוגן קומתי."
+        ),
+    },
+    "commerce-item-15.html": {
+        "title": "חללי תצוגה ואחסנה במיקום מעולה",
+        "tagline": "חללי תצוגה ואחסנה",
+        "floor": "קומה ראשונה וקומה מתחת לאדמה",
+        "long_desc": (
+            "חללי תצוגה ואחסנה משודרגים בבניין מסחר, משרדים ואחסנה, המתפרסים על שטח בנוי של כ-550 מ\"ר "
+            "בקומה הראשונה ובקומה מתחת לאדמה. ממוקמים באזור התעשייה פולג, נתניה, הנכס נהנה ממיקום אסטרטגי "
+            "עם נגישות מעולה – קרבה לתחנת הרכבת וחניות צמודות.\n\n"
+            "היסטוריה ושדרוגים:\n\n"
+            "הנכס, ששימש בעבר כמתקן ייצור לתעשיות מתכת וציוד כבד (ברגים ושרשראות), "
+            "עבר שיפוץ יסודי כדי להתאים אותו לשימושים מודרניים בחללי תצוגה, מסחר ואחסנה.\n\n"
+            "עבודות השיפוץ כללו:\n\n"
+            "• שיפוץ יסודי ומלא של החללים בקומה הראשונה ובמרתף.\n"
+            "• החלפת מערכות תשתית: חשמל, תקשורת, מים ומערכות גילוי אש מתקדמות.\n"
+            "• עיצוב פנימי חדש עם חלוקה חכמה לחללי תצוגה נגישים ואזורי אחסנה.\n"
+            "• פתיחת ויטרינות חזיתיות ליצירת חזות מסחרית מזמינה."
+        ),
+    },
+    "commerce-item-30-07.html": {
+        "long_desc": (
+            "חנות ריהוט ועיצוב הבית בשטח בנוי של כ-900 מ\"ר, בחזית רחבה ונגישה בדהרי המלאכה 30, "
+            "אזור התעשייה פולג נתניה. החנות נהנית מחשיפה אדירה לכביש החוף, תקרות גבוהות ותאורה טבעית, "
+            "וחניות פרטיות צמודות ללקוחות.\n\n"
+            "החנות עברה שדרוג ושיפוץ מקיף, והותאמה להצגת ריהוט ועיצוב הבית בסטנדרט גבוה:\n\n"
+            "• שיפוץ מלא של החלל והחזית המסחרית.\n"
+            "• החלפת מערכות תשתית — חשמל, תקשורת, מים ומערכות גילוי אש.\n"
+            "• פתיחת ויטרינות וחזית רחבה לחשיפה מרבית ונגישות נוחה.\n"
+            "• תכנון פנימי גמיש המאפשר תצוגה מגוונת של ריהוט ואביזרי בית.\n\n"
+            "מיקום פריים בפולג, בקרבת תחנת הרכבת ועם גישה נוחה מהכבישים הראשיים — "
+            "פתרון אידיאלי לחנות תצוגה עם נוכחות חזקה בשטח."
+        ),
+    },
+    "commerce-item-30-06.html": {
+        "long_desc": (
+            "חנות מוצרי תינוקות בשטח בנוי של כ-900 מ\"ר, בחזית רחבה ונגישה בדהרי המלאכה 30, "
+            "אזור התעשייה פולג נתניה. החנות נהנית מחשיפה אדירה לכביש החוף, תקרות גבוהות ותאורה טבעית, "
+            "וחניות פרטיות צמודות ללקוחות.\n\n"
+            "החנות עברה שדרוג ושיפוץ מקיף, והותאמה להצגת מוצרי תינוקות וילדים בסטנדרט גבוה:\n\n"
+            "• שיפוץ מלא של החלל והחזית המסחרית.\n"
+            "• החלפת מערכות תשתית — חשמל, תקשורת, מים ומערכות גילוי אש.\n"
+            "• פתיחת ויטרינות וחזית רחבה לחשיפה מרבית ונגישות נוחה.\n"
+            "• תכנון פנימי גמיש המאפשר תצוגה מגוונת של מוצרי תינוקות וילדים.\n\n"
+            "מיקום פריים בפולג, בקרבת תחנת הרכבת ועם גישה נוחה מהכבישים הראשיים — "
+            "פתרון אידיאלי לחנות תצוגה עם נוכחות חזקה בשטח."
+        ),
+    },
+    "commerce-item-30.html": {
+        "long_desc": (
+            "בית פטיסרי וקפה בשטח בנוי של כ-200 מ\"ר, בחלק האחורי של דהרי המלאכה 30, "
+            "אזור התעשייה פולג נתניה. החנות הפינתית נהנית מחשיפה מלאה לרחוב, תאורה טבעית ונעימה, "
+            "וחניות צמודות ללקוחות.\n\n"
+            "בית הקפה עבר שדרוג ושיפוץ, והותאם לפעילות פטיסרי וקפה בסטנדרט גבוה:\n\n"
+            "• שיפוץ מלא של החלל.\n"
+            "• החלפת מערכות תשתית — חשמל, תקשורת, מים ומערכות גילוי אש.\n"
+            "• עיצוב פנימי מזמין המתאים לישיבה, תצוגת מוצרים ושירות לקוחות.\n"
+            "• חלוקה חכמה המנצלת את שטח החנות הפינתית בצורה מיטבית.\n\n"
+            "מיקום פריים בפולג, בקרבת תחנת הרכבת — פתרון מעולה לבית קפה ופטיסרי עם נגישות נוחה ללקוחות."
+        ),
+    },
+    "commerce-item-30-04.html": {
+        "long_desc": (
+            "משרדי הייטק בשטח בנוי של כ-400 מ\"ר בדהרי המלאכה 30, אזור התעשייה פולג נתניה. "
+            "החלל משלב מעבדות, משרדי פיתוח וחדרי ישיבות, ונהנה מנגישות מצוינת — קרבה לתחנת הרכבת וחניות צמודות.\n\n"
+            "הנכס עבר שדרוג ושיפוץ, והותאם לפעילות הייטק, פיתוח ומערכות ניטור מתקדמות:\n\n"
+            "• שיפוץ מלא של החלל.\n"
+            "• החלפת מערכות תשתית — חשמל, תקשורת, מים ומערכות גילוי אש.\n"
+            "• חלוקה פנימית חדשה עם מעבדות, חדרי ישיבות ומרחבי עבודה פתוחים.\n"
+            "• תכנון המאפשר שילוב בין פיתוח, ייצור והרכבה בסביבת עבודה מודרנית.\n\n"
+            "מיקום פריים בפולג — פתרון אידיאלי למשרדי הייטק ופיתוח טכנולוגי עם תשתית מתקדמת ונגישות נוחה."
+        ),
+    },
+    "commerce-item-wolt.html": {
+        "long_desc": (
+            "חלל אחסנה וסופרמרקט של Wolt בשטח בנוי של כ-420 מ\"ר, בקומת קרקע בדהרי התרופה 4, "
+            "אזור התעשייה פולג נתניה. החלל הרחב והפתוח נהנה מתקרות גבוהות, גישה נוחה לפריקה וטעינה, "
+            "וחניות צמודות.\n\n"
+            "יתרונות המיקום:\n\n"
+            "• קרבה לתחנת הרכבת נתניה-ספיר.\n"
+            "• חניות צמודות ונגישות מצוינת לסחורה וללקוחות.\n\n"
+            "החלל עבר שדרוג ושיפוץ, והותאם לפעילות אחסנה וסופרמרקט:\n\n"
+            "• שיפוץ מקיף של החלל.\n"
+            "• החלפת מערכות תשתית — חשמל, תקשורת, מים ומערכות גילוי אש.\n"
+            "• תכנון פנימי המאפשר אחסון, מילוי הזמנות ותפעול יומיומי נוח.\n"
+            "• חלוקה חכמה המנצלת את שטח האחסנה בצורה מיטבית.\n\n"
+            "מיקום אסטרטגי בפולג — פתרון מעולה לפעילות אחסנה ומסחר עם תשתית חדשה ונגישות נוחה."
+        ),
+    },
+}
 
 CORNER_SVG = (
     '<svg aria-hidden="true" class="corner-accent" fill="none" height="10" viewbox="0 0 10 10" width="10">'
@@ -141,26 +305,26 @@ def format_body_html(long_desc, short_desc=""):
 
 
 def area_text(built, area):
-    """Combined label for portfolio card tags."""
-    built = clean_text(built)
-    area = clean_text(area)
-    if built and area and built != area:
-        return f"{built} · {area}"
-    return built or area or "—"
+    """Portfolio card tag — built area only."""
+    return clean_text(built) or "—"
 
 
-def meta_area_rows(built, plot_area):
-    """Separate שטח בנוי / גודל שטח rows for product pages."""
+def meta_area_rows(built, plot_area, show_plot=True):
+    """Separate שטח בנוי / גודל השטח rows for product pages."""
     built_val = clean_text(built) or "—"
-    plot_val = clean_text(plot_area) or "—"
-    return (
+    rows = (
         f'<div class="dh-logistics-item__meta-row" role="listitem">'
         f'<span class="dh-logistics-item__meta-label">שטח בנוי</span>'
         f"<span>{html.escape(built_val)}</span></div>\n"
-        f'<div class="dh-logistics-item__meta-row" role="listitem">'
-        f'<span class="dh-logistics-item__meta-label">גודל שטח</span>'
-        f"<span>{html.escape(plot_val)}</span></div>\n"
     )
+    if show_plot and clean_text(plot_area):
+        plot_val = clean_text(plot_area)
+        rows += (
+            f'<div class="dh-logistics-item__meta-row" role="listitem">'
+            f'<span class="dh-logistics-item__meta-label">גודל השטח</span>'
+            f"<span>{html.escape(plot_val)}</span></div>\n"
+        )
+    return rows
 
 
 def display_title(address):
@@ -279,6 +443,274 @@ def _collect_from(rel):
 
     items.sort(key=sort_key)
     return [p for _, p in items]
+
+
+def _collect_folder_media(folder):
+    """Image and video files in a gallery folder (non-recursive).
+
+    Videos are listed first, then images — each group natural-sorted.
+    """
+    if not folder.is_dir():
+        return []
+    items = [
+        p
+        for p in folder.iterdir()
+        if p.is_file()
+        and p.suffix.lower() in MEDIA_EXT
+        and not p.name.startswith(".")
+        and p.name != "manifest.json"
+    ]
+    items.sort(
+        key=lambda p: (
+            0 if p.suffix.lower() in VIDEO_EXT else 1,
+            _natural_sort_key(p),
+        )
+    )
+    return items
+
+
+def _media_type(path):
+    return "video" if path.suffix.lower() in VIDEO_EXT else "image"
+
+
+def sort_gallery_media(media):
+    """Videos first, then images — keeps relative order within each type."""
+    videos = [m for m in media if m.get("type") == "video"]
+    images = [m for m in media if m.get("type") != "video"]
+    return videos + images
+
+
+def resolve_folder_gallery(rel_from_root):
+    folder = ROOT / rel_from_root
+    return [
+        {
+            "type": _media_type(p),
+            "src": asset_href(p.relative_to(ROOT).as_posix()),
+        }
+        for p in _collect_folder_media(folder)
+    ]
+
+
+def gallery_image_srcs(media):
+    return [item["src"] for item in media if item["type"] == "image"]
+
+
+def write_gallery_manifest(rel_from_root, media):
+    import json
+
+    media = sort_gallery_media(media)
+    folder = ROOT / rel_from_root
+    folder.mkdir(parents=True, exist_ok=True)
+    manifest = folder / "manifest.json"
+    manifest.write_text(
+        json.dumps(
+            {"media": media, "images": gallery_image_srcs(media)},
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
+def gallery_li_html(media):
+    media = sort_gallery_media(media)
+    lines = []
+    for item in media:
+        src = html.escape(item["src"])
+        if item["type"] == "video":
+            lines.append(
+                f'<li role="listitem"><video class="dh-logistics-item__gallery-video" '
+                f'controls playsinline preload="metadata" src="{src}"></video></li>'
+            )
+        else:
+            lines.append(
+                f'<li role="listitem"><img alt=""{img_attrs_class(item["src"])} '
+                f'decoding="async" height="600" loading="lazy" referrerpolicy="no-referrer" '
+                f'src="{src}" width="960"/></li>'
+            )
+    return "\n".join(lines)
+
+
+def patch_product_gallery(page_path, rel_from_root, media):
+    text = page_path.read_text(encoding="utf-8")
+    gallery_li = gallery_li_html(media)
+    gallery_data = f' data-contentstorage-gallery="{html.escape(rel_from_root)}"'
+    new_ul = f'<ul class="dh-logistics-item__gallery-grid" role="list"{gallery_data}>\n{gallery_li}\n</ul>'
+    text, n = re.subn(
+        r'<ul class="dh-logistics-item__gallery-grid"[^>]*>.*?</ul>',
+        new_ul,
+        text,
+        count=1,
+        flags=re.DOTALL,
+    )
+    if n != 1:
+        raise ValueError(f"Gallery block not found in {page_path.name}")
+    page_path.write_text(text, encoding="utf-8")
+
+
+def patch_portfolio_card_image(portfolio_path, item_href, image_href):
+    if not image_href:
+        return
+    text = portfolio_path.read_text(encoding="utf-8")
+    block_pat = (
+        r'<div class="wqf-logo">\s*'
+        r'<img alt="" class="wqf-logo-img"[^>]*src="[^"]*"[^>]*/>\s*'
+        r'<a class="wqf-area-tag" href="'
+        + re.escape(item_href)
+        + r'"'
+    )
+    replacement_img = (
+        f'<div class="wqf-logo">\n'
+        f'<img alt="" class="wqf-logo-img" decoding="async" height="540" loading="lazy" '
+        f'referrerpolicy="no-referrer" src="{html.escape(image_href)}" width="960"/>\n'
+        f'<a class="wqf-area-tag" href="{html.escape(item_href)}"'
+    )
+    text, n = re.subn(block_pat, replacement_img, text, count=1, flags=re.DOTALL)
+    if n == 1:
+        portfolio_path.write_text(text, encoding="utf-8")
+
+
+def sync_contentstorage_galleries(verbose=True):
+    synced = 0
+    for filename, rel_from_root in GALLERY_FOLDER_SOURCES.items():
+        media = resolve_folder_gallery(rel_from_root)
+        write_gallery_manifest(rel_from_root, media)
+        page_path = ROOT / filename
+        if page_path.exists():
+            patch_product_gallery(page_path, rel_from_root, media)
+            if verbose:
+                image_count = sum(1 for m in media if m["type"] == "image")
+                video_count = sum(1 for m in media if m["type"] == "video")
+                print(
+                    f"Gallery: {filename} ← {image_count} images, {video_count} videos "
+                    f"from {rel_from_root}"
+                )
+        section = filename.split("-")[0]
+        portfolio = ROOT / f"{section}.html"
+        image_srcs = gallery_image_srcs(media)
+        if portfolio.exists() and image_srcs:
+            patch_portfolio_card_image(portfolio, filename, image_srcs[0])
+            if verbose:
+                print(f"Card image updated on {portfolio.name} for {filename}")
+        synced += 1
+    return synced
+
+
+def _product_section_from_filename(name):
+    for section in ("commerce", "residences", "offices"):
+        if name.startswith(f"{section}-item"):
+            return section
+    return None
+
+
+def _first_gallery_image_src(html_text):
+    m = re.search(
+        r'<ul class="dh-logistics-item__gallery-grid"[^>]*>(.*?)</ul>',
+        html_text,
+        flags=re.DOTALL,
+    )
+    if not m:
+        return ""
+    for src in re.findall(r'<img\b[^>]*\bsrc="([^"]+)"', m.group(1)):
+        if src:
+            return src
+    return ""
+
+
+def collect_product_catalog():
+    """Build also-like catalog from existing product HTML pages."""
+    catalog = []
+    for path in sorted(ROOT.glob("*-item*.html")):
+        section = _product_section_from_filename(path.name)
+        if not section:
+            continue
+        text = path.read_text(encoding="utf-8")
+        addr_m = re.search(r'data-product-address="([^"]*)"', text)
+        title_m = re.search(r'data-product-title="([^"]*)"', text)
+        address = html.unescape(addr_m.group(1)) if addr_m else ""
+        title = html.unescape(title_m.group(1)) if title_m else ""
+        image = _first_gallery_image_src(text)
+        if not image:
+            # Fallback: any image already used in also-like media on other pages
+            # pointing at this product, or from wqf portfolio.
+            portfolio = ROOT / f"{section}.html"
+            if portfolio.exists():
+                port = portfolio.read_text(encoding="utf-8")
+                block = re.search(
+                    r'<img alt="" class="wqf-logo-img"[^>]*src="([^"]*)"[^>]*>\s*'
+                    r'<a class="wqf-area-tag" href="'
+                    + re.escape(path.name)
+                    + r'"',
+                    port,
+                    flags=re.DOTALL,
+                )
+                if block:
+                    image = block.group(1)
+        catalog.append(
+            {
+                "filename": path.name,
+                "section": section,
+                "address": address or title or path.stem,
+                "title": title,
+                "card_image": image,
+                "images": [image] if image else [],
+            }
+        )
+    return catalog
+
+
+def patch_also_like_section(page_path, related, subtitle="נכסים מומלצים"):
+    text = page_path.read_text(encoding="utf-8")
+    cards = "\n".join(also_like_card_html(r) for r in related)
+    new_ul = (
+        f'<ul class="dh-logistics-item__also-like-grid" role="list">\n'
+        f"{cards}\n"
+        f"</ul>"
+    )
+    text, n = re.subn(
+        r'<ul class="dh-logistics-item__also-like-grid"[^>]*>.*?</ul>',
+        new_ul,
+        text,
+        count=1,
+        flags=re.DOTALL,
+    )
+    if n != 1:
+        raise ValueError(f"Also-like grid not found in {page_path.name}")
+    text, _ = re.subn(
+        r'(<span class="dh-logistics-item__also-like-title-en"[^>]*>)(.*?)(</span>)',
+        rf'\1{html.escape(subtitle)}\3',
+        text,
+        count=1,
+        flags=re.DOTALL,
+    )
+    page_path.write_text(text, encoding="utf-8")
+
+
+def sync_also_like_sections(verbose=True, limit=5):
+    catalog = collect_product_catalog()
+    if len(catalog) < 2:
+        if verbose:
+            print("Also-like: need at least 2 product pages.")
+        return 0
+    updated = 0
+    for item in catalog:
+        related = pick_also_like(item, catalog, limit=limit)
+        if len(related) < limit and verbose:
+            print(
+                f"Also-like warning: {item['filename']} only got {len(related)}/{limit} cards"
+            )
+        page_path = ROOT / item["filename"]
+        patch_also_like_section(page_path, related)
+        updated += 1
+        if verbose:
+            same = sum(1 for r in related if r["section"] == item["section"])
+            other = len(related) - same
+            print(
+                f"Also-like: {item['filename']} ← {len(related)} cards "
+                f"({same} same category, {other} other)"
+            )
+    return updated
 
 
 def _match_text(*parts):
@@ -452,7 +884,29 @@ def parse_excel_rows(rows):
         built = clean_text(row["built"])
         plot_area = clean_text(row["area"])
         card_area = area_text(row["built"], row["area"])
-        images = resolve_project_images(section, row, title)
+        short_desc = CARD_DESC_OVERRIDES.get(filename, short_desc)
+        page_override = PRODUCT_PAGE_OVERRIDES.get(filename, {})
+        if "title" in page_override:
+            title = page_override["title"]
+        if "tagline" in page_override:
+            tagline = page_override["tagline"]
+        if "long_desc" in page_override:
+            long_desc = page_override["long_desc"]
+            body_html = format_body_html(long_desc, short_desc)
+        floor = row["floor"]
+        if "floor" in page_override:
+            floor = page_override["floor"]
+        gallery_folder = GALLERY_FOLDER_SOURCES.get(filename)
+        if gallery_folder:
+            gallery_media = resolve_folder_gallery(gallery_folder)
+            images = gallery_image_srcs(gallery_media)
+        else:
+            gallery_media = None
+            images = resolve_project_images(section, row, title)
+            card_override = CARD_IMAGE_OVERRIDES.get(filename)
+            if card_override:
+                override_href = asset_href(card_override)
+                images = [override_href] + [img for img in images if img != override_href]
 
         projects.append(
             {
@@ -467,9 +921,12 @@ def parse_excel_rows(rows):
                 "built": built,
                 "plot_area": plot_area,
                 "area": card_area,
-                "floor": row["floor"],
+                "floor": floor,
                 "images": images,
                 "filename": filename,
+                "hide_plot_meta": page_override.get("hide_plot_meta", False),
+                "gallery_folder": gallery_folder,
+                "gallery_media": gallery_media,
             }
         )
 
@@ -517,7 +974,40 @@ def img_attrs_class(src, extra=""):
     return f' class="{cls}"' if cls else ""
 
 
-def build_item_page(project, all_in_section):
+def pick_also_like(project, all_projects, limit=5):
+    """Prefer same category, then fill from other categories — always up to `limit`."""
+    current_id = project.get("filename") or project.get("slug")
+    same = [
+        p
+        for p in all_projects
+        if (p.get("filename") or p.get("slug")) != current_id
+        and p.get("section") == project.get("section")
+    ]
+    other = [
+        p
+        for p in all_projects
+        if (p.get("filename") or p.get("slug")) != current_id
+        and p.get("section") != project.get("section")
+    ]
+    return (same + other)[:limit]
+
+
+def also_like_card_html(item):
+    label = item.get("address") or item.get("title") or item["filename"]
+    image = item.get("card_image") or (item.get("images") or [""])[0]
+    return f"""<li role="listitem">
+<a aria-label="מעבר לעמוד הפרויקט — {html.escape(label)}" class="dh-logistics-item__also-like-card" href="{html.escape(item['filename'])}">
+<span class="dh-logistics-item__also-like-media">
+<img alt=""{img_attrs_class(image)} decoding="async" height="200" loading="lazy" referrerpolicy="no-referrer" src="{html.escape(image)}" width="200"/>
+</span>
+<span class="dh-logistics-item__also-like-body">
+<span class="dh-logistics-item__also-like-name">{html.escape(label)}</span>
+</span>
+</a>
+</li>"""
+
+
+def build_item_page(project, all_projects):
     meta = SECTION_META[project["section"]]
     title = project["title"]
     tagline = project["tagline"]
@@ -526,34 +1016,24 @@ def build_item_page(project, all_in_section):
     built = project.get("built", "")
     plot_area = project.get("plot_area", "")
     images = project["images"]
-    gallery_images = images[:7]
 
-    related = [p for p in all_in_section if p["slug"] != project["slug"]][:5]
-    also_like_html = []
-    for r in related:
-        card_label = r["address"]
-        also_like_html.append(
-            f"""<li role="listitem">
-<a aria-label="מעבר לעמוד הפרויקט — {html.escape(card_label)}" class="dh-logistics-item__also-like-card" href="{html.escape(r['filename'])}">
-<span class="dh-logistics-item__also-like-media">
-<img alt=""{img_attrs_class(r['images'][0])} decoding="async" height="200" loading="lazy" referrerpolicy="no-referrer" src="{html.escape(r['images'][0])}" width="200"/>
-</span>
-<span class="dh-logistics-item__also-like-body">
-<span class="dh-logistics-item__also-like-name">{html.escape(card_label)}</span>
-</span>
-</a>
-</li>"""
+    related = pick_also_like(project, all_projects, limit=5)
+    also_like_html = [also_like_card_html(r) for r in related]
+
+    if project.get("gallery_media"):
+        gallery_li = gallery_li_html(project["gallery_media"])
+    else:
+        gallery_li = gallery_li_html(
+            [{"type": "image", "src": src} for src in images[:7]]
         )
-
-    gallery_li = "\n".join(
-        f'<li role="listitem"><img alt=""{img_attrs_class(src)} decoding="async" height="600" loading="lazy" referrerpolicy="no-referrer" src="{html.escape(src)}" width="960"/></li>'
-        for src in gallery_images
-    )
+    gallery_data = ""
+    if project.get("gallery_folder"):
+        gallery_data = f' data-contentstorage-gallery="{html.escape(project["gallery_folder"])}"'
 
     floor_row = ""
     if project.get("floor"):
         floor_row = f'<div class="dh-logistics-item__meta-row" role="listitem"><span class="dh-logistics-item__meta-label">קומה</span><span>{html.escape(project["floor"])}</span></div>\n'
-    area_rows = meta_area_rows(built, plot_area)
+    area_rows = meta_area_rows(built, plot_area, show_plot=not project.get("hide_plot_meta"))
     inquiry_html = build_inquiry_section(project, meta)
 
     page = f"""<!DOCTYPE html>
@@ -561,13 +1041,14 @@ def build_item_page(project, all_in_section):
 <html class="{meta['page_class']}" dir="rtl" lang="he">
 <head>
 <meta charset="utf-8"/>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/>
 <script src="dh-page-transition-boot.js?v=1"></script>
 <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
 <title>{html.escape(meta['title_prefix'])} — {html.escape(title)}</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@500;600;700&amp;family=Rubik:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="index-layout.css?v=73" rel="stylesheet"/>
-<link href="dh-side-header888.css?v=70" rel="stylesheet"/>
-<link href="dh-logistics-item.css?v=77" rel="stylesheet"/>
+<link href="dh-side-header888.css?v=71" rel="stylesheet"/>
+<link href="dh-logistics-item.css?v=91" rel="stylesheet"/>
 </head>
 <body>
 <a class="dh-skip-link" href="#dh-main-content">דלג לתוכן הראשי</a>
@@ -614,7 +1095,7 @@ def build_item_page(project, all_in_section):
 <section aria-label="אולי יעניין אותך גם" class="dh-logistics-item__also-like">
 <h3 class="dh-logistics-item__also-like-title">
 <span class="dh-logistics-item__also-like-title-he">אולי יעניין אותך גם</span>
-<span class="dh-logistics-item__also-like-title-en" lang="he">נכסים נוספים באותה הכתובת</span>
+<span class="dh-logistics-item__also-like-title-en" lang="he">נכסים מומלצים</span>
 </h3>
 <ul class="dh-logistics-item__also-like-grid" role="list">
 {"".join(also_like_html)}
@@ -623,7 +1104,7 @@ def build_item_page(project, all_in_section):
 </div>
 <div class="dh-logistics-item__media-col">
 <div aria-label="גלריה" class="dh-logistics-item__gallery">
-<ul class="dh-logistics-item__gallery-grid" role="list">
+<ul class="dh-logistics-item__gallery-grid" role="list"{gallery_data}>
 {gallery_li}
 </ul>
 </div>
@@ -817,7 +1298,7 @@ def main():
 
     for section, items in by_section.items():
         for p in items:
-            fname, content = build_item_page(p, items)
+            fname, content = build_item_page(p, built_projects)
             (ROOT / fname).write_text(content, encoding="utf-8")
             print("Wrote", fname)
 
@@ -831,6 +1312,10 @@ def main():
     print(f"\nDone: {len(built_projects)} project pages generated.")
     for section, items in by_section.items():
         print(f"  {section}: {len(items)}")
+
+    if GALLERY_FOLDER_SOURCES:
+        print("\nSyncing gallery folders...")
+        sync_contentstorage_galleries()
 
 
 if __name__ == "__main__":

@@ -1,7 +1,71 @@
 (() => {
   "use strict";
 
-  var videos = document.querySelectorAll("video.dh-logistics-item__video");
+  var galleryGrid = document.querySelector("[data-contentstorage-gallery]");
+  if (galleryGrid) {
+    var rel = galleryGrid.getAttribute("data-contentstorage-gallery") || "";
+    var manifestUrl =
+      rel
+        .split("/")
+        .map(function (part) {
+          return encodeURIComponent(part);
+        })
+        .join("/") + "/manifest.json";
+
+    fetch(manifestUrl)
+      .then(function (res) {
+        if (!res.ok) throw new Error("manifest");
+        return res.json();
+      })
+      .then(function (data) {
+        var media = data && Array.isArray(data.media) ? data.media : null;
+        var images = data && Array.isArray(data.images) ? data.images : [];
+        if (media && media.length) {
+          var videos = media.filter(function (item) {
+            return item.type === "video";
+          });
+          var onlyImages = media.filter(function (item) {
+            return item.type !== "video";
+          });
+          galleryGrid.innerHTML = videos
+            .concat(onlyImages)
+            .map(function (item) {
+              if (item.type === "video") {
+                return (
+                  '<li role="listitem"><video class="dh-logistics-item__gallery-video" controls playsinline ' +
+                  'preload="metadata" src="' +
+                  item.src +
+                  '"></video></li>'
+                );
+              }
+              return (
+                '<li role="listitem"><img alt="" decoding="async" height="600" loading="lazy" ' +
+                'referrerpolicy="no-referrer" src="' +
+                item.src +
+                '" width="960"/></li>'
+              );
+            })
+            .join("");
+          return;
+        }
+        if (!images.length) return;
+        galleryGrid.innerHTML = images
+          .map(function (src) {
+            return (
+              '<li role="listitem"><img alt="" decoding="async" height="600" loading="lazy" ' +
+              'referrerpolicy="no-referrer" src="' +
+              src +
+              '" width="960"/></li>'
+            );
+          })
+          .join("");
+      })
+      .catch(function () {});
+  }
+
+  var videos = document.querySelectorAll(
+    "video.dh-logistics-item__video, video.dh-logistics-item__gallery-video"
+  );
   if (videos.length) {
     function tryPlay(video) {
       if (!video) return;

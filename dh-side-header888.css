@@ -1052,22 +1052,34 @@
 		}
 
 		.dh-side-header888__menu-nav888 {
-		  gap: 6px;
+		  display: grid;
+		  grid-template-columns: repeat(2, minmax(0, 1fr));
+		  gap: 10px;
 		  padding-block: 4px;
+		  align-content: start;
 		  scrollbar-gutter: stable both-edges;
 		}
 
 		.dh-side-header888__menu-link888 {
-		  min-height: clamp(52px, 8.2vh, 78px);
-		  padding-inline: 14px;
-		  border-radius: 14px;
+		  aspect-ratio: 1 / 1;
+		  min-height: 0;
+		  height: auto;
+		  width: 100%;
+		  padding: 12px 10px;
+		  border-radius: 16px;
 		  background-color: rgba(255, 255, 255, 0.54);
+		  flex-direction: column;
+		  align-items: center;
+		  justify-content: center;
+		  gap: 6px;
+		  text-align: center;
 		}
-  
+
 		.dh-side-header888__menu-link888::before {
 		  inset: 4px;
 		  opacity: 1;
 		  transform: none;
+		  border-radius: 14px;
 		  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1), 5px 5px 0 rgba(0, 0, 0, 0.05);
 		}
 
@@ -1078,8 +1090,62 @@
 
 		.dh-side-header888__menu-link888:hover,
 		.dh-side-header888__menu-link888:focus-visible {
-		  padding-left: 14px;
+		  padding-left: 10px;
 		  transform: none;
+		}
+
+		/* Icon tile (above label) — one icon per nav item */
+		.dh-side-header888__menu-link888::after {
+		  content: "";
+		  position: relative;
+		  z-index: 1;
+		  order: -1;
+		  width: clamp(28px, 8vw, 36px);
+		  height: clamp(28px, 8vw, 36px);
+		  flex: 0 0 auto;
+		  background-color: currentColor;
+		  -webkit-mask-repeat: no-repeat;
+		  mask-repeat: no-repeat;
+		  -webkit-mask-position: center;
+		  mask-position: center;
+		  -webkit-mask-size: contain;
+		  mask-size: contain;
+		}
+
+		.dh-side-header888__menu-link888:nth-child(1)::after {
+		  /* Home */
+		  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath fill='black' d='M12 3.2 21 11h-2.5v9.2h-5.2v-5.4H10.7v5.4H5.5V11H3L12 3.2z'/%3E%3C/svg%3E");
+		  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath fill='black' d='M12 3.2 21 11h-2.5v9.2h-5.2v-5.4H10.7v5.4H5.5V11H3L12 3.2z'/%3E%3C/svg%3E");
+		}
+
+		.dh-side-header888__menu-link888:nth-child(2)::after {
+		  /* Projects / under construction */
+		  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath fill='black' d='M3 20.5h18v-2H3v2zm2.5-3.5h3V9.5h-3V17zm5 0h3V6.5h-3V17zm5 0h3V11.5h-3V17zM8 5.2 12 2l4 3.2V5H8v.2z'/%3E%3C/svg%3E");
+		  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath fill='black' d='M3 20.5h18v-2H3v2zm2.5-3.5h3V9.5h-3V17zm5 0h3V6.5h-3V17zm5 0h3V11.5h-3V17zM8 5.2 12 2l4 3.2V5H8v.2z'/%3E%3C/svg%3E");
+		}
+
+		.dh-side-header888__menu-link888:nth-child(3)::after {
+		  /* Residences */
+		  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath fill='black' d='M4 20.5V9.2L12 3.5l8 5.7v11.3h-5.5v-6.2h-5v6.2H4z'/%3E%3C/svg%3E");
+		  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath fill='black' d='M4 20.5V9.2L12 3.5l8 5.7v11.3h-5.5v-6.2h-5v6.2H4z'/%3E%3C/svg%3E");
+		}
+
+		.dh-side-header888__menu-link888:nth-child(4)::after {
+		  /* Commercial */
+		  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath fill='black' d='M4 7.5 5.2 3.5h13.6L20 7.5H4zm1 1.5v10.5h4.2v-5.2h5.6v5.2H19V9H5z'/%3E%3C/svg%3E");
+		  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath fill='black' d='M4 7.5 5.2 3.5h13.6L20 7.5H4zm1 1.5v10.5h4.2v-5.2h5.6v5.2H19V9H5z'/%3E%3C/svg%3E");
+		}
+
+		.dh-side-header888__menu-link888:nth-child(5)::after {
+		  /* About */
+		  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath fill='black' d='M12 2.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19zm0 4.2a1.4 1.4 0 110 2.8 1.4 1.4 0 010-2.8zm1.7 11.1h-3.4v-1.5h.9v-4.2h-.9V10.6h2.5v5.7h.9v1.5z'/%3E%3C/svg%3E");
+		  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath fill='black' d='M12 2.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19zm0 4.2a1.4 1.4 0 110 2.8 1.4 1.4 0 010-2.8zm1.7 11.1h-3.4v-1.5h.9v-4.2h-.9V10.6h2.5v5.7h.9v1.5z'/%3E%3C/svg%3E");
+		}
+
+		.dh-side-header888__menu-link888:nth-child(6)::after {
+		  /* Contact */
+		  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath fill='black' d='M3.5 5.5h17v13h-17v-13zm1.7 1.5 6.8 5.1 6.8-5.1H5.2zm13.6 1.7-6.1 4.6a1.2 1.2 0 01-1.4 0L5.2 8.7v8.3h13.6V8.7z'/%3E%3C/svg%3E");
+		  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath fill='black' d='M3.5 5.5h17v13h-17v-13zm1.7 1.5 6.8 5.1 6.8-5.1H5.2zm13.6 1.7-6.1 4.6a1.2 1.2 0 01-1.4 0L5.2 8.7v8.3h13.6V8.7z'/%3E%3C/svg%3E");
 		}
   
 		.dh-side-header888__menu-link-index888 {
@@ -1087,9 +1153,23 @@
 		}
   
 		.dh-side-header888__menu-link-text888 {
-		  line-height: 1.05;
+		  position: relative;
+		  z-index: 1;
+		  line-height: 1.15;
 		  max-width: 100%;
-		  font-size: clamp(17px, 4.8vw, 22px);
+		  font-size: clamp(13px, 3.6vw, 16px);
+		  text-align: center;
+		}
+
+		.dh-side-header888__menu-link-subtle888 {
+		  position: relative;
+		  z-index: 1;
+		  display: block;
+		  margin-top: 0;
+		  font-size: clamp(10px, 2.6vw, 11px);
+		  line-height: 1.2;
+		  opacity: 0.62;
+		  text-align: center;
 		}
 
 		.dh-side-header888__menu-social888 {
@@ -1117,7 +1197,18 @@
 	  /* Very small phones */
 	  @media (max-width: 480px) {
 		.dh-side-header888__menu-link888 {
-		  min-height: clamp(38px, 6vh, 68px);
+		  min-height: 0;
+		  padding: 10px 8px;
+		  gap: 5px;
+		}
+
+		.dh-side-header888__menu-link888::after {
+		  width: 26px;
+		  height: 26px;
+		}
+
+		.dh-side-header888__menu-link-text888 {
+		  font-size: clamp(12px, 3.4vw, 14px);
 		}
 	  }
   
@@ -1140,6 +1231,18 @@
   
 		.dh-side-header888__menu-link-text888 {
 		  line-height: 1;
+		}
+	  }
+
+	  /* Keep mobile square tiles — don't let short-height rules flatten them */
+	  @media (max-width: 767px) and (max-height: 760px) {
+		.dh-side-header888__menu-link888 {
+		  min-height: 0;
+		  aspect-ratio: 1 / 1;
+		}
+
+		.dh-side-header888__menu-link-text888 {
+		  line-height: 1.15;
 		}
 	  }
   
@@ -1168,6 +1271,18 @@
   
 		.dh-side-header888__menu-link-text888 {
 		  font-size: clamp(12px, 2.75vw, 18px);
+		}
+	  }
+
+	  @media (max-width: 767px) and (max-height: 560px) {
+		.dh-side-header888__menu-link888 {
+		  min-height: 0;
+		  aspect-ratio: 1 / 1;
+		  padding: 8px 6px;
+		}
+
+		.dh-side-header888__menu-link-text888 {
+		  font-size: clamp(11px, 3.2vw, 13px);
 		}
 	  }
   
