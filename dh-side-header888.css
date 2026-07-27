@@ -269,7 +269,7 @@
 	  }
 
 	  /* Phones: reserve full width for open overlay + tighter shell (design tested down to ~350px) */
-	  @media (max-width: 767px) {
+	  @media (max-width: 1023px) {
 		.dh-side-header888 {
 		  --menu-panel-width: 100%;
 		  --shell-padding-x: clamp(10px, min(4.2vw, 5vmin), 22px);
@@ -960,7 +960,8 @@
 	  /* Tablet (align upper bound with portrait-tablet / overlay breakpoint) */
 	  @media (max-width: 1023px) {
 		.dh-side-header888__menu-link888 {
-		  min-height: clamp(42px, 6vh, 80px);
+		  /* Tile menu overrides min-height; keep this soft for any residual list layout */
+		  min-height: 0;
 		}
   
 		.dh-side-header888__menu-link-text888 {
@@ -984,7 +985,7 @@
 		}
 	  }
 
-	  @media (max-width: 767px) {
+	  @media (max-width: 1023px) {
 		.dh-side-header888__overlay888.is-active888 {
 		  inset: 0;
 		  width: 100vw;
@@ -1006,8 +1007,10 @@
 		  justify-content: flex-start;
 		  align-items: stretch;
 		  padding-top: max(calc(env(safe-area-inset-top, 0px) + 64px), 22px);
-		  padding-bottom: max(calc(env(safe-area-inset-bottom, 0px) + 16px), 16px);
-		  gap: 10px;
+		  padding-bottom: max(calc(env(safe-area-inset-bottom, 0px) + 28px), 28px);
+		  gap: 24px;
+		  overflow-y: auto;
+		  -webkit-overflow-scrolling: touch;
 		}
 
 		.dh-side-header888__menu-logo {
@@ -1054,16 +1057,20 @@
 		.dh-side-header888__menu-nav888 {
 		  display: grid;
 		  grid-template-columns: repeat(2, minmax(0, 1fr));
+		  grid-template-rows: repeat(3, minmax(0, 1fr));
 		  gap: 10px;
-		  padding-block: 4px;
-		  align-content: start;
-		  scrollbar-gutter: stable both-edges;
+		  padding-block: 0;
+		  flex: 1 1 auto;
+		  min-height: 0;
+		  align-content: stretch;
+		  overflow: hidden;
+		  scrollbar-gutter: auto;
 		}
 
 		.dh-side-header888__menu-link888 {
-		  aspect-ratio: 1 / 1;
+		  aspect-ratio: auto;
 		  min-height: 0;
-		  height: auto;
+		  height: 100%;
 		  width: 100%;
 		  padding: 12px 10px;
 		  border-radius: 16px;
@@ -1173,8 +1180,10 @@
 		}
 
 		.dh-side-header888__menu-social888 {
-		  margin-top: 8px;
-		  padding-top: 10px;
+		  margin-top: 0;
+		  flex: 0 0 auto;
+		  padding-top: 20px;
+		  padding-bottom: max(10px, env(safe-area-inset-bottom, 0px));
 		  border-top: 1px solid rgba(44, 45, 102, 0.18);
 		}
 
@@ -1188,14 +1197,63 @@
 		}
 	  }
 
-	  @media (min-width: 768px) {
+	  @media (min-width: 1024px) {
 		.dh-side-header888__menu-logo {
 		  display: none !important;
 		}
 	  }
+
+	  /* Portrait tablets: more air between tiles and social row */
+	  @media (min-width: 768px) and (max-width: 1023px) {
+		.dh-side-header888__overlay888.is-active888 .dh-side-header888__menu-shell888 {
+		  gap: 32px;
+		  padding-bottom: max(calc(env(safe-area-inset-bottom, 0px) + 36px), 36px);
+		  max-width: min(560px, 100%);
+		  margin-inline: auto;
+		  padding-inline: max(24px, env(safe-area-inset-inline-start, 0px))
+			max(24px, env(safe-area-inset-inline-end, 0px));
+		}
+
+		.dh-side-header888__menu-nav888 {
+		  gap: 14px;
+		}
+
+		.dh-side-header888__menu-link888 {
+		  min-height: 0;
+		  padding: 16px 12px;
+		  border-radius: 18px;
+		}
+
+		.dh-side-header888__menu-link888::after {
+		  width: clamp(32px, 5vw, 42px);
+		  height: clamp(32px, 5vw, 42px);
+		}
+
+		.dh-side-header888__menu-link-text888 {
+		  font-size: clamp(15px, 2.2vw, 18px);
+		}
+
+		.dh-side-header888__menu-link-subtle888 {
+		  font-size: clamp(11px, 1.6vw, 13px);
+		}
+
+		.dh-side-header888__menu-social888 {
+		  padding-top: 24px;
+		  padding-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+		}
+	  }
   
-	  /* Very small phones */
+	  /* Very small phones (e.g. iPhone 12/13 mini) */
 	  @media (max-width: 480px) {
+		.dh-side-header888__overlay888.is-active888 .dh-side-header888__menu-shell888 {
+		  gap: 26px;
+		  padding-bottom: max(calc(env(safe-area-inset-bottom, 0px) + 32px), 32px);
+		}
+
+		.dh-side-header888__menu-nav888 {
+		  gap: 8px;
+		}
+
 		.dh-side-header888__menu-link888 {
 		  min-height: 0;
 		  padding: 10px 8px;
@@ -1209,6 +1267,12 @@
 
 		.dh-side-header888__menu-link-text888 {
 		  font-size: clamp(12px, 3.4vw, 14px);
+		}
+
+		.dh-side-header888__menu-social888 {
+		  margin-top: 0;
+		  padding-top: 20px;
+		  padding-bottom: max(10px, env(safe-area-inset-bottom, 0px));
 		}
 	  }
   
@@ -1234,11 +1298,12 @@
 		}
 	  }
 
-	  /* Keep mobile square tiles — don't let short-height rules flatten them */
-	  @media (max-width: 767px) and (max-height: 760px) {
+	  /* Keep mobile/tablet tiles flexible — don't force square (avoids crushing social footer) */
+	  @media (max-width: 1023px) and (max-height: 760px) {
 		.dh-side-header888__menu-link888 {
 		  min-height: 0;
-		  aspect-ratio: 1 / 1;
+		  aspect-ratio: auto;
+		  height: 100%;
 		}
 
 		.dh-side-header888__menu-link-text888 {
@@ -1274,10 +1339,11 @@
 		}
 	  }
 
-	  @media (max-width: 767px) and (max-height: 560px) {
+	  @media (max-width: 1023px) and (max-height: 560px) {
 		.dh-side-header888__menu-link888 {
 		  min-height: 0;
-		  aspect-ratio: 1 / 1;
+		  aspect-ratio: auto;
+		  height: 100%;
 		  padding: 8px 6px;
 		}
 
@@ -1378,8 +1444,8 @@
 		background-repeat: no-repeat;
 	  }
 
-	  /* Mobile: hide the sidebar strip; keep menu + back-to-top fixed in place */
-	  @media (max-width: 767px) {
+	  /* Mobile + tablet: hide the sidebar strip; keep menu + back-to-top fixed in place */
+	  @media (max-width: 1023px) {
 		.dh-side-header888::before,
 		.dh-side-header888--menu-open::before {
 		  display: none;

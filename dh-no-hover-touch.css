@@ -1,0 +1,122 @@
+/**
+ * Disable hover UI on phones, tablets, and touch / coarse-pointer devices.
+ * Desktop mouse (fine pointer + real hover) keeps existing :hover styles.
+ */
+@media (max-width: 1024px), (hover: none), (pointer: coarse) {
+  /* Kill sticky-hover motion / lift / glow after tap */
+  a:hover,
+  button:hover,
+  [role="button"]:hover,
+  .dh-corner-logo:hover,
+  .dh-side-header888__back-to-top:hover,
+  .dh-side-header888__icon-btn888:hover,
+  .dh-side-header888__icon-btn888.is-active888:hover,
+  .dh-side-header888--menu-open .dh-side-header888__icon-btn888.is-active888:hover,
+  .dh-side-header888__menu-logo:hover,
+  .dh-side-header888__menu-link888:hover,
+  .dh-side-header888__menu-social888-link:hover,
+  .dh-carousel__desk-arrow:hover,
+  .dh-carousel__mobile-arrow:not([disabled]):hover,
+  .dh-logistics-item__cta:hover,
+  .dh-logistics-item__plans-card:hover,
+  .dh-logistics-item__also-like-card:hover,
+  .dh-contact__chip:hover,
+  .dh-contact__card:hover,
+  html.dh-page-contact .dh-contact__card:hover,
+  .dh-contact__submit:hover,
+  #wqf-ethos-root .wqf-btn:hover,
+  #wqf-portfolio-root .wqf-btn:hover,
+  #wqf-portfolio-root .wqf-slide.swiper-slide-active .wqf-slide-card:hover,
+  #wqf-portfolio-root .wqf-slide.swiper-slide-active .wqf-slide-card:hover .wqf-btn,
+  .wqf-join-btn-embed555 .wqf-btn555:hover {
+    transform: none !important;
+    animation: none !important;
+    filter: none !important;
+  }
+
+  .dh-corner-logo:hover {
+    opacity: 0.92 !important;
+  }
+
+  .dh-breadcrumbs a:hover {
+    border-bottom-color: transparent !important;
+  }
+
+  .dh-logistics-item__back:hover {
+    text-decoration: none !important;
+  }
+
+  .dh-logistics-item__cta:hover {
+    box-shadow: 0 10px 28px rgba(44, 45, 102, 0.22) !important;
+  }
+
+  .dh-logistics-item__plans-card:hover,
+  .dh-logistics-item__also-like-card:hover {
+    box-shadow: 0 8px 22px rgba(44, 45, 102, 0.06) !important;
+    border-color: var(--dh-item-line, rgba(44, 45, 102, 0.12)) !important;
+  }
+
+  .dh-side-header888__menu-link888:hover::before,
+  .dh-side-header888__menu-link888:hover .dh-side-header888__menu-link-index888 {
+    opacity: 0 !important;
+    transform: none !important;
+  }
+
+  .dh-contact__card:hover::before,
+  .dh-contact__submit:hover::after,
+  #wqf-portfolio-root .wqf-slide.swiper-slide-active .wqf-slide-card:hover::before,
+  .ce-component-2 p a:hover:after,
+  .ce-component-2 .link-frame p a:hover:after {
+    opacity: 0 !important;
+    transform: none !important;
+    animation: none !important;
+    width: 0 !important;
+  }
+
+  .dh-carousel__desk-arrow:hover svg,
+  .dh-carousel__desk-arrow--next:hover svg,
+  .dh-carousel__desk-arrow--prev:hover svg,
+  .dh-carousel__mobile-arrow:not([disabled]):hover svg,
+  .dh-carousel__mobile-arrow[data-mobile-next]:not([disabled]):hover svg,
+  .dh-carousel__mobile-arrow[data-mobile-prev]:not([disabled]):hover svg,
+  .dh-carousel__link:hover .dh-carousel__shine,
+  .dh-logistics-item__media:hover img,
+  .dh-logistics-item__gallery-grid > li:hover img,
+  .dh-logistics-item__gallery-grid > li:hover video,
+  .dh-logistics-item__plans-card:hover .dh-logistics-item__plans-media img,
+  .dh-logistics-item__also-like-card:hover .dh-logistics-item__also-like-media img,
+  #wqf-ethos-root .wqf-btn:hover .button--dot,
+  #wqf-ethos-root .wqf-btn:hover .wqf-btn-label,
+  #wqf-ethos-root .wqf-btn:hover .wqf-btn-label span:first-child,
+  #wqf-ethos-root .wqf-btn:hover .wqf-btn-label span.wqf-btn-label-dup,
+  #wqf-portfolio-root .wqf-btn:hover .button--dot,
+  #wqf-portfolio-root .wqf-btn:hover .wqf-btn-label,
+  #wqf-portfolio-root .wqf-btn:hover .wqf-btn-label span:first-child,
+  #wqf-portfolio-root .wqf-btn:hover .wqf-btn-label span:last-child,
+  #wqf-portfolio-root .wqf-slide.swiper-slide-active .wqf-slide-card:hover .wqf-btn .button--dot,
+  #wqf-portfolio-root .wqf-slide.swiper-slide-active .wqf-slide-card:hover .wqf-btn .wqf-btn-label,
+  #wqf-portfolio-root .wqf-slide.swiper-slide-active .wqf-slide-card:hover .wqf-btn .wqf-btn-label span:first-child,
+  #wqf-portfolio-root .wqf-slide.swiper-slide-active .wqf-slide-card:hover .wqf-btn .wqf-btn-label span:last-child,
+  #wqf-portfolio-root .wqf-slide-card:hover .wqf-cta-row .button--dot,
+  .wqf-join-btn-embed555 .wqf-btn555:hover .button--dot555,
+  .wqf-join-btn-embed555 .wqf-btn555:hover .wqf-btn-label555,
+  .wqf-join-btn-embed555 .wqf-btn555:hover .wqf-btn-label555 span:first-child,
+  .wqf-join-btn-embed555 .wqf-btn555:hover .wqf-btn-label555 span.wqf-btn-label-dup555,
+  .ce-component-2 .nav-btn:hover h6 span,
+  .ce-component-2 .case-close-button h5:hover span {
+    transform: none !important;
+    animation: none !important;
+    filter: none !important;
+  }
+
+  .dh-contact__input:hover,
+  .dh-contact__select:hover,
+  .dh-contact__textarea:hover,
+  .dh-contact__links a:hover,
+  .dh-arch-foot__link:hover {
+    /* Keep resting look; no hover chrome on touch */
+    border-color: inherit;
+    color: inherit;
+    text-decoration: none !important;
+  }
+}

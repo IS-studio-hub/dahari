@@ -1,0 +1,81 @@
+/* Fullscreen image lightbox — site-wide */
+.dh-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
+    max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+  background: rgba(8, 8, 8, 0.92);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.22s ease, visibility 0.22s ease;
+}
+
+.dh-lightbox.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.dh-lightbox__img {
+  max-width: min(100%, 1600px);
+  max-height: calc(100vh - 4rem);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.dh-lightbox__close {
+  position: fixed;
+  top: max(0.75rem, env(safe-area-inset-top));
+  inset-inline-end: max(0.75rem, env(safe-area-inset-right));
+  z-index: 100001;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s ease;
+}
+
+.dh-lightbox__close:hover,
+.dh-lightbox__close:focus-visible {
+  opacity: 0.75;
+  outline: none;
+}
+
+.dh-lightbox__close:focus-visible {
+  box-shadow: 0 0 0 2px #fff;
+}
+
+.dh-lightbox__close svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: block;
+}
+
+/* Hint that content images are expandable (not portfolio/listing cards) */
+.dh-logistics-item__gallery img,
+.dh-logistics-item__plans-media img,
+.dh-arch-media {
+  cursor: zoom-in;
+}
+
+body.dh-lightbox-open {
+  overflow: hidden;
+}
