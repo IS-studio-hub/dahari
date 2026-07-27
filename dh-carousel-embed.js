@@ -346,7 +346,7 @@
     }
 
     /**
-     * Load + play the front card (and nearest neighbors). Pause the rest to cut bandwidth/CPU.
+     * Load + play the front card (and nearest neighbors on desktop). Pause the rest.
      * @param {number} index
      */
     setPrimaryIndex(index) {
@@ -355,12 +355,29 @@
       const i = Math.max(0, Math.min(index | 0, n - 1));
       this._primary = i;
 
-      const near = new Set([i, (i - 1 + n) % n, (i + 1) % n]);
+      const mobile = !!(this.c && this.c.isMobile);
+      const near = mobile
+        ? new Set([i])
+        : new Set([i, (i - 1 + n) % n, (i + 1) % n]);
 
       this.items.forEach(({ el }, idx) => {
         if (near.has(idx)) {
-          this.ensureSrc(el);
-          el.preload = idx === i ? "auto" : "metadata";
+          const attach = () => {
+            this.ensureSrc(el);
+            el.preload = idx === i ? "auto" : "metadata";
+            if (el.paused) this.primePlay(el);
+          };
+          // Mobile: keep poster as LCP; attach video after first paint/idle.
+          if (mobile && idx === i && !el.getAttribute("src")) {
+            el.preload = "none";
+            if (typeof window.requestIdleCallback === "function") {
+              window.requestIdleCallback(attach, { timeout: 1500 });
+            } else {
+              window.setTimeout(attach, 450);
+            }
+          } else {
+            attach();
+          }
         } else {
           el.preload = "none";
           try {
@@ -369,6 +386,7 @@
         }
       });
 
+      if (!mobile) {
       requestAnimationFrame(() => {
         this.items.forEach(({ el }, idx) => {
           if (!near.has(idx)) return;
@@ -390,13 +408,19 @@
         });
         this.ensurePlayback();
       });
+      } else {
+        this.ensurePlayback();
+      }
     }
 
     ensurePlayback() {
       if (!this.items.length) return;
       const n = this.items.length;
       const i = this._primary;
-      const near = new Set([i, (i - 1 + n) % n, (i + 1) % n]);
+      const mobile = !!(this.c && this.c.isMobile);
+      const near = mobile
+        ? new Set([i])
+        : new Set([i, (i - 1 + n) % n, (i + 1) % n]);
       this.items.forEach(({ el }, idx) => {
         if (!near.has(idx)) {
           if (!el.paused) {
@@ -406,7 +430,11 @@
           }
           return;
         }
-        this.ensureSrc(el);
+        // On mobile, poster stays until idle attach sets src (better LCP).
+        if (!el.getAttribute("src")) {
+          if (!mobile) this.ensureSrc(el);
+          else return;
+        }
         if (!el.paused) return;
         void el.play().catch(() => {});
         window.setTimeout(() => void el.play().catch(() => {}), 100);
@@ -1210,61 +1238,64 @@
       .join("");
   }
 
+  function mountCarousel(slides) {
+    const carouselRoot = root.querySelector(".dh-carousel");
+    if (!carouselRoot) return false;
+    const stage = carouselRoot.querySelector("[data-carousel-stage]");
+    if (!stage) return false;
+    destroyRunner();
+    stage.innerHTML = buildStageMarkup(slides);
+    root.querySelectorAll("[data-desk-prev],[data-mobile-prev]").forEach((btn) => {
+      if (!btn.firstElementChild) {
+        btn.innerHTML =
+          '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 5L7.5 12L14.5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
+      }
+    });
+    root.querySelectorAll("[data-desk-next],[data-mobile-next]").forEach((btn) => {
+      if (!btn.firstElementChild) {
+        btn.innerHTML =
+          '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.5 5L16.5 12L9.5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
+      }
+    });
+    let initialFront = findSlideIndexForPath(slides, window.location.pathname);
+    const initialHrefAttr = root.getAttribute("data-carousel-initial-href");
+    if (initialHrefAttr && String(initialHrefAttr).trim()) {
+      const idx = findSlideIndexByHref(slides, String(initialHrefAttr).trim());
+      if (idx >= 0) initialFront = idx;
+    }
+    runner = new Carousel(root, initialFront);
+    return !!(runner && runner.carousel);
+  }
+
   async function bootstrap() {
     if (bootstrapping) return;
     bootstrapping = true;
     try {
-      const slides = await resolveSlides();
-      const carouselRoot = root.querySelector(".dh-carousel");
-      if (!carouselRoot) {
+      // Paint immediately with defaults (critical for mobile LCP) — JSON can refine later.
+      if (!mountCarousel(DEFAULT_SLIDES)) {
         bootstrapping = false;
         if (++bootstrapAttempts < 10) {
           setTimeout(function () {
             void bootstrap();
           }, 150);
         }
-        return;
-      }
-      const stage = carouselRoot.querySelector("[data-carousel-stage]");
-      if (!stage) {
-        bootstrapping = false;
-        if (++bootstrapAttempts < 10) {
-          setTimeout(function () {
-            void bootstrap();
-          }, 150);
-        }
-        return;
-      }
-      destroyRunner();
-      stage.innerHTML = buildStageMarkup(slides);
-      root.querySelectorAll("[data-desk-prev],[data-mobile-prev]").forEach((btn) => {
-        if (!btn.firstElementChild) {
-          btn.innerHTML =
-            '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 5L7.5 12L14.5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
-        }
-      });
-      root.querySelectorAll("[data-desk-next],[data-mobile-next]").forEach((btn) => {
-        if (!btn.firstElementChild) {
-          btn.innerHTML =
-            '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.5 5L16.5 12L9.5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
-        }
-      });
-      let initialFront = findSlideIndexForPath(slides, window.location.pathname);
-      const initialHrefAttr = root.getAttribute("data-carousel-initial-href");
-      if (initialHrefAttr && String(initialHrefAttr).trim()) {
-        const idx = findSlideIndexByHref(slides, String(initialHrefAttr).trim());
-        if (idx >= 0) initialFront = idx;
-      }
-      runner = new Carousel(root, initialFront);
-      if (!runner.carousel && ++bootstrapAttempts < 10) {
-        bootstrapping = false;
-        setTimeout(function () {
-          void bootstrap();
-        }, 400);
         return;
       }
       bootstrapAttempts = 0;
       bootstrapping = false;
+
+      try {
+        const remote = await resolveSlides();
+        if (
+          remote &&
+          remote.length &&
+          JSON.stringify(remote) !== JSON.stringify(DEFAULT_SLIDES)
+        ) {
+          mountCarousel(remote);
+        }
+      } catch (e) {
+        /* keep defaults */
+      }
     } catch (err) {
       bootstrapping = false;
       if (++bootstrapAttempts < 10) {
