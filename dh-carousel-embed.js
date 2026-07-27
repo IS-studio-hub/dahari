@@ -247,10 +247,19 @@
         el.setAttribute("playsinline", "");
         el.setAttribute("webkit-playsinline", "");
         el.loop = true;
+        el.setAttribute("loop", "");
         el.preload = "none";
         el.disablePictureInPicture = true;
         el.setAttribute("disablepictureinpicture", "");
         el.setAttribute("data-slide-index", String(idx));
+        // Native loop is flaky on some MP4s / after dynamic src — restart explicitly.
+        el.addEventListener("ended", () => {
+          try {
+            el.currentTime = 0.001;
+          } catch (e) {}
+          el.loop = true;
+          void el.play().catch(() => {});
+        });
         let retriedDecode = false;
         el.addEventListener("error", function () {
           if (retriedDecode) return;
@@ -331,6 +340,10 @@
       if (el.getAttribute("src")) return;
       const pending = el.getAttribute("data-src");
       if (!pending) return;
+      el.loop = true;
+      el.setAttribute("loop", "");
+      el.muted = true;
+      el.defaultMuted = true;
       el.src = pending;
       el.removeAttribute("data-src");
     }
@@ -435,7 +448,13 @@
           if (!mobile) this.ensureSrc(el);
           else return;
         }
-        if (!el.paused) return;
+        el.loop = true;
+        if (el.ended) {
+          try {
+            el.currentTime = 0.001;
+          } catch (e) {}
+        }
+        if (!el.paused && !el.ended) return;
         void el.play().catch(() => {});
         window.setTimeout(() => void el.play().catch(() => {}), 100);
       });
