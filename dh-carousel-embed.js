@@ -172,7 +172,7 @@
       /* keep relative */
     }
     try {
-      const res = await fetch(slidesUrl, { cache: "no-store" });
+      const res = await fetch(slidesUrl, { cache: "force-cache" });
       if (res.ok) {
         const parsed = await res.json();
         const norm = normalizeSlides(parsed);
@@ -247,7 +247,7 @@
         el.setAttribute("playsinline", "");
         el.setAttribute("webkit-playsinline", "");
         el.loop = true;
-        el.preload = "auto";
+        el.preload = "none";
         el.disablePictureInPicture = true;
         el.setAttribute("disablepictureinpicture", "");
         el.setAttribute("data-slide-index", String(idx));
@@ -317,10 +317,22 @@
 
       this._docUnlock = () => {
         this.ensurePlayback();
-        this.items.forEach(({ el }) => this.primePlay(el));
       };
       document.addEventListener("touchend", this._docUnlock, { capture: true, passive: true, once: true });
       document.addEventListener("click", this._docUnlock, { capture: true, passive: true, once: true });
+    }
+
+    /**
+     * Attach src from data-src only when the clip is needed (cuts initial payload).
+     * @param {HTMLVideoElement} el
+     */
+    ensureSrc(el) {
+      if (!el) return;
+      if (el.getAttribute("src")) return;
+      const pending = el.getAttribute("data-src");
+      if (!pending) return;
+      el.src = pending;
+      el.removeAttribute("data-src");
     }
 
     restartTickLoop() {
@@ -334,7 +346,7 @@
     }
 
     /**
-     * Tracks the front card for unlock / tick helpers; every clip stays playing in a loop.
+     * Load + play the front card (and nearest neighbors). Pause the rest to cut bandwidth/CPU.
      * @param {number} index
      */
     setPrimaryIndex(index) {
@@ -343,12 +355,23 @@
       const i = Math.max(0, Math.min(index | 0, n - 1));
       this._primary = i;
 
-      this.items.forEach(({ el }) => {
-        el.preload = "auto";
+      const near = new Set([i, (i - 1 + n) % n, (i + 1) % n]);
+
+      this.items.forEach(({ el }, idx) => {
+        if (near.has(idx)) {
+          this.ensureSrc(el);
+          el.preload = idx === i ? "auto" : "metadata";
+        } else {
+          el.preload = "none";
+          try {
+            el.pause();
+          } catch (e) {}
+        }
       });
 
       requestAnimationFrame(() => {
-        this.items.forEach(({ el }) => {
+        this.items.forEach(({ el }, idx) => {
+          if (!near.has(idx)) return;
           if (el.error) {
             try {
               el.load();
@@ -371,7 +394,19 @@
 
     ensurePlayback() {
       if (!this.items.length) return;
-      this.items.forEach(({ el }) => {
+      const n = this.items.length;
+      const i = this._primary;
+      const near = new Set([i, (i - 1 + n) % n, (i + 1) % n]);
+      this.items.forEach(({ el }, idx) => {
+        if (!near.has(idx)) {
+          if (!el.paused) {
+            try {
+              el.pause();
+            } catch (e) {}
+          }
+          return;
+        }
+        this.ensureSrc(el);
         if (!el.paused) return;
         void el.play().catch(() => {});
         window.setTimeout(() => void el.play().catch(() => {}), 100);
@@ -1135,10 +1170,29 @@
   /**
    * @param {{ href: string; src: string; titleHe: string; titleEn: string }[]} slides
    */
+  function posterForVideoSrc(src) {
+    const s = String(src || "");
+    const clean = s.split("?")[0];
+    const file = clean.split("/").pop() || "";
+    if (!file.toLowerCase().endsWith(".mp4")) return "";
+    const base = file.replace(/\.mp4$/i, "");
+    try {
+      return new URL(
+        "assets/Homepagevids/posters/" + decodeURIComponent(base) + ".webp",
+        getAssetBaseHref()
+      ).href;
+    } catch (e) {
+      return "assets/Homepagevids/posters/" + base + ".webp";
+    }
+  }
+
   function buildStageMarkup(slides) {
     return slides
       .map((slide, index) => {
         const label = `${slide.titleHe} (${slide.titleEn || "Dahari"}) — וידאו ללא שמע`;
+        const mediaUrl = resolveMediaUrl(slide.src);
+        const posterUrl = posterForVideoSrc(slide.src);
+        const posterAttr = posterUrl ? ` poster="${escAttr(posterUrl)}"` : "";
         return (
           `<div class="dh-carousel__item" data-index="${index}" data-slide-title="${escAttr(slide.titleHe)}">` +
           `<a href="${escAttr(slide.href)}" class="dh-carousel__link dh-carousel__media" aria-label="${escAttr(label)}">` +
@@ -1147,7 +1201,7 @@
           `<div class="dh-carousel__card-front">` +
           `<span class="dh-carousel__shine" aria-hidden="true"></span>` +
           `<div class="dh-carousel__video-wrap" aria-hidden="true">` +
-          `<video class="dh-carousel__video" muted="" playsinline="" webkit-playsinline="" loop="" preload="auto" disablepictureinpicture="" data-slide-index="${index}" src="${escAttr(resolveMediaUrl(slide.src))}"></video>` +
+          `<video class="dh-carousel__video" muted="" playsinline="" webkit-playsinline="" loop="" preload="none" disablepictureinpicture="" data-slide-index="${index}" data-src="${escAttr(mediaUrl)}"${posterAttr}></video>` +
           `</div>` +
           `<span class="dh-carousel__title" aria-hidden="true">${escHtml(slide.titleHe)}</span>` +
           `</div></a></div>`
