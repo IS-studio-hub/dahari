@@ -192,14 +192,14 @@
     var to = attr("data-mailto") || "info@dahari.co.il";
     var productTitle = attr("data-product-title");
     var body =
-      "פנייה חדשה מהאתר — מעוניין/ת בנכס\n\n" +
+      "פנייה חדשה מהאתר - מעוניין/ת בנכס\n\n" +
       "דוא״ל הלקוח/ה: " +
       customerEmail +
       "\n\n" +
       "פרטי הנכס:\n" +
       productDetailLines();
 
-    var subject = "פנייה לגבי נכס — " + productTitle;
+    var subject = "פנייה לגבי נכס - " + productTitle;
     return "mailto:" + encodeURIComponent(to) + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
   }
 

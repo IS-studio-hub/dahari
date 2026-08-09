@@ -1,6 +1,6 @@
     .dh-carousel-embed {
       --font-primary: "Rubik", system-ui, sans-serif;
-      --font-title: "Noto Sans Hebrew", "Noto Sans", system-ui, sans-serif;
+      --font-title: "Gveret Levin", "Noto Sans Hebrew", "Rubik", cursive, system-ui, sans-serif;
       --site-color-60: #fff5df;
       --site-color-30: #99beff;
       --site-color-10: #cfb682;
@@ -30,7 +30,7 @@
         #d0d0d0 270deg 360deg
       );
       --dh-arrow-hover-hop-duration: 0.52s;
-      --card-size: 200px;
+      --card-size: 240px;
       /* Defaults to square; override --card-width / --card-height for slim (portrait) cards */
       --card-width: var(--card-size);
       --card-height: var(--card-size);
@@ -255,7 +255,7 @@
       will-change: auto;
     }
     .dh-carousel {
-      height: calc(var(--component-height) - var(--container-offset));
+      height: calc(var(--component-height) var(--container-offset));
       min-height: calc(max(var(--card-width), var(--card-height)) + 120px);
       width: 100%;
       overflow: hidden;
@@ -414,7 +414,7 @@
       margin-top: calc(var(--card-depth) / -2);
       transform: rotateX(-90deg) translateZ(calc(var(--card-height) / 2));
     }
-    /* Card back: #99BEFF family — angled panels + subtle grid */
+    /* Card back: #99BEFF family - angled panels + subtle grid */
     .dh-carousel__card-back {
       position: absolute;
       inset: 0;
@@ -562,8 +562,8 @@
       position: absolute;
       right: 16px;
       bottom: 16px;
-      font-size: clamp(14px, 1.05vw, 18px);
-      font-weight: 700;
+      font-size: clamp(16px, 1.2vw, 22px);
+      font-weight: 400;
       font-stretch: 75%;
       color: #fff;
       text-shadow:
@@ -717,10 +717,10 @@
       /* Avoid 100vw (ignores parent rail padding). cqw = embed width when supported. */
       .dh-carousel__item {
         position: relative !important;
-        flex: 0 0 calc(100vw - 5.5rem);
-        width: calc(100vw - 5.5rem) !important;
-        min-width: calc(100vw - 5.5rem) !important;
-        max-width: calc(100vw - 5.5rem) !important;
+        flex: 0 0 calc(100vw 5.5rem);
+        width: calc(100vw 5.5rem) !important;
+        min-width: calc(100vw 5.5rem) !important;
+        max-width: calc(100vw 5.5rem) !important;
         height: var(--component-height) !important;
         min-height: var(--component-height) !important;
         transform: none !important;
@@ -801,8 +801,8 @@
       .dh-carousel__mobile-title {
         display: inline-block;
         color: #fff;
-        font-size: clamp(18px, 5.2vw, 24px);
-        font-weight: 700;
+        font-size: clamp(20px, 5.6vw, 28px);
+        font-weight: 400;
         font-stretch: 75%;
         line-height: 1.2;
         margin-right: 10px;

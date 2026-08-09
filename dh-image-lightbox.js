@@ -4,7 +4,7 @@
   var EXCLUDE =
     ".dh-corner-logo img, .wqf-slide-meta-icon, .dh-side-header888__menu-social888 img, " +
     "img[src*='Icons/'], img[src*='favicon'], img[src$='.svg'], " +
-    /* Portfolio / listing cards — lightbox is for content images only */
+    /* Portfolio / listing cards - lightbox is for content images only */
     ".wqf-logo-img, .wqf-slide img, .wqf-slide-card img, " +
     ".dh-logistics-item__also-like-media img, .dh-logistics-item__also-like-card img, " +
     ".dh-lightbox img";
@@ -61,7 +61,7 @@
     if (link) {
       var href = link.getAttribute("href") || "";
       if (IMAGE_EXT.test(href)) return href;
-      // Page link (also-like, etc.) — do not lightbox
+      // Page link (also-like, etc.) - do not lightbox
       if (/\.html?(\?|#|$)/i.test(href) || href === "#" || href.startsWith("mailto:")) {
         return null;
       }

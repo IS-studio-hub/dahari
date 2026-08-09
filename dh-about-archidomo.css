@@ -1,5 +1,5 @@
 /*
-  Archidomo “Agence” page recreation — editorial layout, beige panels, scroll reveals.
+  Archidomo “Agence” page recreation - editorial layout, beige panels, scroll reveals.
   Scoped under html.dh-page-archidomo. Dahari sidebar shell unchanged.
 */
 
@@ -26,7 +26,7 @@ html.dh-page-archidomo .dh-main-content.dh-main-content--archidomo {
   box-sizing: border-box;
 }
 
-/* ——— Page shell ——— */
+/* --- Page shell --- */
 .dh-arch-page {
   width: 100%;
   /* max-width: min(1180px, 100%); */
@@ -42,7 +42,7 @@ html.dh-page-archidomo .dh-main-content.dh-main-content--archidomo {
   /* text-align: left; */
 }
 
-/* Body copy + titles (breadcrumbs untouched — outside .dh-arch-page) */
+/* Body copy + titles (breadcrumbs untouched - outside .dh-arch-page) */
 html.dh-page-archidomo .dh-arch-page {
   font-family: "Rubik", system-ui, sans-serif;
 }
@@ -55,7 +55,7 @@ html.dh-page-archidomo .dh-arch-ag-panel__intro-text {
   font-family: "Noto Sans Hebrew", "Rubik", system-ui, sans-serif;
 }
 
-/* ——— Reveal motion ——— */
+/* --- Reveal motion --- */
 html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal {
   opacity: 0;
   transform: translate3d(0, 22px, 0);
@@ -91,7 +91,7 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
   }
 }
 
-/* ——— Hero ——— */
+/* --- Hero --- */
 .dh-arch-hero {
   padding-block: clamp(0.5rem, 2vw, 1.5rem) clamp(1.5rem, 4vw, 2.5rem);
 }
@@ -125,7 +125,7 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
   color: var(--site-text-color, #2c2d66);
 }
 
-/* ——— Stagger images ——— */
+/* --- Stagger images --- */
 .dh-arch-stagger {
   display: grid;
   grid-template-columns: minmax(0, 0.34fr) minmax(0, 0.66fr);
@@ -157,7 +157,7 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
   min-height: clamp(18rem, 48vh, 38rem);
 }
 
-/* ——— Serif quote band ——— */
+/* --- Serif quote band --- */
 .dh-arch-quote-band {
   position: relative;
   padding-block: clamp(2rem, 5vw, 4rem);
@@ -185,7 +185,7 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
   font-weight: 400;
 }
 
-/* ——— Prose ——— */
+/* --- Prose --- */
 .dh-arch-prose {
   margin: 0 0 1.25rem;
   max-width: 42rem;
@@ -194,7 +194,7 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
   color: var(--site-text-color, #2c2d66);
 }
 
-/* ——— Beige architects panel ——— */
+/* --- Beige architects panel --- */
 .dh-arch-ag-panel {
   margin-top: clamp(2rem, 5vw, 3.5rem);
   background: #ece9e3;
@@ -216,7 +216,7 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
   line-height: 1.18;
 }
 
-/* Portrait frame: landscape assets crop via cover — full column width, no side gutters */
+/* Portrait frame: landscape assets crop via cover - full column width, no side gutters */
 .dh-arch-ag-panel__intro-pic {
   overflow: hidden;
   width: 100%;
@@ -292,7 +292,7 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
   filter: grayscale(1) contrast(1.05);
 }
 
-/* ——— Statement + imagery ——— */
+/* --- Statement + imagery --- */
 .dh-arch-statement {
   padding-block: clamp(2.5rem, 6vw, 5rem);
 }
@@ -378,6 +378,54 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
 
 .dh-arch-foot__link:hover {
   opacity: 0.65;
+}
+
+/* Renewal page CTA → under-construction portfolio */
+.dh-arch-page--renewal .dh-arch-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 1.5rem;
+  padding: 0.95rem 1.6rem;
+  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-size: clamp(0.9rem, 1.6vw, 1rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #fff5df;
+  text-decoration: none;
+  background-color: #2c2d66;
+  border: 1px solid #2c2d66;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.12);
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.dh-arch-page--renewal .dh-arch-cta:hover {
+  transform: translateY(-2px);
+  background-color: #23244f;
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.14);
+}
+
+.dh-arch-page--renewal .dh-arch-cta:focus-visible {
+  outline: 3px solid #99beff;
+  outline-offset: 3px;
+}
+
+.dh-arch-page--renewal .dh-arch-foot__secondary {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.dh-arch-page--renewal .dh-arch-ag-row__body a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+.dh-arch-page--renewal .dh-arch-ag-row__body a:hover {
+  text-decoration-thickness: 2px;
 }
 
 @media (max-width: 900px) {

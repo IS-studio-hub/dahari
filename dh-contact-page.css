@@ -1,4 +1,4 @@
-/* Contact page — high-end motion + site brand (cream / blue / gold grid) */
+/* Contact page - high-end motion + site brand (cream / blue / gold grid) */
 
 html.dh-page-contact {
   scroll-behavior: smooth;
@@ -554,7 +554,7 @@ html.dh-page-contact .dh-contact__hero-video {
   }
 
   html.dh-page-contact .dh-contact__aside .dh-contact__card {
-    flex: 1 1 calc(50% - 0.32rem);
+    flex: 1 1 calc(50% 0.32rem);
     min-width: 140px;
     padding: 0.75rem 0.85rem;
   }

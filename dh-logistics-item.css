@@ -1,4 +1,4 @@
-/* Property / logistics — single item pages (2026 editorial split-panel layout) */
+/* Property / logistics - single item pages (2026 editorial split-panel layout) */
 
 html.dh-page-logistics-item,
 html.dh-page-property-item {
@@ -80,7 +80,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 
   html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item,
   html.dh-page-logistics-item .dh-main-content.dh-main-content--logistics-item {
-    /* Must grow with gallery — flex shrink was clipping sticky's parent halfway. */
+       /* Must grow with gallery - flex shrink was clipping sticky's parent halfway. */
     flex: 0 0 auto;
     min-height: auto;
     overflow: visible;
@@ -111,7 +111,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   }
 
   /* Sticky right column until end of gallery; HTML/order unchanged.
-     No inner overflow — wheel over this column must scroll the page. */
+     No inner overflow - wheel over this column must scroll the page. */
   .dh-logistics-item__content-col {
     position: sticky;
     top: 48px;
@@ -134,7 +134,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 
   .dh-logistics-item__content-col .dh-logistics-item__title {
     margin-bottom: 0.35rem;
-    font-size: clamp(1.15rem, 2.2vw, 1.55rem);
+    font-size: clamp(1.35rem, 2.6vw, 1.85rem);
   }
 
   .dh-logistics-item__content-col .dh-logistics-item__tagline {
@@ -320,11 +320,11 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 
 .dh-logistics-item__title {
   margin: 0 0 0.65rem;
-  font-family: "Noto Sans Hebrew", "Rubik", system-ui, sans-serif;
-  font-weight: 700;
-  font-size: clamp(1.65rem, 4.5vw, 2.35rem);
-  line-height: 1.12;
-  letter-spacing: -0.025em;
+  font-family: "Gveret Levin", "Noto Sans Hebrew", "Rubik", cursive, system-ui, sans-serif;
+  font-weight: 400;
+  font-size: clamp(1.85rem, 5vw, 2.65rem);
+  line-height: 1.2;
+  letter-spacing: 0;
   color: var(--dh-item-ink);
   text-wrap: balance;
 }
@@ -413,7 +413,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   margin-block-end: 0;
 }
 
-/* Description + stat boxes — side by side on desktop */
+/* Description + stat boxes - side by side on desktop */
 .dh-logistics-item__details-split {
   display: flex;
   flex-direction: column;
@@ -442,7 +442,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   margin-top: 0;
 }
 
-/* Stat chips — single column */
+/* Stat chips - single column */
 .dh-logistics-item__meta {
   display: grid;
   grid-template-columns: 1fr;
@@ -494,7 +494,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 
 .dh-logistics-item__dropdown {
   margin: 0 0 0.85rem;
-  border-radius: calc(var(--dh-item-radius) - 4px);
+  border-radius: calc(var(--dh-item-radius) 4px);
   border: 1px solid var(--dh-item-line);
   background: rgba(255, 255, 255, 0.45);
   overflow: hidden;
@@ -609,7 +609,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   transform: translateY(0) scale(0.98);
 }
 
-/* Gallery — videos 2/row, images 3/row */
+/* Gallery - videos 2/row, images 3/row */
 .dh-logistics-item__gallery {
   margin: 0;
   padding-top: 0;
@@ -630,7 +630,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   /* Images: 3 per row (span 2 of 6) */
   grid-column: span 2;
   grid-row: span 1;
-  border-radius: calc(var(--dh-item-radius) - 4px);
+  border-radius: calc(var(--dh-item-radius) 4px);
   overflow: hidden;
   border: 1px solid var(--dh-item-line);
   background: var(--dh-item-surface);
@@ -646,6 +646,12 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 /* Optional 2-up image gallery (this page / short sets) */
 .dh-logistics-item__gallery-grid--2 > li {
   grid-column: span 3;
+}
+
+/* Optional square (1:1) gallery tiles */
+.dh-logistics-item__gallery-grid--square img,
+.dh-logistics-item__gallery-grid--square video {
+  aspect-ratio: 1 / 1;
 }
 
 .dh-logistics-item__gallery-grid img,
@@ -685,7 +691,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 }
 
 
-/* You may also like — recommendations grid */
+/* You may also like - recommendations grid */
 .dh-logistics-item__also-like {
   margin: clamp(1rem, 2vw, 1.35rem) 0 0;
   padding: 0;
@@ -695,7 +701,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   min-width: 0;
 }
 
-/* Product inquiry — mailto lead form */
+/* Product inquiry - mailto lead form */
 .dh-logistics-item__inquiry {
   width: 100%;
   max-width: none;
@@ -830,7 +836,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   color: var(--dh-item-ink);
 }
 
-/* Building plans — 4 preview cards (links to PDF) */
+/* Building plans - 4 preview cards (links to PDF) */
 .dh-logistics-item__plans {
   margin: clamp(1rem, 2vw, 1.35rem) 0 0;
   padding: 0;
@@ -860,7 +866,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   flex-direction: column;
   min-width: 0;
   height: 100%;
-  border-radius: calc(var(--dh-item-radius) - 2px);
+  border-radius: calc(var(--dh-item-radius) 2px);
   overflow: hidden;
   border: 1px solid var(--dh-item-line);
   background: var(--dh-item-surface);
@@ -940,7 +946,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   flex-direction: column;
   min-width: 0;
   height: 100%;
-  border-radius: calc(var(--dh-item-radius) - 2px);
+  border-radius: calc(var(--dh-item-radius) 2px);
   overflow: hidden;
   border: 1px solid var(--dh-item-line);
   background: var(--dh-item-surface);

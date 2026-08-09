@@ -1,4 +1,4 @@
-/* Fullscreen image lightbox — site-wide */
+/* Fullscreen image lightbox - site-wide */
 .dh-lightbox {
   position: fixed;
   inset: 0;
@@ -23,7 +23,7 @@
 
 .dh-lightbox__img {
   max-width: min(100%, 1600px);
-  max-height: calc(100vh - 4rem);
+  max-height: calc(100vh 4rem);
   width: auto;
   height: auto;
   object-fit: contain;

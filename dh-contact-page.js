@@ -119,13 +119,13 @@
       email +
       "\n" +
       "טלפון: " +
-      (phone || "—") +
+      (phone || "-") +
       "\n" +
       "נושא: " +
       topic +
       "\n\n" +
       (fields.message ? String(fields.message.value).trim() : "");
-    var subject = encodeURIComponent("פנייה מהאתר — " + topic);
+    var subject = encodeURIComponent("פנייה מהאתר - " + topic);
     return "mailto:" + to + "?subject=" + subject + "&body=" + encodeURIComponent(body);
   }
 

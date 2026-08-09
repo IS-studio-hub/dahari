@@ -457,7 +457,7 @@
   height: 100%;
   width: 67.2cqw;
   border-radius: 20px;
-  padding: 8px;
+  padding: 0 0 8px;
   opacity: 1;
   border-color: var(--wqf-card-stroke);
 }
@@ -583,7 +583,7 @@
 
 #wqf-portfolio-root .wqf-logo {
   position: relative;
-  padding: 16px;
+  padding: 0;
   width: 100%;
   height: 300px;
   overflow: hidden;
@@ -593,16 +593,16 @@
 /* House + area (m²) as a pill on the image, top-end corner */
 #wqf-portfolio-root .wqf-area-tag {
   position: absolute;
-  margin: 8px 8px;
-  top: 16px;
-  right: 16px;
+  margin: 0;
+  top: 12px;
+  right: 12px;
   left: auto;
   z-index: 2;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 6px 10px;
-  max-width: min(70%, calc(100% - 32px));
+  max-width: min(70%, calc(100% 24px));
   background: rgba(255, 255, 255, 0.94);
   border-radius: 999px;
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
@@ -679,7 +679,7 @@
 
 #wqf-portfolio-root .wqf-slide-location {
   margin: 0;
-  padding: 0 16px 4px;
+  padding: 12px 16px 4px;
   font-family: var(--font-body);
   font-size: clamp(0.9rem, 2.6cqw, 1.05rem);
   font-weight: 600;
@@ -897,7 +897,7 @@
   }
 }
 
-/* RTL: prev sits right, next sits left — flip both so outer arrows point outward */
+/* RTL: prev sits right, next sits left - flip both so outer arrows point outward */
 #wqf-portfolio-root[dir="rtl"] .js-wqf-prev .wqf-arrow,
 #wqf-portfolio-root[dir="rtl"] .js-wqf-next .wqf-arrow {
   transform: scaleX(-1);
@@ -971,8 +971,8 @@
   flex: 1 1 auto;
   opacity: 1 !important;
   border-radius: 16px;
-  padding: 20px;
-  gap: 16px;
+  padding: 0 0 20px;
+  gap: 0;
 }
 
 #wqf-portfolio-root.wqf-portfolio--mobile-stack .wqf-slide-card::before {
@@ -1019,7 +1019,7 @@
 }
 
 #wqf-portfolio-root.wqf-portfolio--mobile-stack .wqf-logo {
-  padding: 16px;
+  padding: 0;
   width: 100%;
   height: 300px;
   overflow: hidden;
@@ -1191,7 +1191,7 @@ body::-webkit-scrollbar {
 
 @media (max-width: 380px) {
   #wqf-portfolio-root.wqf-portfolio--mobile-stack .wqf-slide-card {
-    padding: 14px;
-    gap: 12px;
+    padding: 0 0 14px;
+    gap: 0;
   }
 }

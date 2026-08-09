@@ -39,7 +39,7 @@
    */
   const DEFAULT_SLIDES = [
     { href: "offices.html", src: "assets/Homepagevids/office.mp4", titleHe: "פרוייקטים בהקמה", titleEn: "Under construction" },
-    { href: "residences.html", src: "assets/Homepagevids/residences.mp4", titleHe: "מגורים", titleEn: "Residences" },
+    { href: "residences.html", src: "assets/Homepagevids/residences.mp4", titleHe: "התחדשות עירונית", titleEn: "Urban renewal" },
     { href: "commerce.html", src: "assets/Homepagevids/commercial.mp4", titleHe: "נדל״ן מסחרי", titleEn: "Commercial" },
     { href: "about.html", src: "assets/Homepagevids/%D7%90%D7%95%D7%93%D7%95%D7%AA%20V3.mp4", titleHe: "אודות", titleEn: "About" },
     { href: "contact.html", src: "assets/Homepagevids/b%20Copy%2004.mp4", titleHe: "יצירת קשר", titleEn: "Contact" },
@@ -179,7 +179,7 @@
         if (norm) return norm;
       }
     } catch (e) {
-      /* file:// or missing file — use defaults */
+      /* file:// or missing file - use defaults */
     }
     return DEFAULT_SLIDES;
   }
@@ -252,7 +252,7 @@
         el.disablePictureInPicture = true;
         el.setAttribute("disablepictureinpicture", "");
         el.setAttribute("data-slide-index", String(idx));
-        // Native loop is flaky on some MP4s / after dynamic src — restart explicitly.
+        // Native loop is flaky on some MP4s / after dynamic src - restart explicitly.
         el.addEventListener("ended", () => {
           try {
             el.currentTime = 0.001;
@@ -1236,7 +1236,7 @@
   function buildStageMarkup(slides) {
     return slides
       .map((slide, index) => {
-        const label = `${slide.titleHe} (${slide.titleEn || "Dahari"}) — וידאו ללא שמע`;
+        const label = `${slide.titleHe} (${slide.titleEn || "Dahari"}) - וידאו ללא שמע`;
         const mediaUrl = resolveMediaUrl(slide.src);
         const posterUrl = posterForVideoSrc(slide.src);
         const posterAttr = posterUrl ? ` poster="${escAttr(posterUrl)}"` : "";
@@ -1290,7 +1290,7 @@
     if (bootstrapping) return;
     bootstrapping = true;
     try {
-      // Paint immediately with defaults (critical for mobile LCP) — JSON can refine later.
+      // Paint immediately with defaults (critical for mobile LCP) - JSON can refine later.
       if (!mountCarousel(DEFAULT_SLIDES)) {
         bootstrapping = false;
         if (++bootstrapAttempts < 10) {

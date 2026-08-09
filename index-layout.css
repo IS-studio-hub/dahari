@@ -17,10 +17,10 @@
 
     /*
       Viewport shells:
-      - Home + logistics (iframe parent): one screen, no document scroll.
-      - Contact: body locked; inner regions scroll.
-      - Property / logistics item pages: body locked; rail strip fixed to viewport; main column scrolls.
-      - Other pages: document may grow; body scrolls so content is never clipped.
+      Home + logistics (iframe parent): one screen, no document scroll.
+      Contact: body locked; inner regions scroll.
+      Property / logistics item pages: body locked; rail strip fixed to viewport; main column scrolls.
+      Other pages: document may grow; body scrolls so content is never clipped.
     */
     html,
     body {
@@ -258,7 +258,7 @@
 
     /*
       index.html: ground shadow under the 3D carousel.
-      Desktop only — mobile carousel is flat scroll; shadow is omitted to avoid a floating smudge.
+      Desktop only - mobile carousel is flat scroll; shadow is omitted to avoid a floating smudge.
     */
     @media (min-width: 1024px) {
       /* Nudge 3D cluster upward on the home page (does not touch stage transform used by JS) */
@@ -532,11 +532,11 @@
         inset-inline-start: var(--dh-header-gutter-inline-start);
         max-width: min(
           100%,
-          calc(100% - var(--dh-header-edge-gutter) - 3.5rem - max(0px, env(safe-area-inset-inline-start, 0px)))
+          calc(100% var(--dh-header-edge-gutter) 3.5rem max(0px, env(safe-area-inset-inline-start, 0px)))
         );
       }
 
-      /* Item pages: rail is in flex — no extra gutter on the content column */
+      /* Item pages: rail is in flex - no extra gutter on the content column */
       html.dh-page-property-item .dh-side-header888__content888,
       html.dh-page-logistics-item .dh-side-header888__content888 {
         /* padding-inline-start: max(0.75rem, env(safe-area-inset-inline-start, 0px)); */
@@ -676,7 +676,7 @@
       }
     }
 
-    /* Mobile: sidebar hidden — content uses full width beside floating menu only */
+    /* Mobile: sidebar hidden - content uses full width beside floating menu only */
     @media (max-width: 767px) {
       html:not(.dh-page-home):not(.dh-page-property-item):not(.dh-page-logistics-item) .dh-side-header888__content888 {
         padding-top: 64px;
@@ -686,7 +686,7 @@
       html:not(.dh-page-home):not(.dh-page-property-item):not(.dh-page-logistics-item) .dh-breadcrumbs {
         max-width: min(
           100%,
-          calc(100% - var(--dh-header-edge-gutter) - var(--rail-width-desktop, 54px) - max(0px, env(safe-area-inset-inline-start, 0px)))
+          calc(100% var(--dh-header-edge-gutter) var(--rail-width-desktop, 54px) max(0px, env(safe-area-inset-inline-start, 0px)))
         );
       }
     }
@@ -752,13 +752,13 @@
       text-decoration: none;
       opacity: 0.96;
       pointer-events: auto;
-      max-width: calc(100% - 5.5rem);
+      max-width: calc(100% 5.5rem);
     }
 
     @media (max-width: 1023px) {
       .dh-corner-logo {
         max-width: calc(
-          100% - var(--rail-width-desktop, 54px) - max(1.25rem, env(safe-area-inset-inline-start, 0px)) - 4.5rem
+          100% var(--rail-width-desktop, 54px) max(1.25rem, env(safe-area-inset-inline-start, 0px)) 4.5rem
         );
       }
     }
@@ -766,7 +766,7 @@
     @media (max-width: 767px) {
       .dh-corner-logo {
         max-width: calc(
-          100% - var(--rail-width-mobile, 54px) - max(0.75rem, env(safe-area-inset-inline-start, 0px)) - 3.25rem
+          100% var(--rail-width-mobile, 54px) max(0.75rem, env(safe-area-inset-inline-start, 0px)) 3.25rem
         );
       }
 
@@ -826,7 +826,7 @@
       .dh-main-content--stub:not(:has(> .dh-breadcrumbs)) {
         justify-content: flex-start;
         padding-top: max(4.25rem, env(safe-area-inset-top, 0px));
-        /* Rail gutter lives on .dh-side-header888__content888 — keep only normal inset here */
+        /* Rail gutter lives on .dh-side-header888__content888 - keep only normal inset here */
         padding-inline-end: max(1.1rem, env(safe-area-inset-inline-end, 0px));
       }
 
@@ -846,7 +846,7 @@
       margin: 0;
       padding: 0;
       width: fit-content;
-      max-width: min(36rem, calc(100% - 7.5rem));
+      max-width: min(36rem, calc(100% 7.5rem));
       text-align: start;
       box-sizing: border-box;
       display: flex;
@@ -857,19 +857,19 @@
 
     @media (min-width: 1024px) and (max-width: 1279px) {
       .dh-breadcrumbs {
-        max-width: min(34rem, calc(100% - 8rem - var(--rail-width-desktop, 54px)));
+        max-width: min(34rem, calc(100% 8rem var(--rail-width-desktop, 54px)));
       }
     }
 
     @media (min-width: 768px) and (max-width: 1023px) {
       .dh-breadcrumbs {
-        max-width: min(32rem, calc(100% - 7rem - var(--rail-width-desktop, 54px)));
+        max-width: min(32rem, calc(100% 7rem var(--rail-width-desktop, 54px)));
       }
     }
 
     @media (max-width: 767px) {
       .dh-breadcrumbs {
-        max-width: min(100%, calc(100% - var(--rail-width-mobile, 54px) - 3.5rem));
+        max-width: min(100%, calc(100% var(--rail-width-mobile, 54px) 3.5rem));
       }
 
       .dh-breadcrumbs__track {
@@ -882,7 +882,7 @@
       padding-top: max(3.35rem, calc(var(--dh-top-bar-y) + 1.45rem));
     }
 
-    /* Mobile: no logo or breadcrumbs on the page — logo lives in the open menu */
+    /* Mobile: no logo or breadcrumbs on the page - logo lives in the open menu */
     @media (max-width: 767px) {
       .dh-breadcrumbs {
         display: none !important;

@@ -86,7 +86,7 @@
   
 		function lockPageScroll() {
 		  scrollY = window.scrollY ?? window.pageYOffset;
-		  /* Do not use position:fixed on document.body — on iOS it flattens the compositor and
+		  /* Do not use position:fixed on document.body - on iOS it flattens the compositor and
 		   * backdrop-filter on the menu then samples a solid layer (body background) instead of the video. */
 		  document.documentElement.style.overscrollBehavior = 'none';
 		  document.body.style.overscrollBehavior = 'none';
@@ -342,7 +342,7 @@
 (function () {
 	var LOGO_SRC = 'assets/black%20logo.svg';
 	var LOGO_HOME = 'index.html';
-	var LOGO_LABEL = 'דהרי — עמוד הבית';
+	var LOGO_LABEL = 'דהרי - עמוד הבית';
 
 	document.querySelectorAll('.dh-side-header888').forEach(function (component) {
 		var shell = component.querySelector('.dh-side-header888__menu-shell888');
@@ -375,12 +375,31 @@
 	if (document.querySelector("script[data-dh-custom-cursor]")) return;
 	if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 	if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-	var cur = document.currentScript;
-	if (!cur || !cur.src) return;
+
+	function resolveCursorSrc() {
+		var cur = document.currentScript;
+		if (cur && cur.src) {
+			try {
+				return new URL("dh-custom-cursor.js?v=7", cur.src).href;
+			} catch (e) {}
+		}
+		/* deferred scripts: currentScript is null - find this header script by src */
+		var tags = document.getElementsByTagName("script");
+		for (var i = tags.length - 1; i >= 0; i--) {
+			var src = tags[i].src || "";
+			if (/dh-side-header888(\.min)?\.js/i.test(src)) {
+				try {
+					return new URL("dh-custom-cursor.js?v=7", src).href;
+				} catch (e) {}
+			}
+		}
+		return "dh-custom-cursor.js?v=7";
+	}
+
 	window.__dhCustomCursorScheduled = true;
 	try {
 		var s = document.createElement("script");
-		s.src = new URL("dh-custom-cursor.js?v=6", cur.src).href;
+		s.src = resolveCursorSrc();
 		s.defer = true;
 		s.setAttribute("data-dh-custom-cursor", "1");
 		document.head.appendChild(s);
