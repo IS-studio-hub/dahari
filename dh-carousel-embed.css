@@ -30,7 +30,7 @@
         #d0d0d0 270deg 360deg
       );
       --dh-arrow-hover-hop-duration: 0.52s;
-      --card-size: 240px;
+      --card-size: 250px;
       /* Defaults to square; override --card-width / --card-height for slim (portrait) cards */
       --card-width: var(--card-size);
       --card-height: var(--card-size);
@@ -517,6 +517,16 @@
       transform: translateZ(0);
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
+    }
+    /* Dual-layer seamless loop (residences + contact): swap before EOF */
+    .dh-carousel__video.is-layer-active {
+      opacity: 1;
+      z-index: 2;
+    }
+    .dh-carousel__video.is-layer-standby,
+    .dh-carousel__video--twin.is-layer-standby {
+      opacity: 0;
+      z-index: 1;
     }
     .dh-carousel__video-wrap::before {
       content: "";

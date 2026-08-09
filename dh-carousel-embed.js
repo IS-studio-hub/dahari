@@ -42,7 +42,7 @@
     { href: "residences.html", src: "assets/Homepagevids/residences.mp4", titleHe: "התחדשות עירונית", titleEn: "Urban renewal" },
     { href: "commerce.html", src: "assets/Homepagevids/commercial.mp4", titleHe: "נדל״ן מסחרי", titleEn: "Commercial" },
     { href: "about.html", src: "assets/Homepagevids/%D7%90%D7%95%D7%93%D7%95%D7%AA%20V3.mp4", titleHe: "אודות", titleEn: "About" },
-    { href: "contact.html", src: "assets/Homepagevids/b%20Copy%2004.mp4", titleHe: "יצירת קשר", titleEn: "Contact" },
+    { href: "contact.html", src: "assets/Homepagevids/contact.mp4", titleHe: "יצירת קשר", titleEn: "Contact" },
   ];
 
   function escAttr(s) {
@@ -210,6 +210,165 @@
       this._unlock = null;
       /** @type {(() => void) | null} */
       this._docUnlock = null;
+      /** After first user-driven card change, attach/play immediately (no idle defer). */
+      this._userNavigated = false;
+      /** @type {Map<string, string>} remote URL → object URL */
+      this._blobByRemote = new Map();
+      /** @type {Set<string>} */
+      this._blobFetching = new Set();
+      /** @type {Map<HTMLVideoElement, string>} element → object URL currently attached */
+      this._blobUrls = new Map();
+    }
+
+    /**
+     * Residences + contact hitch on native HTML loop on desktop; use dual-layer swap.
+     * @param {HTMLVideoElement} el
+     */
+    needsSeamless(el) {
+      if (!el) return false;
+      if (el.dataset.dhSeamless === "1") return true;
+      const remote =
+        el.getAttribute("data-remote-src") ||
+        el.getAttribute("data-src") ||
+        el.getAttribute("src") ||
+        "";
+      return /(?:^|[\\/])(residences|contact)\.mp4(?:$|\?)/i.test(remote);
+    }
+
+    /**
+     * @param {{ el: HTMLVideoElement, twin?: HTMLVideoElement|null, active?: HTMLVideoElement }} item
+     * @returns {HTMLVideoElement[]}
+     */
+    pairOf(item) {
+      if (!item) return [];
+      return item.twin ? [item.el, item.twin] : [item.el];
+    }
+
+    /**
+     * @param {HTMLVideoElement} el
+     */
+    applyLoopAttrs(el) {
+      if (!el) return;
+      el.muted = true;
+      el.defaultMuted = true;
+      if (this.needsSeamless(el)) {
+        el.loop = false;
+        el.removeAttribute("loop");
+        el.dataset.dhSeamless = "1";
+      } else {
+        el.loop = true;
+        el.setAttribute("loop", "");
+      }
+    }
+
+    /**
+     * Create a standby twin so we can swap layers before EOF (no seek hitch).
+     * @param {{ el: HTMLVideoElement, twin?: HTMLVideoElement|null, active?: HTMLVideoElement, _swapping?: boolean }} item
+     */
+    ensureSeamlessTwin(item) {
+      if (!item || !item.el || item.twin || !this.needsSeamless(item.el)) return;
+      const wrap = item.el.closest(".dh-carousel__video-wrap") || item.el.parentElement;
+      if (!wrap) return;
+      const twin = /** @type {HTMLVideoElement} */ (item.el.cloneNode(false));
+      twin.removeAttribute("id");
+      twin.classList.add("dh-carousel__video--twin");
+      twin.classList.add("is-layer-standby");
+      twin.classList.remove("is-layer-active");
+      twin.muted = true;
+      twin.defaultMuted = true;
+      twin.playsInline = true;
+      twin.loop = false;
+      twin.removeAttribute("loop");
+      twin.preload = "auto";
+      twin.dataset.dhSeamless = "1";
+      twin.setAttribute("aria-hidden", "true");
+      wrap.appendChild(twin);
+      item.twin = twin;
+      item.active = item.el;
+      item.el.classList.add("is-layer-active");
+      item.el.classList.remove("is-layer-standby");
+      item.el.loop = false;
+      item.el.removeAttribute("loop");
+      item.el.dataset.dhSeamless = "1";
+
+      const onNearEnd = (vid) => {
+        if (item.active !== vid || item._swapping) return;
+        const d = vid.duration;
+        if (!d || !isFinite(d) || d < 0.5 || vid.paused) return;
+        // Swap ~4 frames early so the outgoing layer never hits ended/waiting.
+        if (vid.currentTime < d - 0.16) return;
+        this.swapSeamless(item);
+      };
+      item.el.addEventListener("timeupdate", () => onNearEnd(item.el));
+      twin.addEventListener("timeupdate", () => onNearEnd(twin));
+      // Keep standby warm at t≈0 whenever the active clip is playing.
+      item.el.addEventListener("playing", () => this.primeStandby(item));
+      twin.addEventListener("playing", () => this.primeStandby(item));
+    }
+
+    /**
+     * @param {{ el: HTMLVideoElement, twin?: HTMLVideoElement|null, active?: HTMLVideoElement }} item
+     */
+    primeStandby(item) {
+      if (!item || !item.twin || !item.active) return;
+      const standby = item.active === item.el ? item.twin : item.el;
+      const active = item.active;
+      const src = active.currentSrc || active.getAttribute("src") || "";
+      if (!src) return;
+      if ((standby.currentSrc || standby.getAttribute("src") || "") !== src) {
+        standby.src = src;
+        standby.dataset.dhBlob = active.dataset.dhBlob || "0";
+        try {
+          standby.load();
+        } catch (e) {}
+      }
+      try {
+        if (standby.currentTime > 0.05) standby.currentTime = 0.001;
+      } catch (e) {}
+      // Decode first frame without showing/playing over the active layer.
+      if (standby.paused && standby.readyState < 2) {
+        void standby.play().then(() => {
+          if (item.active !== standby) {
+            try {
+              standby.pause();
+              standby.currentTime = 0.001;
+            } catch (e) {}
+          }
+        }).catch(() => {});
+      }
+    }
+
+    /**
+     * Instant layer swap — visible clip is never seeked at the loop point.
+     * @param {{ el: HTMLVideoElement, twin?: HTMLVideoElement|null, active?: HTMLVideoElement, _swapping?: boolean }} item
+     */
+    swapSeamless(item) {
+      if (!item || !item.twin || item._swapping) return;
+      const from = item.active || item.el;
+      const to = from === item.el ? item.twin : item.el;
+      item._swapping = true;
+      const src = from.currentSrc || from.getAttribute("src") || "";
+      if (src && (to.currentSrc || to.getAttribute("src") || "") !== src) {
+        to.src = src;
+        to.dataset.dhBlob = from.dataset.dhBlob || "0";
+      }
+      try {
+        to.currentTime = 0.001;
+      } catch (e) {}
+      to.muted = true;
+      void to.play().catch(() => {});
+      to.classList.add("is-layer-active");
+      to.classList.remove("is-layer-standby");
+      from.classList.add("is-layer-standby");
+      from.classList.remove("is-layer-active");
+      item.active = to;
+      window.requestAnimationFrame(() => {
+        try {
+          from.pause();
+          from.currentTime = 0.001;
+        } catch (e) {}
+        item._swapping = false;
+      });
     }
 
     /**
@@ -219,16 +378,25 @@
      */
     primePlay(el) {
       if (!el) return;
-      el.muted = true;
-      el.defaultMuted = true;
+      this.applyLoopAttrs(el);
+      const item = this.items.find((it) => it.el === el || it.twin === el);
+      if (item) this.ensureSeamlessTwin(item);
+      const target = item && item.active ? item.active : el;
+      this.applyLoopAttrs(target);
       const run = () => {
-        void el.play().catch(() => {});
+        if (target.ended) {
+          try {
+            target.currentTime = 0.001;
+          } catch (e) {}
+        }
+        void target.play().catch(() => {});
+        if (item) this.primeStandby(item);
       };
       run();
-      if (el.readyState < 2) {
+      if (target.readyState < 2) {
         const evts = ["loadedmetadata", "loadeddata", "canplay", "canplaythrough"];
         for (let e = 0; e < evts.length; e++) {
-          el.addEventListener(evts[e], run, { once: true });
+          target.addEventListener(evts[e], run, { once: true });
         }
       }
       window.setTimeout(run, 60);
@@ -237,29 +405,178 @@
       window.setTimeout(run, 1200);
     }
 
+    /**
+     * Prefetch a remote MP4 into memory. Does not touch the <video> until ensureSrc/applyBlob.
+     * @param {string} remote
+     * @returns {Promise<string|null>} object URL
+     */
+    prefetchBlob(remote) {
+      const url = String(remote || "").trim();
+      if (!url || url.startsWith("blob:")) return Promise.resolve(null);
+      if (this._blobByRemote.has(url)) return Promise.resolve(this._blobByRemote.get(url) || null);
+      if (this._blobFetching.has(url)) {
+        return new Promise((resolve) => {
+          const start = performance.now();
+          const tick = () => {
+            if (this._blobByRemote.has(url)) {
+              resolve(this._blobByRemote.get(url) || null);
+              return;
+            }
+            if (performance.now() - start > 12000) {
+              resolve(null);
+              return;
+            }
+            window.setTimeout(tick, 80);
+          };
+          tick();
+        });
+      }
+      this._blobFetching.add(url);
+      return fetch(url)
+        .then((res) => {
+          if (!res.ok) throw new Error("fetch failed");
+          return res.blob();
+        })
+        .then((blob) => {
+          const obj = URL.createObjectURL(blob);
+          this._blobByRemote.set(url, obj);
+          this._blobFetching.delete(url);
+          return obj;
+        })
+        .catch(() => {
+          this._blobFetching.delete(url);
+          return null;
+        });
+    }
+
+    /**
+     * If a memory blob is ready for this element, point src at it (seamless native loop).
+     * @param {HTMLVideoElement} el
+     */
+    applyBlobIfReady(el) {
+      if (!el || el.dataset.dhBlob === "1") return false;
+      const remote =
+        el.getAttribute("data-remote-src") ||
+        el.getAttribute("data-src") ||
+        (!String(el.currentSrc || el.src || "").startsWith("blob:")
+          ? el.currentSrc || el.getAttribute("src") || ""
+          : "");
+      if (!remote || !this._blobByRemote.has(remote)) return false;
+      const obj = this._blobByRemote.get(remote);
+      if (!obj) return false;
+      const item = this.items.find((it) => it.el === el || it.twin === el);
+      const wasPlaying = item
+        ? !!(item.active && !item.active.paused)
+        : !el.paused;
+      const t = (item && item.active ? item.active.currentTime : el.currentTime) || 0;
+      const targets = item ? this.pairOf(item) : [el];
+      targets.forEach((node) => {
+        node.setAttribute("data-remote-src", remote);
+        this.applyLoopAttrs(node);
+        node.src = obj;
+        node.removeAttribute("data-src");
+        node.dataset.dhBlob = "1";
+        this._blobUrls.set(node, obj);
+        try {
+          node.load();
+        } catch (e) {}
+      });
+      if (item) this.ensureSeamlessTwin(item);
+      const active = item && item.active ? item.active : el;
+      const resume = () => {
+        try {
+          if (t > 0.05 && t < (active.duration || Infinity) - 0.25) active.currentTime = t;
+        } catch (e) {}
+        if (wasPlaying) this.primePlay(item ? item.el : el);
+        if (item) this.primeStandby(item);
+      };
+      active.addEventListener("loadeddata", resume, { once: true });
+      window.setTimeout(resume, 40);
+      return true;
+    }
+
+    /**
+     * Prefetch all carousel clips (desktop needs neighbors looping smoothly too).
+     */
+    prefetchAllBlobs() {
+      this.items.forEach(({ el }) => {
+        const remote = el.getAttribute("data-src") || el.getAttribute("data-remote-src");
+        if (!remote) return;
+        void this.prefetchBlob(remote).then((obj) => {
+          if (!obj) return;
+          // Apply when this clip is already attached / active.
+          const idx = parseInt(el.getAttribute("data-slide-index") || "-1", 10);
+          const n = this.items.length;
+          const i = this._primary;
+          const mobile = !!(this.c && this.c.isMobile);
+          const near = mobile
+            ? idx === i
+            : idx === i || idx === (i - 1 + n) % n || idx === (i + 1) % n;
+          if (near) {
+            this.applyBlobIfReady(el);
+            this.primePlay(el);
+          }
+        });
+      });
+    }
+
     init() {
-      const els = Array.from(this.root.querySelectorAll("video.dh-carousel__video"));
-      this.items = els.map((el) => ({ el }));
-      els.forEach((el, idx) => {
+      const els = Array.from(
+        this.root.querySelectorAll("video.dh-carousel__video:not(.dh-carousel__video--twin)")
+      );
+      this.items = els.map((el) => ({ el, twin: null, active: el, _swapping: false }));
+      this.items.forEach((item, idx) => {
+        const el = item.el;
         el.muted = true;
         el.defaultMuted = true;
         el.playsInline = true;
         el.setAttribute("playsinline", "");
         el.setAttribute("webkit-playsinline", "");
-        el.loop = true;
-        el.setAttribute("loop", "");
+        this.applyLoopAttrs(el);
         el.preload = "none";
         el.disablePictureInPicture = true;
         el.setAttribute("disablepictureinpicture", "");
         el.setAttribute("data-slide-index", String(idx));
-        // Native loop is flaky on some MP4s / after dynamic src - restart explicitly.
-        el.addEventListener("ended", () => {
-          try {
-            el.currentTime = 0.001;
-          } catch (e) {}
-          el.loop = true;
-          void el.play().catch(() => {});
-        });
+        if (this.needsSeamless(el)) {
+          // Twin swap handles looping — avoid native ended/seek hitch.
+          el.addEventListener("ended", () => {
+            if (item.twin) this.swapSeamless(item);
+            else {
+              try {
+                el.currentTime = 0.001;
+              } catch (e) {}
+              void el.play().catch(() => {});
+            }
+          });
+        } else {
+          // Memory-buffered clips: wrap a few frames before EOF.
+          let wrapping = false;
+          el.addEventListener("timeupdate", () => {
+            if (el.dataset.dhBlob !== "1" || wrapping) return;
+            const d = el.duration;
+            if (!d || !isFinite(d) || d < 0.5 || el.paused) return;
+            if (el.currentTime < d - 0.1) return;
+            wrapping = true;
+            try {
+              el.currentTime = 0.001;
+            } catch (e) {}
+            if (el.paused) void el.play().catch(() => {});
+            window.setTimeout(() => {
+              wrapping = false;
+            }, 120);
+          });
+          el.addEventListener("ended", () => {
+            el.loop = true;
+            try {
+              el.currentTime = 0.001;
+            } catch (e) {}
+            const kick = () => void el.play().catch(() => {});
+            el.addEventListener("seeked", kick, { once: true });
+            kick();
+            window.setTimeout(kick, 60);
+            window.setTimeout(kick, 200);
+          });
+        }
         let retriedDecode = false;
         el.addEventListener("error", function () {
           if (retriedDecode) return;
@@ -296,6 +613,11 @@
             : 0;
       this.setPrimaryIndex(initial);
       this.restartTickLoop();
+      // Desktop shows side cards; prefetch all short clips so neighbor loops stay smooth.
+      window.setTimeout(() => this.prefetchAllBlobs(), 200);
+      if (typeof window.requestIdleCallback === "function") {
+        window.requestIdleCallback(() => this.prefetchAllBlobs(), { timeout: 2500 });
+      }
 
       const ioTarget = this.root.querySelector("[data-carousel-container]") || this.root;
       if ("IntersectionObserver" in window) {
@@ -337,15 +659,57 @@
      */
     ensureSrc(el) {
       if (!el) return;
-      if (el.getAttribute("src")) return;
-      const pending = el.getAttribute("data-src");
+      if (el.getAttribute("src") && el.dataset.dhBlob === "1") {
+        const item = this.items.find((it) => it.el === el || it.twin === el);
+        if (item) {
+          this.ensureSeamlessTwin(item);
+          this.primeStandby(item);
+        }
+        return;
+      }
+      const pending =
+        el.getAttribute("data-src") ||
+        el.getAttribute("data-remote-src") ||
+        (!String(el.currentSrc || "").startsWith("blob:") ? el.getAttribute("src") : "");
+      if (!pending && el.getAttribute("src")) return;
       if (!pending) return;
-      el.loop = true;
-      el.setAttribute("loop", "");
+      el.setAttribute("data-remote-src", pending);
+      this.applyLoopAttrs(el);
       el.muted = true;
       el.defaultMuted = true;
-      el.src = pending;
+      el.setAttribute("muted", "");
+      el.setAttribute("autoplay", "");
+      el.playsInline = true;
+      el.setAttribute("playsinline", "");
+      el.setAttribute("webkit-playsinline", "");
+      const blobUrl = this._blobByRemote.get(pending);
+      if (blobUrl) {
+        el.src = blobUrl;
+        el.dataset.dhBlob = "1";
+        this._blobUrls.set(el, blobUrl);
+      } else if (!el.getAttribute("src")) {
+        el.src = pending;
+        el.dataset.dhBlob = el.dataset.dhBlob || "0";
+        // Kick prefetch so the next loop / revisit uses memory.
+        void this.prefetchBlob(pending).then(() => {
+          if (this.applyBlobIfReady(el)) this.primePlay(el);
+        });
+      } else {
+        // Already streaming from network — upgrade to blob when ready (desktop neighbors).
+        void this.prefetchBlob(pending).then(() => {
+          if (this.applyBlobIfReady(el)) this.primePlay(el);
+        });
+        return;
+      }
       el.removeAttribute("data-src");
+      try {
+        el.load();
+      } catch (e) {}
+      const item = this.items.find((it) => it.el === el || it.twin === el);
+      if (item) {
+        this.ensureSeamlessTwin(item);
+        this.primeStandby(item);
+      }
     }
 
     restartTickLoop() {
@@ -361,11 +725,14 @@
     /**
      * Load + play the front card (and nearest neighbors on desktop). Pause the rest.
      * @param {number} index
+     * @param {{ fromUser?: boolean }} [opts]
      */
-    setPrimaryIndex(index) {
+    setPrimaryIndex(index, opts) {
       if (!this.items.length) return;
       const n = this.items.length;
       const i = Math.max(0, Math.min(index | 0, n - 1));
+      const fromUser = !!(opts && opts.fromUser);
+      if (fromUser) this._userNavigated = true;
       this._primary = i;
 
       const mobile = !!(this.c && this.c.isMobile);
@@ -373,57 +740,62 @@
         ? new Set([i])
         : new Set([i, (i - 1 + n) % n, (i + 1) % n]);
 
-      this.items.forEach(({ el }, idx) => {
+      this.items.forEach((item, idx) => {
+        const el = item.el;
         if (near.has(idx)) {
           const attach = () => {
             this.ensureSrc(el);
-            el.preload = idx === i ? "auto" : "metadata";
-            if (el.paused) this.primePlay(el);
+            this.ensureSeamlessTwin(item);
+            this.pairOf(item).forEach((node) => {
+              node.preload = "auto";
+            });
+            this.primePlay(el);
+            this.applyBlobIfReady(el);
           };
-          // Mobile: keep poster as LCP; attach video after first paint/idle.
-          if (mobile && idx === i && !el.getAttribute("src")) {
+          // First paint only: briefly defer the initial mobile LCP card.
+          // After the user scrolls/rotates, attach + play immediately.
+          const deferInitial =
+            mobile &&
+            idx === i &&
+            !el.getAttribute("src") &&
+            !this._userNavigated &&
+            !fromUser;
+          if (deferInitial) {
             el.preload = "none";
             if (typeof window.requestIdleCallback === "function") {
-              window.requestIdleCallback(attach, { timeout: 1500 });
+              window.requestIdleCallback(attach, { timeout: 900 });
             } else {
-              window.setTimeout(attach, 450);
+              window.setTimeout(attach, 220);
             }
           } else {
             attach();
           }
         } else {
-          el.preload = "none";
-          try {
-            el.pause();
-          } catch (e) {}
+          this.pairOf(item).forEach((node) => {
+            node.preload = "none";
+            try {
+              node.pause();
+            } catch (e) {}
+          });
         }
       });
 
-      if (!mobile) {
       requestAnimationFrame(() => {
-        this.items.forEach(({ el }, idx) => {
+        this.items.forEach((item, idx) => {
           if (!near.has(idx)) return;
-          if (el.error) {
+          if (!item.el.getAttribute("src")) this.ensureSrc(item.el);
+          if (item.el.error) {
             try {
-              el.load();
+              item.el.load();
             } catch (e) {}
-            this.primePlay(el);
-            return;
           }
-          if (el.networkState === 0) {
-            try {
-              el.load();
-            } catch (e) {}
-            this.primePlay(el);
-            return;
-          }
-          if (el.paused) this.primePlay(el);
+          this.primePlay(item.el);
         });
         this.ensurePlayback();
       });
-      } else {
-        this.ensurePlayback();
-      }
+      // Extra kick after decode starts (esp. after scroll-to-card).
+      window.setTimeout(() => this.ensurePlayback(), 160);
+      window.setTimeout(() => this.ensurePlayback(), 480);
     }
 
     ensurePlayback() {
@@ -434,29 +806,38 @@
       const near = mobile
         ? new Set([i])
         : new Set([i, (i - 1 + n) % n, (i + 1) % n]);
-      this.items.forEach(({ el }, idx) => {
+      this.items.forEach((item, idx) => {
+        const el = item.el;
         if (!near.has(idx)) {
-          if (!el.paused) {
-            try {
-              el.pause();
-            } catch (e) {}
-          }
+          this.pairOf(item).forEach((node) => {
+            if (!node.paused) {
+              try {
+                node.pause();
+              } catch (e) {}
+            }
+          });
           return;
         }
-        // On mobile, poster stays until idle attach sets src (better LCP).
         if (!el.getAttribute("src")) {
-          if (!mobile) this.ensureSrc(el);
-          else return;
+          // Always attach the active/near clip so scroll-to-card can autoplay.
+          this.ensureSrc(el);
         }
-        el.loop = true;
-        if (el.ended) {
+        this.ensureSeamlessTwin(item);
+        const active = item.active || el;
+        active.muted = true;
+        active.defaultMuted = true;
+        this.applyLoopAttrs(active);
+        active.setAttribute("autoplay", "");
+        if (active.ended) {
           try {
-            el.currentTime = 0.001;
+            active.currentTime = 0.001;
           } catch (e) {}
         }
-        if (!el.paused && !el.ended) return;
-        void el.play().catch(() => {});
-        window.setTimeout(() => void el.play().catch(() => {}), 100);
+        if (!active.paused && !active.ended) {
+          this.primeStandby(item);
+          return;
+        }
+        this.primePlay(el);
       });
     }
 
@@ -480,11 +861,24 @@
         clearInterval(this.tickInterval);
         this.tickInterval = null;
       }
-      this.items.forEach(({ el }) => {
-        try {
-          el.pause();
-        } catch (e) {}
+      this.items.forEach((item) => {
+        this.pairOf(item).forEach((el) => {
+          try {
+            el.pause();
+          } catch (e) {}
+        });
       });
+      if (this._blobUrls) {
+        this._blobUrls.clear();
+      }
+      if (this._blobByRemote) {
+        this._blobByRemote.forEach((url) => {
+          try {
+            URL.revokeObjectURL(url);
+          } catch (e) {}
+        });
+        this._blobByRemote.clear();
+      }
       this.items = [];
     }
   }
@@ -739,8 +1133,12 @@
       });
       this.updateMobileTitle();
       this.updateMobileNav();
-      if (this.videos && prevIndex !== best) {
-        this.videos.setPrimaryIndex(best);
+      if (this.videos) {
+        if (prevIndex !== best) {
+          this.videos.setPrimaryIndex(best, { fromUser: true });
+        } else {
+          this.videos.ensurePlayback();
+        }
       }
       if (prevIndex !== best) {
         this.announceFromIndex(best);
@@ -878,6 +1276,15 @@
           if (!this.isMobile) return;
           cancelAnimationFrame(scrollRaf);
           scrollRaf = requestAnimationFrame(() => this.updateMobileActive());
+        },
+        { passive: true }
+      );
+      this.container.addEventListener(
+        "scrollend",
+        () => {
+          if (!this.isMobile) return;
+          this.updateMobileActive();
+          if (this.videos) this.videos.ensurePlayback();
         },
         { passive: true }
       );
@@ -1142,7 +1549,7 @@
         const front = this.getFrontItemIndex();
         if (front !== this._lastPrimaryFront) {
           this._lastPrimaryFront = front;
-          this.videos.setPrimaryIndex(front);
+          this.videos.setPrimaryIndex(front, { fromUser: true });
         }
       }
       this.syncGroundShadowTilt();
@@ -1248,7 +1655,7 @@
           `<div class="dh-carousel__card-front">` +
           `<span class="dh-carousel__shine" aria-hidden="true"></span>` +
           `<div class="dh-carousel__video-wrap" aria-hidden="true">` +
-          `<video class="dh-carousel__video" muted="" playsinline="" webkit-playsinline="" loop="" preload="none" disablepictureinpicture="" data-slide-index="${index}" data-src="${escAttr(mediaUrl)}"${posterAttr}></video>` +
+          `<video class="dh-carousel__video" muted="" autoplay="" playsinline="" webkit-playsinline="" loop="" preload="none" disablepictureinpicture="" data-slide-index="${index}" data-src="${escAttr(mediaUrl)}"${posterAttr}></video>` +
           `</div>` +
           `<span class="dh-carousel__title" aria-hidden="true">${escHtml(slide.titleHe)}</span>` +
           `</div></a></div>`

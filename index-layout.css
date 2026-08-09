@@ -242,6 +242,10 @@
       /* Bubble intro waits until background has finished; arrow delay in dh-carousel-embed.css follows */
       --embed-bubble-duration: var(--dh-home-bubble-duration);
       --embed-bubble-delay: var(--dh-home-carousel-start);
+      /* Homepage 3D card face size */
+      --card-size: 250px;
+      --card-width: var(--card-size);
+      --card-height: var(--card-size);
       /* Thinner 3D extrusion (depth); faces stay default square from dh-carousel-embed.css */
       --card-depth: 8px;
       --dh-carousel-shadow-rgb: 153, 190, 255;
