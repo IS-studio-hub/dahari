@@ -160,9 +160,7 @@
     /* index.html only: photo over white; ~60% photo via 40% white wash */
     html.dh-page-home body {
       background-color: #fff;
-      background-image: var(--dh-8bit-grid-light);
-      background-size: var(--dh-8bit-grid-size);
-      background-repeat: repeat;
+      background-image: none;
       position: relative;
     }
 
@@ -235,10 +233,12 @@
 
     html.dh-page-home .dh-side-header888__content888 {
       background-color: transparent;
+      background-image: none;
     }
 
     html.dh-page-home .dh-carousel-embed {
       background-color: transparent;
+      background-image: none;
       /* Bubble intro waits until background has finished; arrow delay in dh-carousel-embed.css follows */
       --embed-bubble-duration: var(--dh-home-bubble-duration);
       --embed-bubble-delay: var(--dh-home-carousel-start);
@@ -971,4 +971,15 @@
       clip: rect(0, 0, 0, 0);
       white-space: nowrap;
       border: 0;
+    }
+
+    /* Homepage: kill square grid on full-bleed layers (must come after side-header rules).
+       Do NOT target body::before — that layer carries the background photo. */
+    html.dh-page-home body,
+    html.dh-page-home .dh-side-header888,
+    html.dh-page-home .dh-side-header888__layout888,
+    html.dh-page-home .dh-side-header888__content888,
+    html.dh-page-home .dh-carousel-embed,
+    html.dh-page-home .dh-main-content {
+      background-image: none !important;
     }

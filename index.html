@@ -7,8 +7,8 @@
 <title>דהרי - עמוד הבית</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/>
 <link rel="preload" as="image" href="assets/Homepagevids/posters/%D7%90%D7%95%D7%93%D7%95%D7%AA%20V3.webp" fetchpriority="high"/>
-<link rel="preload" as="style" href="dh-home.min.css?v=18"/>
-<link href="dh-home.min.css?v=18" rel="stylesheet"/>
+<link rel="preload" as="style" href="dh-home.min.css?v=24"/>
+<link href="dh-home.min.css?v=24" rel="stylesheet"/>
 <link href="dh-custom-cursor.css?v=7" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Gveret+Levin&amp;family=Noto+Sans+Hebrew:wght@500;600;700&amp;family=Rubik:wght@400;500;600;700&amp;display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
 <noscript><link href="https://fonts.googleapis.com/css2?family=Gveret+Levin&amp;family=Noto+Sans+Hebrew:wght@500;600;700&amp;family=Rubik:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/></noscript>
@@ -18,6 +18,11 @@
 .dh-carousel__lcp-shell{position:absolute;inset:0;z-index:1;pointer-events:none}
 .dh-carousel__lcp-shell img{display:block;width:100%;height:100%;object-fit:cover}
 .dh-carousel__stage:has(.dh-carousel__item) .dh-carousel__lcp-shell{display:none}
+/* Homepage: no square grid over the background photo (keep body::before photo) */
+html.dh-page-home body,
+html.dh-page-home .dh-side-header888__content888,
+html.dh-page-home .dh-carousel-embed,
+html.dh-page-home .dh-main-content{background-image:none!important}
 </style>
 </head>
 <body>

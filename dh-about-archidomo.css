@@ -164,18 +164,6 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
   overflow: hidden;
 }
 
-.dh-arch-quote-band::before {
-  content: "";
-  position: absolute;
-  width: min(72vw, 780px);
-  height: min(72vw, 780px);
-  border-radius: 50%;
-  border: 1px solid rgba(17, 17, 17, 0.08);
-  top: -58%;
-  right: -34%;
-  pointer-events: none;
-}
-
 .dh-arch-quote-band__text {
   margin: 0;
   position: relative;
@@ -209,6 +197,13 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
   margin-bottom: clamp(1.25rem, 3vw, 2rem);
 }
 
+.dh-arch-ag-panel__intro-copy {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.5vw, 1.5rem);
+  min-width: 0;
+}
+
 .dh-arch-ag-panel__intro-text {
   margin: 0;
   max-width: 36rem;
@@ -216,13 +211,30 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
   line-height: 1.18;
 }
 
+.dh-arch-ag-panel__intro-copy .dh-arch-world--inline {
+  padding-block: 0;
+}
+
+.dh-arch-ag-panel__intro-copy .dh-arch-statement__h2 {
+  margin-top: clamp(0.75rem, 2vw, 1.35rem);
+  margin-bottom: 0.75rem;
+  font-size: clamp(2rem, 4.5vw, 3.15rem);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.dh-arch-ag-panel__intro-copy .dh-arch-world__p {
+  max-width: 36rem;
+}
+
 /* Portrait frame: landscape assets crop via cover - full column width, no side gutters */
 .dh-arch-ag-panel__intro-pic {
   overflow: hidden;
-  width: 100%;
-  aspect-ratio: 3 / 4;
+  width: min(100%, min(72vh, 560px));
+  aspect-ratio: 1 / 1;
   max-height: min(72vh, 560px);
   align-self: start;
+  justify-self: stretch;
 }
 
 .dh-arch-ag-panel__intro-img {
@@ -237,6 +249,7 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
 .dh-arch-ag-panel__h2 {
   margin: 0 0 0.5rem;
   font-weight: 400;
+  font-synthesis: none;
   font-size: clamp(2.8rem, 7vw, 5rem);
   line-height: 1.05;
   padding-bottom: 0.5rem;
@@ -252,7 +265,7 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
 
 .dh-arch-ag-row {
   display: grid;
-  grid-template-columns: 44px minmax(120px, 170px) minmax(0, 1fr) minmax(160px, 26%);
+  grid-template-columns: 44px minmax(180px, 300px) minmax(0, 1fr) minmax(160px, 24%);
   gap: 1rem;
   padding: 1rem 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
@@ -283,6 +296,14 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
   line-height: 1.35;
   max-width: 52ch;
   color: var(--site-text-color, #2c2d66);
+}
+
+.dh-arch-ag-row__body p {
+  margin: 0 0 0.7em;
+}
+
+.dh-arch-ag-row__body p:last-child {
+  margin-bottom: 0;
 }
 
 .dh-arch-ag-row__img {
@@ -336,6 +357,10 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
 /* World imprint */
 .dh-arch-world {
   padding-block: clamp(2rem, 5vw, 4rem);
+}
+
+.dh-arch-world--inline {
+  padding-block: clamp(1.25rem, 3vw, 2.5rem) clamp(2rem, 5vw, 3.5rem);
 }
 
 .dh-arch-world__p {
@@ -442,6 +467,7 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
   }
 
   .dh-arch-ag-panel__intro-pic {
+    width: min(100%, min(58vh, 520px));
     max-height: min(58vh, 520px);
   }
 

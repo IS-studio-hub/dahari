@@ -364,19 +364,8 @@
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
       pointer-events: none;
-      background-color: var(--card-back);
-      background-image: linear-gradient(
-          155deg,
-          var(--card-back-highlight) 0%,
-          var(--card-back-highlight) 36%,
-          var(--card-back) 36%,
-          var(--card-back) 64%,
-          var(--card-back-shadow) 64%
-        ),
-        var(--dh-8bit-grid-light);
-      background-size: auto, var(--dh-8bit-grid-size);
-      background-position: center, 0 0;
-      background-repeat: no-repeat, repeat;
+      background-color: var(--card-back, #99beff);
+      background-image: none;
     }
     .dh-carousel__card-edge--right {
       width: var(--card-depth);
@@ -414,23 +403,12 @@
       margin-top: calc(var(--card-depth) / -2);
       transform: rotateX(-90deg) translateZ(calc(var(--card-height) / 2));
     }
-    /* Card back: #99BEFF family - angled panels + subtle grid */
+    /* Card back: solid light blue */
     .dh-carousel__card-back {
       position: absolute;
       inset: 0;
-      background-color: var(--card-back);
-      background-image: linear-gradient(
-          155deg,
-          var(--card-back-highlight) 0%,
-          var(--card-back-highlight) 36%,
-          var(--card-back) 36%,
-          var(--card-back) 64%,
-          var(--card-back-shadow) 64%
-        ),
-        var(--dh-8bit-grid-light);
-      background-size: auto, var(--dh-8bit-grid-size);
-      background-position: center, 0 0;
-      background-repeat: no-repeat, repeat;
+      background-color: var(--card-back, #99beff);
+      background-image: none;
       border-radius: var(--card-radius);
       transform: rotateY(180deg) translate3d(0, 0, calc(var(--card-depth) / 2));
       transform-style: preserve-3d;
@@ -439,9 +417,7 @@
       -webkit-backface-visibility: hidden;
       pointer-events: none;
       border: none;
-      box-shadow:
-        inset 0 2px 0 rgba(255, 255, 255, 0.45),
-        inset 0 -2px 0 rgba(0, 0, 0, 0.12);
+      box-shadow: none;
     }
 
     .dh-carousel__video-wrap {
