@@ -21,9 +21,10 @@
   pointer-events: auto;
 }
 
-.dh-lightbox__img {
+.dh-lightbox__img,
+.dh-lightbox__video {
   max-width: min(100%, 1600px);
-  max-height: calc(100vh 4rem);
+  max-height: calc(100vh - 4rem);
   width: auto;
   height: auto;
   object-fit: contain;
@@ -31,6 +32,15 @@
   box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45);
   user-select: none;
   -webkit-user-select: none;
+}
+
+.dh-lightbox__video {
+  background: #000;
+}
+
+.dh-lightbox__img[hidden],
+.dh-lightbox__video[hidden] {
+  display: none !important;
 }
 
 .dh-lightbox__close {
@@ -69,11 +79,20 @@
   display: block;
 }
 
-/* Hint that content images are expandable (not portfolio/listing cards) */
+/* Hint that content images / looping videos are expandable */
 .dh-logistics-item__gallery img,
+.dh-logistics-item__gallery video,
 .dh-logistics-item__plans-media img,
 .dh-arch-media {
   cursor: zoom-in;
+}
+
+.dh-logistics-item video::-webkit-media-controls,
+.dh-lightbox video::-webkit-media-controls,
+.dh-logistics-item video::-webkit-media-controls-start-playback-button,
+.dh-lightbox video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none;
 }
 
 body.dh-lightbox-open {

@@ -9,6 +9,12 @@ html.dh-custom-cursor--on * {
   cursor: none !important;
 }
 
+/* If the custom cursor is hidden, show the OS pointer again. */
+html.dh-custom-cursor--on:has(#dh-site-cursor.dh-site-cursor--hidden),
+html.dh-custom-cursor--on:has(#dh-site-cursor.dh-site-cursor--hidden) * {
+  cursor: auto !important;
+}
+
 html.dh-custom-cursor--on .dh-skip-link:focus,
 html.dh-custom-cursor--on .dh-skip-link:focus-visible,
 html.dh-custom-cursor--on .wqf-skip-link:focus,
@@ -32,7 +38,7 @@ html.dh-custom-cursor--on
   margin: 0;
   padding: 0;
   pointer-events: none;
-  z-index: 50000;
+  z-index: 100010;
   will-change: transform;
   isolation: isolate;
 }

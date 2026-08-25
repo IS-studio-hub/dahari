@@ -16,7 +16,7 @@ GREY_PLACEHOLDER = "assets/placeholders/grey-placeholder.svg"
 IMAGE_EXT = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
 VIDEO_EXT = {".mp4", ".mov", ".webm", ".m4v"}
 MEDIA_EXT = IMAGE_EXT | VIDEO_EXT
-INQUIRY_MAILTO = "info@dahari.co.il"
+INQUIRY_MAILTO = "shamrikin@gmail.com"
 
 # Product pages that load gallery media from a folder (path relative to site root).
 # Add or remove files, then run: python3 scripts/sync-contentstorage-galleries.py
@@ -849,7 +849,7 @@ def _collect_from(rel):
 def _collect_folder_media(folder):
     """Image and video files in a gallery folder (non-recursive).
 
-    Videos are listed first, then images — each group natural-sorted.
+    Mixed in one list by natural filename so photos and videos share a grid.
     When WebP versions exist, skip raster originals so galleries aren't duplicated.
     """
     if not folder.is_dir():
@@ -869,12 +869,7 @@ def _collect_folder_media(folder):
             for p in items
             if p.suffix.lower() in VIDEO_EXT or p.suffix.lower() == ".webp"
         ]
-    items.sort(
-        key=lambda p: (
-            0 if p.suffix.lower() in VIDEO_EXT else 1,
-            _natural_sort_key(p),
-        )
-    )
+    items.sort(key=_natural_sort_key)
     return items
 
 
@@ -883,10 +878,8 @@ def _media_type(path):
 
 
 def sort_gallery_media(media):
-    """Videos first, then images — keeps relative order within each type."""
-    videos = [m for m in media if m.get("type") == "video"]
-    images = [m for m in media if m.get("type") != "video"]
-    return videos + images
+    """Keep mixed image/video order (natural filename)."""
+    return list(media)
 
 
 def resolve_folder_gallery(rel_from_root):
@@ -930,7 +923,8 @@ def gallery_li_html(media):
         if item["type"] == "video":
             lines.append(
                 f'<li role="listitem"><video class="dh-logistics-item__gallery-video" '
-                f'controls playsinline preload="metadata" src="{src}"></video></li>'
+                f'muted loop autoplay playsinline preload="metadata" disablepictureinpicture '
+                f'controlslist="nodownload nofullscreen noremoteplayback" src="{src}"></video></li>'
             )
         else:
             lines.append(
@@ -945,9 +939,14 @@ def patch_product_gallery(page_path, rel_from_root, media):
     text = page_path.read_text(encoding="utf-8")
     gallery_li = gallery_li_html(media)
     gallery_data = f' data-contentstorage-gallery="{html.escape(rel_from_root)}"'
-    new_ul = f'<ul class="dh-logistics-item__gallery-grid" role="list"{gallery_data}>\n{gallery_li}\n</ul>'
+    class_m = re.search(
+        r'<ul class="(dh-logistics-item__gallery-grid[^"]*)"',
+        text,
+    )
+    grid_class = class_m.group(1) if class_m else "dh-logistics-item__gallery-grid"
+    new_ul = f'<ul class="{grid_class}" role="list"{gallery_data}>\n{gallery_li}\n</ul>'
     text, n = re.subn(
-        r'<ul class="dh-logistics-item__gallery-grid"[^>]*>.*?</ul>',
+        r'<ul class="dh-logistics-item__gallery-grid[^"]*"[^>]*>.*?</ul>',
         new_ul,
         text,
         count=1,
@@ -1459,8 +1458,9 @@ def build_item_page(project, all_projects):
 <title>{html.escape(meta['title_prefix'])} — {html.escape(title)}</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@500;600;700&amp;family=Rubik:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="index-layout.css?v=73" rel="stylesheet"/>
-<link href="dh-side-header888.css?v=71" rel="stylesheet"/>
-<link href="dh-logistics-item.css?v=91" rel="stylesheet"/>
+<link href="dh-side-header888.css?v=92" rel="stylesheet"/>
+<link href="dh-logistics-item.css?v=98" rel="stylesheet"/>
+<link href="dh-image-lightbox.css?v=4" rel="stylesheet" media="print" onload="this.media='all'"/>
 </head>
 <body>
 <a class="dh-skip-link" href="#dh-main-content">דלג לתוכן הראשי</a>
@@ -1609,10 +1609,11 @@ def build_item_page(project, all_projects):
 </div>
 </nav>
 </div>
-<script defer="" src="dh-side-header888.js?v=15"></script>
+<script defer="" src="dh-side-header888.js?v=22"></script>
+<script defer="" src="dh-image-lightbox.js?v=4"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-<script defer="" src="dh-logistics-item.js?v=37"></script>
+<script defer="" src="dh-logistics-item.js?v=47"></script>
 </div>
 </body>
 </html>

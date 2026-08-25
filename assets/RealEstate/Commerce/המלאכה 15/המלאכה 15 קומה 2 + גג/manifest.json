@@ -1,9 +1,4 @@
 {
-  "images": [
-    "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015%20%D7%A7%D7%95%D7%9E%D7%94%202%20%2B%20%D7%92%D7%92/00-hero.webp",
-    "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015%20%D7%A7%D7%95%D7%9E%D7%94%202%20%2B%20%D7%92%D7%92/DJI_20251116134848_0050_D.webp",
-    "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015%20%D7%A7%D7%95%D7%9E%D7%94%202%20%2B%20%D7%92%D7%92/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015%20%D7%A6%D7%99%D7%9C%D7%95%D7%9D%20%D7%97%D7%95%D7%A5%203.webp"
-  ],
   "media": [
     {
       "type": "image",
@@ -11,11 +6,41 @@
     },
     {
       "type": "image",
+      "src": "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015%20%D7%A7%D7%95%D7%9E%D7%94%202%20%2B%20%D7%92%D7%92/01-exterior.webp"
+    },
+    {
+      "type": "image",
       "src": "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015%20%D7%A7%D7%95%D7%9E%D7%94%202%20%2B%20%D7%92%D7%92/DJI_20251116134848_0050_D.webp"
     },
     {
       "type": "image",
-      "src": "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015%20%D7%A7%D7%95%D7%9E%D7%94%202%20%2B%20%D7%92%D7%92/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015%20%D7%A6%D7%99%D7%9C%D7%95%D7%9D%20%D7%97%D7%95%D7%A5%203.webp"
+      "src": "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015%20%D7%A7%D7%95%D7%9E%D7%94%202%20%2B%20%D7%92%D7%92/IMG_5649.webp"
+    },
+    {
+      "type": "image",
+      "src": "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015%20%D7%A7%D7%95%D7%9E%D7%94%202%20%2B%20%D7%92%D7%92/IMG_5651.webp"
+    },
+    {
+      "type": "image",
+      "src": "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015%20%D7%A7%D7%95%D7%9E%D7%94%202%20%2B%20%D7%92%D7%92/IMG_5653.webp"
+    },
+    {
+      "type": "image",
+      "src": "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015%20%D7%A7%D7%95%D7%9E%D7%94%202%20%2B%20%D7%92%D7%92/IMG_6060.webp"
+    },
+    {
+      "type": "image",
+      "src": "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015%20%D7%A7%D7%95%D7%9E%D7%94%202%20%2B%20%D7%92%D7%92/IMG_8265.webp"
     }
+  ],
+  "images": [
+    "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015%20%D7%A7%D7%95%D7%9E%D7%94%202%20%2B%20%D7%92%D7%92/00-hero.webp",
+    "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015%20%D7%A7%D7%95%D7%9E%D7%94%202%20%2B%20%D7%92%D7%92/01-exterior.webp",
+    "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015%20%D7%A7%D7%95%D7%9E%D7%94%202%20%2B%20%D7%92%D7%92/DJI_20251116134848_0050_D.webp",
+    "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015%20%D7%A7%D7%95%D7%9E%D7%94%202%20%2B%20%D7%92%D7%92/IMG_5649.webp",
+    "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015%20%D7%A7%D7%95%D7%9E%D7%94%202%20%2B%20%D7%92%D7%92/IMG_5651.webp",
+    "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015%20%D7%A7%D7%95%D7%9E%D7%94%202%20%2B%20%D7%92%D7%92/IMG_5653.webp",
+    "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015%20%D7%A7%D7%95%D7%9E%D7%94%202%20%2B%20%D7%92%D7%92/IMG_6060.webp",
+    "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2015%20%D7%A7%D7%95%D7%9E%D7%94%202%20%2B%20%D7%92%D7%92/IMG_8265.webp"
   ]
 }

@@ -20,59 +20,61 @@
       .then(function (data) {
         var media = data && Array.isArray(data.media) ? data.media : null;
         var images = data && Array.isArray(data.images) ? data.images : [];
+        function renderItem(item) {
+          if (item.type === "video") {
+            return (
+              '<li role="listitem"><video class="dh-logistics-item__gallery-video" muted loop autoplay playsinline ' +
+              'preload="metadata" disablepictureinpicture controlslist="nodownload nofullscreen noremoteplayback" src="' +
+              item.src +
+              '"></video></li>'
+            );
+          }
+          return (
+            '<li role="listitem"><img alt="" decoding="async" height="600" loading="lazy" ' +
+            'referrerpolicy="no-referrer" src="' +
+            item.src +
+            '" width="960"/></li>'
+          );
+        }
+
         if (media && media.length) {
-          var videos = media.filter(function (item) {
-            return item.type === "video";
-          });
-          var onlyImages = media.filter(function (item) {
-            return item.type !== "video";
-          });
-          // Images first so the page stays usable; videos load on demand.
-          galleryGrid.innerHTML = onlyImages
-            .concat(videos)
-            .map(function (item) {
-              if (item.type === "video") {
-                return (
-                  '<li role="listitem"><video class="dh-logistics-item__gallery-video" controls playsinline ' +
-                  'preload="none" src="' +
-                  item.src +
-                  '"></video></li>'
-                );
-              }
-              return (
-                '<li role="listitem"><img alt="" decoding="async" height="600" loading="lazy" ' +
-                'referrerpolicy="no-referrer" src="' +
-                item.src +
-                '" width="960"/></li>'
-              );
-            })
-            .join("");
+          galleryGrid.innerHTML = media.map(renderItem).join("");
+          bindGalleryVideos();
           return;
         }
         if (!images.length) return;
         galleryGrid.innerHTML = images
           .map(function (src) {
-            return (
-              '<li role="listitem"><img alt="" decoding="async" height="600" loading="lazy" ' +
-              'referrerpolicy="no-referrer" src="' +
-              src +
-              '" width="960"/></li>'
-            );
+            return renderItem({ type: "image", src: src });
           })
           .join("");
+        bindGalleryVideos();
       })
-      .catch(function () {});
+      .catch(function () {
+        bindGalleryVideos();
+      });
+  } else {
+    bindGalleryVideos();
   }
 
-  var videos = document.querySelectorAll(
-    "video.dh-logistics-item__video, video.dh-logistics-item__gallery-video"
-  );
-  if (videos.length) {
+  function bindGalleryVideos() {
+    var videos = document.querySelectorAll(
+      "video.dh-logistics-item__video, video.dh-logistics-item__gallery-video"
+    );
+    if (!videos.length) return;
+
     function tryPlay(video) {
       if (!video) return;
       video.muted = true;
       video.defaultMuted = true;
+      video.loop = true;
+      video.autoplay = true;
       video.playsInline = true;
+      video.controls = false;
+      video.removeAttribute("controls");
+      video.setAttribute("muted", "");
+      video.setAttribute("loop", "");
+      video.setAttribute("playsinline", "");
       var playAttempt = video.play();
       if (playAttempt && typeof playAttempt.catch === "function") {
         playAttempt.catch(function () {});
@@ -122,13 +124,15 @@
     if (alertBox) {
       alertBox.textContent = "";
       alertBox.hidden = true;
+      alertBox.classList.remove("dh-logistics-item__inquiry-alert--ok");
     }
   }
 
-  function showAlert(msg) {
+  function showAlert(msg, ok) {
     if (!alertBox) return;
     alertBox.textContent = msg;
     alertBox.hidden = false;
+    alertBox.classList.toggle("dh-logistics-item__inquiry-alert--ok", !!ok);
     alertBox.focus();
   }
 
@@ -188,19 +192,107 @@
     return lines.join("\n");
   }
 
-  function buildMailto(customerEmail) {
-    var to = attr("data-mailto") || "info@dahari.co.il";
-    var productTitle = attr("data-product-title");
-    var body =
+  function inquiryTo() {
+    return attr("data-mailto") || "shamrikin@gmail.com";
+  }
+
+  function inquiryBody(customerEmail) {
+    return (
       "פנייה חדשה מהאתר - מעוניין/ת בנכס\n\n" +
       "דוא״ל הלקוח/ה: " +
       customerEmail +
       "\n\n" +
       "פרטי הנכס:\n" +
-      productDetailLines();
+      productDetailLines()
+    );
+  }
 
-    var subject = "פנייה לגבי נכס - " + productTitle;
-    return "mailto:" + encodeURIComponent(to) + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+  function inquiryPayload(customerEmail) {
+    var productTitle = attr("data-product-title");
+    return {
+      _subject: "פנייה לגבי נכס - " + productTitle,
+      _template: "table",
+      _captcha: "false",
+      _replyto: customerEmail,
+      email: customerEmail,
+      property: productTitle,
+      category: attr("data-product-category"),
+      page: productPageUrl(),
+      message: inquiryBody(customerEmail),
+    };
+  }
+
+  var toastTimer = 0;
+
+  function showSentToast() {
+    var toast = document.getElementById("dh-inquiry-toast");
+    if (!toast) {
+      toast = document.createElement("p");
+      toast.id = "dh-inquiry-toast";
+      toast.className = "dh-inquiry-toast";
+      toast.setAttribute("role", "status");
+      toast.setAttribute("aria-live", "polite");
+      document.body.appendChild(toast);
+    }
+    toast.textContent = "האימייל נישלח";
+    toast.classList.add("is-on");
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(function () {
+      toast.classList.remove("is-on");
+    }, 3000);
+  }
+
+  function postInquiryInBackground(customerEmail) {
+    var payload = inquiryPayload(customerEmail);
+    var to = encodeURIComponent(inquiryTo());
+
+    fetch("https://formsubmit.co/ajax/" + to, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(payload),
+      keepalive: true,
+    }).catch(function () {});
+
+    var iframe = document.getElementById("dh-inquiry-frame");
+    if (!iframe) {
+      iframe = document.createElement("iframe");
+      iframe.id = "dh-inquiry-frame";
+      iframe.name = "dh-inquiry-frame";
+      iframe.title = "inquiry";
+      iframe.setAttribute("aria-hidden", "true");
+      iframe.style.cssText =
+        "position:absolute;width:0;height:0;border:0;overflow:hidden;visibility:hidden";
+      document.body.appendChild(iframe);
+    }
+
+    var ghost = document.createElement("form");
+    ghost.action = "https://formsubmit.co/" + to;
+    ghost.method = "POST";
+    ghost.target = "dh-inquiry-frame";
+    ghost.acceptCharset = "UTF-8";
+    ghost.style.display = "none";
+    Object.keys(payload).forEach(function (key) {
+      var input = document.createElement("input");
+      input.type = "hidden";
+      input.name = key;
+      input.value = payload[key];
+      ghost.appendChild(input);
+    });
+    document.body.appendChild(ghost);
+    ghost.submit();
+    window.setTimeout(function () {
+      if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+    }, 4000);
+  }
+
+  function sendInquiry(customerEmail) {
+    showSentToast();
+    form.reset();
+    setInvalid(false);
+    postInquiryInBackground(customerEmail);
   }
 
   form.addEventListener("submit", function (ev) {
@@ -209,6 +301,6 @@
     var customerEmail = validateEmail();
     if (!customerEmail) return;
 
-    window.location.href = buildMailto(customerEmail);
+    sendInquiry(customerEmail);
   });
 })();

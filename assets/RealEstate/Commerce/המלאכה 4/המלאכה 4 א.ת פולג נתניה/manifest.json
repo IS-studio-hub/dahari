@@ -2,10 +2,6 @@
   "media": [
     {
       "type": "image",
-      "src": "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204%20%D7%90.%D7%AA%20%D7%A4%D7%95%D7%9C%D7%92%20%D7%A0%D7%AA%D7%A0%D7%99%D7%94/00-hero.webp"
-    },
-    {
-      "type": "image",
       "src": "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204%20%D7%90.%D7%AA%20%D7%A4%D7%95%D7%9C%D7%92%20%D7%A0%D7%AA%D7%A0%D7%99%D7%94/IMG_7238.webp"
     },
     {
@@ -26,10 +22,6 @@
     },
     {
       "type": "image",
-      "src": "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204%20%D7%90.%D7%AA%20%D7%A4%D7%95%D7%9C%D7%92%20%D7%A0%D7%AA%D7%A0%D7%99%D7%94/IMG_7244.webp"
-    },
-    {
-      "type": "image",
       "src": "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204%20%D7%90.%D7%AA%20%D7%A4%D7%95%D7%9C%D7%92%20%D7%A0%D7%AA%D7%A0%D7%99%D7%94/IMG_7245.webp"
     },
     {
@@ -38,13 +30,11 @@
     }
   ],
   "images": [
-    "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204%20%D7%90.%D7%AA%20%D7%A4%D7%95%D7%9C%D7%92%20%D7%A0%D7%AA%D7%A0%D7%99%D7%94/00-hero.webp",
     "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204%20%D7%90.%D7%AA%20%D7%A4%D7%95%D7%9C%D7%92%20%D7%A0%D7%AA%D7%A0%D7%99%D7%94/IMG_7238.webp",
     "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204%20%D7%90.%D7%AA%20%D7%A4%D7%95%D7%9C%D7%92%20%D7%A0%D7%AA%D7%A0%D7%99%D7%94/IMG_7240.webp",
     "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204%20%D7%90.%D7%AA%20%D7%A4%D7%95%D7%9C%D7%92%20%D7%A0%D7%AA%D7%A0%D7%99%D7%94/IMG_7241.webp",
     "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204%20%D7%90.%D7%AA%20%D7%A4%D7%95%D7%9C%D7%92%20%D7%A0%D7%AA%D7%A0%D7%99%D7%94/IMG_7242.webp",
     "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204%20%D7%90.%D7%AA%20%D7%A4%D7%95%D7%9C%D7%92%20%D7%A0%D7%AA%D7%A0%D7%99%D7%94/IMG_7243.webp",
-    "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204%20%D7%90.%D7%AA%20%D7%A4%D7%95%D7%9C%D7%92%20%D7%A0%D7%AA%D7%A0%D7%99%D7%94/IMG_7244.webp",
     "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204%20%D7%90.%D7%AA%20%D7%A4%D7%95%D7%9C%D7%92%20%D7%A0%D7%AA%D7%A0%D7%99%D7%94/IMG_7245.webp",
     "assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%204%20%D7%90.%D7%AA%20%D7%A4%D7%95%D7%9C%D7%92%20%D7%A0%D7%AA%D7%A0%D7%99%D7%94/IMG_7246.webp"
   ]

@@ -1008,6 +1008,20 @@
   margin-top: 12px;
 }
 
+/* Tablets + phones: 16px side inset on “לפרטים נוספים ויצירת קשר” */
+@media (max-width: 1023px) {
+  #wqf-portfolio-root .wqf-cta-row {
+    padding-inline: 16px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  #wqf-portfolio-root .wqf-slide.swiper-slide-active .wqf-expand-grid,
+  #wqf-portfolio-root.wqf-portfolio--mobile-stack .wqf-expand-grid {
+    padding-inline: 0;
+  }
+}
+
 #wqf-portfolio-root.wqf-portfolio--mobile-stack .wqf-slide-title-wrap {
   max-width: 100%;
   padding-left: 16px;

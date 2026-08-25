@@ -39,6 +39,7 @@
   function onMove(ev) {
     mx = ev.clientX;
     my = ev.clientY;
+    setHidden(false);
     const hit = ev.target && ev.target.closest ? ev.target.closest(HOVER) : null;
     el.classList.toggle("dh-site-cursor--link", !!hit);
   }
@@ -81,7 +82,16 @@
     setPressed(false);
   });
 
-  document.documentElement.addEventListener("mouseleave", function () {
+  document.documentElement.addEventListener("mouseleave", function (e) {
+    /* Native video controls can fire mouseleave while the pointer is still in the window. */
+    if (
+      e.clientX >= 0 &&
+      e.clientY >= 0 &&
+      e.clientX <= window.innerWidth &&
+      e.clientY <= window.innerHeight
+    ) {
+      return;
+    }
     setHidden(true);
   });
   document.documentElement.addEventListener("mouseenter", function () {

@@ -380,7 +380,7 @@
 		var cur = document.currentScript;
 		if (cur && cur.src) {
 			try {
-				return new URL("dh-custom-cursor.js?v=7", cur.src).href;
+				return new URL("dh-custom-cursor.js?v=9", cur.src).href;
 			} catch (e) {}
 		}
 		/* deferred scripts: currentScript is null - find this header script by src */
@@ -389,11 +389,11 @@
 			var src = tags[i].src || "";
 			if (/dh-side-header888(\.min)?\.js/i.test(src)) {
 				try {
-					return new URL("dh-custom-cursor.js?v=7", src).href;
+					return new URL("dh-custom-cursor.js?v=9", src).href;
 				} catch (e) {}
 			}
 		}
-		return "dh-custom-cursor.js?v=7";
+		return "dh-custom-cursor.js?v=9";
 	}
 
 	window.__dhCustomCursorScheduled = true;
