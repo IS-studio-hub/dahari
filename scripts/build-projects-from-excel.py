@@ -73,6 +73,15 @@ CARD_IMAGE_OVERRIDES = {
     ),
 }
 
+# Stale duplicate pages — excluded from also-like catalog (canonical page used instead).
+ALSO_LIKE_EXCLUDE = {
+    "residences-item-14-14.html",
+}
+
+PLACEHOLDER_IMAGES = {
+    "assets/RealEstate/about/living-building-1024x480.webp",
+}
+
 # Portfolio card copy / area tag overrides.
 CARD_DESC_OVERRIDES = {
     "commerce-item-30.html": (
@@ -1012,7 +1021,18 @@ def _product_section_from_filename(name):
     return None
 
 
-def _first_gallery_image_src(html_text):
+def _is_placeholder_image(src):
+    if not src:
+        return True
+    if src in PLACEHOLDER_IMAGES:
+        return True
+    if "placeholders/" in src:
+        return True
+    return False
+
+
+def _hero_gallery_image_src(html_text):
+    """First gallery image: prefer fetchpriority=high, skip generic placeholders."""
     m = re.search(
         r'<ul class="dh-logistics-item__gallery-grid"[^>]*>(.*?)</ul>',
         html_text,
@@ -1020,16 +1040,58 @@ def _first_gallery_image_src(html_text):
     )
     if not m:
         return ""
-    for src in re.findall(r'<img\b[^>]*\bsrc="([^"]+)"', m.group(1)):
-        if src:
+    gallery = m.group(1)
+    for img in re.finditer(r"<img\b([^>]*)\bsrc=\"([^\"]+)\"", gallery):
+        attrs, src = img.group(1), img.group(2)
+        if 'fetchpriority="high"' in attrs and not _is_placeholder_image(src):
+            return src
+    for src in re.findall(r'<img\b[^>]*\bsrc="([^"]+)"', gallery):
+        if src and not _is_placeholder_image(src):
             return src
     return ""
+
+
+def _portfolio_card_image(filename):
+    """Card thumbnail from commerce/residences/offices portfolio sliders."""
+    for portfolio_name in ("commerce", "residences", "offices"):
+        portfolio = ROOT / f"{portfolio_name}.html"
+        if not portfolio.exists():
+            continue
+        port = portfolio.read_text(encoding="utf-8")
+        for slide in re.finditer(
+            r'<div class="swiper-slide wqf-slide">(.*?)</div>\s*</div>\s*</div>',
+            port,
+            flags=re.DOTALL,
+        ):
+            block = slide.group(1)
+            if f'href="{filename}"' not in block:
+                continue
+            img = re.search(
+                r'<img alt="" class="wqf-logo-img"[^>]*src="([^"]*)"',
+                block,
+            )
+            if img and not _is_placeholder_image(img.group(1)):
+                return img.group(1)
+    return ""
+
+
+def _product_card_image(filename, html_text):
+    """Main/hero image for also-like cards and portfolio thumbnails."""
+    override = CARD_IMAGE_OVERRIDES.get(filename)
+    if override:
+        return override
+    portfolio = _portfolio_card_image(filename)
+    if portfolio:
+        return portfolio
+    return _hero_gallery_image_src(html_text)
 
 
 def collect_product_catalog():
     """Build also-like catalog from existing product HTML pages."""
     catalog = []
     for path in sorted(ROOT.glob("*-item*.html")):
+        if path.name in ALSO_LIKE_EXCLUDE:
+            continue
         section = _product_section_from_filename(path.name)
         if not section:
             continue
@@ -1038,23 +1100,7 @@ def collect_product_catalog():
         title_m = re.search(r'data-product-title="([^"]*)"', text)
         address = html.unescape(addr_m.group(1)) if addr_m else ""
         title = html.unescape(title_m.group(1)) if title_m else ""
-        image = _first_gallery_image_src(text)
-        if not image:
-            # Fallback: any image already used in also-like media on other pages
-            # pointing at this product, or from wqf portfolio.
-            portfolio = ROOT / f"{section}.html"
-            if portfolio.exists():
-                port = portfolio.read_text(encoding="utf-8")
-                block = re.search(
-                    r'<img alt="" class="wqf-logo-img"[^>]*src="([^"]*)"[^>]*>\s*'
-                    r'<a class="wqf-area-tag" href="'
-                    + re.escape(path.name)
-                    + r'"',
-                    port,
-                    flags=re.DOTALL,
-                )
-                if block:
-                    image = block.group(1)
+        image = _product_card_image(path.name, text)
         catalog.append(
             {
                 "filename": path.name,
@@ -1732,4 +1778,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+
+    if len(sys.argv) > 1 and sys.argv[1] == "--sync-also-like":
+        sync_also_like_sections()
+    else:
+        main()

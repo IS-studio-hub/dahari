@@ -11,6 +11,12 @@
   AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json application/xml image/svg+xml
 </IfModule>
 
+AddDefaultCharset UTF-8
+<IfModule mod_mime.c>
+  AddType text/plain;charset=UTF-8 .txt
+  AddType application/xml;charset=UTF-8 .xml
+</IfModule>
+
 # Single-hop HTTPS + www → apex (avoids "multiple redirects" in PageSpeed)
 <IfModule mod_rewrite.c>
   RewriteEngine On
@@ -23,6 +29,10 @@
   RewriteCond %{HTTPS} !=on
   RewriteCond %{HTTP:X-Forwarded-Proto} !=https
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Collapse /index.html to the canonical homepage
+  RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
+  RewriteRule ^index\.html$ https://dahari.co.il/ [R=301,L]
 </IfModule>
 
 # Browser caching
@@ -56,5 +66,8 @@
   </FilesMatch>
   <FilesMatch "\.(webp|jpe?g|png|gif|svg|ico|woff2?|mp4)$">
     Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "^(robots\.txt|llms\.txt|sitemap\.xml)$">
+    Header set Cache-Control "public, max-age=3600, must-revalidate"
   </FilesMatch>
 </IfModule>

@@ -711,8 +711,8 @@
         min-height: var(--component-height) !important;
         transform: none !important;
         margin: 0 !important;
-        scroll-snap-align: start;
-        scroll-snap-stop: always;
+        scroll-snap-align: center;
+        scroll-snap-stop: normal;
         transition: none;
       }
       @supports (width: 1cqw) {

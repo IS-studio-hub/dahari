@@ -221,18 +221,11 @@
     }
 
     /**
-     * Residences + contact hitch on native HTML loop on desktop; use dual-layer swap.
+     * Dual-layer swap is unused: every homepage clip uses native loop like office/commercial/about.
      * @param {HTMLVideoElement} el
      */
     needsSeamless(el) {
-      if (!el) return false;
-      if (el.dataset.dhSeamless === "1") return true;
-      const remote =
-        el.getAttribute("data-remote-src") ||
-        el.getAttribute("data-src") ||
-        el.getAttribute("src") ||
-        "";
-      return /(?:^|[\\/])(residences|contact)\.mp4(?:$|\?)/i.test(remote);
+      return false;
     }
 
     /**
@@ -251,14 +244,8 @@
       if (!el) return;
       el.muted = true;
       el.defaultMuted = true;
-      if (this.needsSeamless(el)) {
-        el.loop = false;
-        el.removeAttribute("loop");
-        el.dataset.dhSeamless = "1";
-      } else {
-        el.loop = true;
-        el.setAttribute("loop", "");
-      }
+      el.loop = true;
+      el.setAttribute("loop", "");
     }
 
     /**
@@ -386,7 +373,7 @@
       const run = () => {
         if (target.ended) {
           try {
-            target.currentTime = 0.001;
+            target.currentTime = 0;
           } catch (e) {}
         }
         void target.play().catch(() => {});
@@ -450,10 +437,11 @@
     }
 
     /**
-     * If a memory blob is ready for this element, point src at it (seamless native loop).
+     * Blob src swap disabled — mid-playback load() caused residences/contact to freeze.
      * @param {HTMLVideoElement} el
      */
     applyBlobIfReady(el) {
+      return false;
       if (!el || el.dataset.dhBlob === "1") return false;
       const remote =
         el.getAttribute("data-remote-src") ||
@@ -537,46 +525,38 @@
         el.disablePictureInPicture = true;
         el.setAttribute("disablepictureinpicture", "");
         el.setAttribute("data-slide-index", String(idx));
-        if (this.needsSeamless(el)) {
-          // Twin swap handles looping — avoid native ended/seek hitch.
-          el.addEventListener("ended", () => {
-            if (item.twin) this.swapSeamless(item);
-            else {
-              try {
-                el.currentTime = 0.001;
-              } catch (e) {}
-              void el.play().catch(() => {});
-            }
-          });
-        } else {
-          // Memory-buffered clips: wrap a few frames before EOF.
-          let wrapping = false;
-          el.addEventListener("timeupdate", () => {
-            if (el.dataset.dhBlob !== "1" || wrapping) return;
-            const d = el.duration;
-            if (!d || !isFinite(d) || d < 0.5 || el.paused) return;
-            if (el.currentTime < d - 0.1) return;
-            wrapping = true;
-            try {
-              el.currentTime = 0.001;
-            } catch (e) {}
-            if (el.paused) void el.play().catch(() => {});
-            window.setTimeout(() => {
-              wrapping = false;
-            }, 120);
-          });
-          el.addEventListener("ended", () => {
-            el.loop = true;
-            try {
-              el.currentTime = 0.001;
-            } catch (e) {}
-            const kick = () => void el.play().catch(() => {});
-            el.addEventListener("seeked", kick, { once: true });
-            kick();
-            window.setTimeout(kick, 60);
-            window.setTimeout(kick, 200);
-          });
-        }
+        el.addEventListener("playing", () => {
+          if (el.hasAttribute("poster")) el.removeAttribute("poster");
+        });
+        el.addEventListener("ended", () => {
+          el.loop = true;
+          void el.play().catch(() => {});
+        });
+        let stallTimer = 0;
+        const recoverFromStall = () => {
+          if (el.paused || document.hidden) return;
+          const n = this.items.length;
+          const i = this._primary;
+          const mobile = !!(this.c && this.c.isMobile);
+          const near = mobile ? new Set([i]) : new Set([i, (i - 1 + n) % n, (i + 1) % n]);
+          if (!near.has(idx)) return;
+          if (el.readyState >= 2 && !el.ended) {
+            void el.play().catch(() => {});
+            return;
+          }
+          try {
+            el.currentTime = 0;
+          } catch (e) {}
+          void el.play().catch(() => {});
+        };
+        el.addEventListener("waiting", () => {
+          if (stallTimer) window.clearTimeout(stallTimer);
+          stallTimer = window.setTimeout(recoverFromStall, 400);
+        });
+        el.addEventListener("stalled", () => {
+          if (stallTimer) window.clearTimeout(stallTimer);
+          stallTimer = window.setTimeout(recoverFromStall, 400);
+        });
         let retriedDecode = false;
         el.addEventListener("error", function () {
           if (retriedDecode) return;
@@ -613,11 +593,6 @@
             : 0;
       this.setPrimaryIndex(initial);
       this.restartTickLoop();
-      // Desktop shows side cards; prefetch all short clips so neighbor loops stay smooth.
-      window.setTimeout(() => this.prefetchAllBlobs(), 200);
-      if (typeof window.requestIdleCallback === "function") {
-        window.requestIdleCallback(() => this.prefetchAllBlobs(), { timeout: 2500 });
-      }
 
       const ioTarget = this.root.querySelector("[data-carousel-container]") || this.root;
       if ("IntersectionObserver" in window) {
@@ -682,24 +657,8 @@
       el.playsInline = true;
       el.setAttribute("playsinline", "");
       el.setAttribute("webkit-playsinline", "");
-      const blobUrl = this._blobByRemote.get(pending);
-      if (blobUrl) {
-        el.src = blobUrl;
-        el.dataset.dhBlob = "1";
-        this._blobUrls.set(el, blobUrl);
-      } else if (!el.getAttribute("src")) {
+      if (!el.getAttribute("src")) {
         el.src = pending;
-        el.dataset.dhBlob = el.dataset.dhBlob || "0";
-        // Kick prefetch so the next loop / revisit uses memory.
-        void this.prefetchBlob(pending).then(() => {
-          if (this.applyBlobIfReady(el)) this.primePlay(el);
-        });
-      } else {
-        // Already streaming from network — upgrade to blob when ready (desktop neighbors).
-        void this.prefetchBlob(pending).then(() => {
-          if (this.applyBlobIfReady(el)) this.primePlay(el);
-        });
-        return;
       }
       el.removeAttribute("data-src");
       try {
@@ -750,7 +709,6 @@
               node.preload = "auto";
             });
             this.primePlay(el);
-            this.applyBlobIfReady(el);
           };
           // First paint only: briefly defer the initial mobile LCP card.
           // After the user scrolls/rotates, attach + play immediately.
@@ -830,7 +788,7 @@
         active.setAttribute("autoplay", "");
         if (active.ended) {
           try {
-            active.currentTime = 0.001;
+            active.currentTime = 0;
           } catch (e) {}
         }
         if (!active.paused && !active.ended) {
@@ -949,13 +907,14 @@
       this._hoverRaf = null;
       this._pendingHoverEvent = null;
       this.wheelAccumulator = 0;
-      /** Pixel-mode wheel gain (deltaMode 0). Higher = faster spin per scroll. */
-      this.wheelPixelScale = 0.32;
-      /** Line / page wheel scaling (deltaMode 1 / 2). */
-      this.wheelLineScale = 22;
-      this.wheelPageScale = 180;
-      /** Accumulator magnitude needed for one card step (lower = more responsive). */
-      this.wheelStepThreshold = 68;
+      /** Minimum |delta| (px) before a trackpad gesture counts as one step. */
+      this.wheelStepThresholdPx = 36;
+      /** Ignore duplicate wheel events while a step animation runs (ms). */
+      this.wheelStepCooldownMs = 280;
+      this._wheelStepLockedUntil = 0;
+      this._wheelPendingDir = 0;
+      this._wheelSnapping = false;
+      this._wheelSnapTarget = null;
       this.currentMobileIndex = i0;
       this._lastPrimaryFront = -1;
       this.liveRegion = rootEl.querySelector("#dh-carousel-live");
@@ -1338,10 +1297,10 @@
           } else {
             if (ev.key === "ArrowLeft") {
               ev.preventDefault();
-              this.rotateBy(-1);
+              this.rotateBy(-1, { smooth: true });
             } else if (ev.key === "ArrowRight") {
               ev.preventDefault();
-              this.rotateBy(1);
+              this.rotateBy(1, { smooth: true });
             }
           }
         },
@@ -1368,7 +1327,7 @@
         this._deskPrevClickHandler = (ev) => {
           ev.preventDefault();
           ev.stopPropagation();
-          if (!this.isMobile) this.rotateBy(-1);
+          if (!this.isMobile) this.rotateBy(-1, { smooth: true });
         };
         this.deskPrevBtn.addEventListener("click", this._deskPrevClickHandler);
       }
@@ -1376,7 +1335,7 @@
         this._deskNextClickHandler = (ev) => {
           ev.preventDefault();
           ev.stopPropagation();
-          if (!this.isMobile) this.rotateBy(1);
+          if (!this.isMobile) this.rotateBy(1, { smooth: true });
         };
         this.deskNextBtn.addEventListener("click", this._deskNextClickHandler);
       }
@@ -1421,7 +1380,7 @@
       const now = performance.now();
       const dt = Math.min((now - this.lastFrameTime) / 16.67, 2);
       this.lastFrameTime = now;
-      if (this.isMouseOver) {
+      if (this.isMouseOver && !this._wheelScrolling) {
         const target = this.baseRotation + this.mouseOffsetRotation;
         this.smoothTargetRotation += (target - this.smoothTargetRotation) * (1 - Math.pow(0.85, dt));
         this.rotation += (this.smoothTargetRotation - this.rotation) * (1 - Math.pow(1 - this.followSpeed, dt));
@@ -1430,13 +1389,40 @@
         this.rotationX +=
           (this.smoothTargetRotationX - this.rotationX) * (1 - Math.pow(1 - this.followSpeed, dt));
       } else {
-        this.rotation +=
-          (this.baseRotation - this.rotation) * (1 - Math.pow(1 - 2.15 * this.followSpeed, dt));
-        this.smoothTargetRotation +=
-          (this.baseRotation - this.smoothTargetRotation) * (1 - Math.pow(0.85, dt));
-        this.smoothTargetRotationX += (0 - this.smoothTargetRotationX) * (1 - Math.pow(0.85, dt));
-        this.rotationX +=
-          (this.smoothTargetRotationX - this.rotationX) * (1 - Math.pow(1 - this.followSpeed, dt));
+        const snapTarget = this._wheelSnapTarget;
+        if (typeof snapTarget === "number" && this._wheelSnapping) {
+          this.rotation +=
+            (snapTarget - this.rotation) * (1 - Math.pow(1 - 2.4 * this.followSpeed, dt));
+          this.baseRotation +=
+            (snapTarget - this.baseRotation) * (1 - Math.pow(1 - 2.4 * this.followSpeed, dt));
+          this.smoothTargetRotation = this.baseRotation;
+          this.smoothTargetRotationX += (0 - this.smoothTargetRotationX) * (1 - Math.pow(0.85, dt));
+          this.rotationX +=
+            (this.smoothTargetRotationX - this.rotationX) * (1 - Math.pow(1 - this.followSpeed, dt));
+          if (Math.abs(snapTarget - this.rotation) < 0.08) {
+            this.rotation = snapTarget;
+            this.baseRotation = snapTarget;
+            this.smoothTargetRotation = snapTarget;
+            this._wheelSnapping = false;
+            this._wheelSnapTarget = null;
+            this._wheelScrolling = false;
+            this.updateCarousel();
+            this.announceFromIndex(this.getFrontItemIndex());
+            if (this._wheelPendingDir) {
+              const pending = this._wheelPendingDir;
+              this._wheelPendingDir = 0;
+              this.rotateBy(pending, { smooth: true });
+            }
+          }
+        } else {
+          this.rotation +=
+            (this.baseRotation - this.rotation) * (1 - Math.pow(1 - 2.15 * this.followSpeed, dt));
+          this.smoothTargetRotation +=
+            (this.baseRotation - this.smoothTargetRotation) * (1 - Math.pow(0.85, dt));
+          this.smoothTargetRotationX += (0 - this.smoothTargetRotationX) * (1 - Math.pow(0.85, dt));
+          this.rotationX +=
+            (this.smoothTargetRotationX - this.rotationX) * (1 - Math.pow(1 - this.followSpeed, dt));
+        }
       }
       this.updateCarousel();
       this.animationFrame = requestAnimationFrame(() => this.animate());
@@ -1455,43 +1441,74 @@
       }
       if (!focusIn && !inside) return;
       ev.preventDefault();
-      let delta;
-      if (ev.deltaMode === 1) delta = this.wheelLineScale * ev.deltaY;
-      else if (ev.deltaMode === 2) delta = this.wheelPageScale * ev.deltaY;
-      else delta = this.wheelPixelScale * ev.deltaY;
-      this.wheelAccumulator += delta;
-      const th = this.wheelStepThreshold;
-      let stepped = false;
-      while (Math.abs(this.wheelAccumulator) >= th) {
-        if (this.wheelAccumulator > 0) {
-          this.baseRotation += this.angleStep;
-          this.wheelAccumulator -= th;
-        } else {
-          this.baseRotation -= this.angleStep;
-          this.wheelAccumulator += th;
-        }
-        stepped = true;
-      }
-      if (stepped) {
-        this.smoothTargetRotation = this.baseRotation;
-        this.carousel.style.transition = "none";
-        this.items.forEach((item) => {
-          const link = item.querySelector(".dh-carousel__link");
-          if (link) link.style.transition = "none";
-        });
-        this.updateCarousel();
-        this.announceFromIndex(this.getFrontItemIndex());
-      }
-      clearTimeout(this._wheelTimeout);
-      this._wheelTimeout = setTimeout(() => {
+
+      const dominantDelta =
+        Math.abs(ev.deltaX) > Math.abs(ev.deltaY) ? ev.deltaX : ev.deltaY;
+      if (!dominantDelta) return;
+
+      const now = performance.now();
+      if (now < this._wheelStepLockedUntil) return;
+
+      let dir = 0;
+      if (ev.deltaMode === 1 || ev.deltaMode === 2) {
+        dir = dominantDelta > 0 ? 1 : -1;
+      } else {
+        this.wheelAccumulator += dominantDelta;
+        if (Math.abs(this.wheelAccumulator) < this.wheelStepThresholdPx) return;
+        dir = this.wheelAccumulator > 0 ? 1 : -1;
         this.wheelAccumulator = 0;
-      }, 220);
+      }
+
+      if (this._wheelSnapping) {
+        this._wheelPendingDir = dir;
+        return;
+      }
+
+      this._wheelStepLockedUntil = now + this.wheelStepCooldownMs;
+      this.rotateBy(dir, { smooth: true });
     }
 
-    rotateBy(dir) {
+    /**
+     * Rotate desktop carousel by one card. Positive dir = wheel down / next.
+     * @param {number} dir -1 or 1
+     * @param {{ smooth?: boolean }} [opts]
+     */
+    rotateBy(dir, opts) {
       if (this.isMobile) return;
+      const step = dir > 0 ? 1 : -1;
+      const smooth = !(opts && opts.smooth === false) && !this.reduceMotion;
+
+      if (this._wheelSnapping) {
+        this._wheelPendingDir = step;
+        return;
+      }
+
       this.wheelAccumulator = 0;
-      this.baseRotation += dir * this.angleStep;
+      const snapped = Math.round(this.baseRotation / this.angleStep) * this.angleStep;
+      const target = snapped + step * this.angleStep;
+
+      this.carousel.style.transition = "none";
+      this.items.forEach((item) => {
+        const link = item.querySelector(".dh-carousel__link");
+        if (link) link.style.transition = "none";
+      });
+
+      if (smooth) {
+        this.baseRotation = snapped;
+        this._wheelSnapTarget = target;
+        this._wheelSnapping = true;
+        this._wheelScrolling = true;
+        this.smoothTargetRotation = target;
+        if (this.animationFrame == null) this.animate();
+        return;
+      }
+
+      this._wheelSnapping = false;
+      this._wheelSnapTarget = null;
+      this._wheelScrolling = false;
+      this.baseRotation = target;
+      this.rotation = target;
+      this.smoothTargetRotation = target;
       this.updateCarousel();
       this.announceFromIndex(this.getFrontItemIndex());
     }
