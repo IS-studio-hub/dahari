@@ -53,7 +53,7 @@ html.dh-page-terms body {
   display: inline-flex;
   align-items: center;
   padding: 0.45rem 0.85rem;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: clamp(0.78rem, 1.8vw, 0.88rem);
   font-weight: 500;
   letter-spacing: 0.01em;
@@ -94,8 +94,8 @@ html.dh-page-terms body {
   align-items: center;
   gap: 0.65rem;
   margin: 0 0 0.85rem;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
-  font-size: 0.72rem;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -113,7 +113,7 @@ html.dh-page-terms body {
 
 .dh-accessibility__title {
   margin: 0 0 0.85rem;
-  font-family: "Noto Sans Hebrew", "Rubik", system-ui, sans-serif;
+  font-family: "Noto Sans Hebrew", "Heebo", system-ui, sans-serif;
   font-size: clamp(2.15rem, 6.5vw, 3.35rem);
   font-weight: 700;
   line-height: 1.08;
@@ -124,7 +124,7 @@ html.dh-page-terms body {
 .dh-accessibility__lead {
   margin: 0 0 1.15rem;
   max-width: 36rem;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: clamp(1rem, 2.4vw, 1.15rem);
   font-weight: 400;
   line-height: 1.65;
@@ -155,7 +155,7 @@ html.dh-page-terms body {
   align-items: center;
   gap: 0.4rem;
   padding: 0.35rem 0.75rem;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.78rem;
   font-weight: 500;
   color: rgba(44, 45, 102, 0.78);
@@ -200,8 +200,8 @@ html.dh-page-terms body {
 
 .dh-accessibility__toc-label {
   margin: 0 0 0.75rem;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
-  font-size: 0.7rem;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -230,7 +230,7 @@ html.dh-page-terms body {
   align-items: baseline;
   gap: 0.45rem;
   padding: 0.35rem 0.55rem;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.82rem;
   font-weight: 500;
   line-height: 1.35;
@@ -254,7 +254,7 @@ html.dh-page-terms body {
 
 .dh-accessibility__toc-num {
   flex-shrink: 0;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.04em;
   color: rgba(44, 45, 102, 0.4);
@@ -297,7 +297,7 @@ html.dh-page-terms body {
 
 .dh-accessibility__index {
   margin-top: 0.2rem;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -311,7 +311,7 @@ html.dh-page-terms body {
 
 .dh-accessibility__section h2 {
   margin: 0 0 0.65rem;
-  font-family: "Noto Sans Hebrew", "Rubik", system-ui, sans-serif;
+  font-family: "Noto Sans Hebrew", "Heebo", system-ui, sans-serif;
   font-size: clamp(1.12rem, 2.6vw, 1.35rem);
   font-weight: 700;
   line-height: 1.3;
@@ -322,7 +322,7 @@ html.dh-page-terms body {
 .dh-accessibility__section p,
 .dh-accessibility__section li {
   margin: 0 0 0.7rem;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: clamp(0.95rem, 2.1vw, 1.05rem);
   line-height: 1.7;
   color: rgba(44, 45, 102, 0.9);
@@ -429,7 +429,7 @@ html.dh-page-terms body {
 
 .dh-accessibility__cta-title {
   margin: 0 0 0.45rem;
-  font-family: "Noto Sans Hebrew", "Rubik", system-ui, sans-serif;
+  font-family: "Noto Sans Hebrew", "Heebo", system-ui, sans-serif;
   font-size: clamp(1.15rem, 2.8vw, 1.4rem);
   font-weight: 700;
   line-height: 1.25;
@@ -439,7 +439,7 @@ html.dh-page-terms body {
 .dh-accessibility__cta-text {
   margin: 0 0 1.15rem;
   max-width: 32rem;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: clamp(0.92rem, 2vw, 1rem);
   line-height: 1.6;
   color: rgba(255, 245, 223, 0.82);
@@ -457,7 +457,7 @@ html.dh-page-terms body {
   justify-content: center;
   min-height: 2.65rem;
   padding: 0.55rem 1.25rem;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
@@ -503,7 +503,7 @@ html.dh-page-terms body {
   margin: 1.25rem 0 0;
   padding-top: 1rem;
   border-top: 1px solid rgba(255, 245, 223, 0.18);
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.82rem;
   color: rgba(255, 245, 223, 0.65);
 }

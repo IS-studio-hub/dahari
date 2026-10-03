@@ -67,169 +67,6 @@ html.dh-page-contact .dh-main-content--contact:has(#dh-contact-root.dh-contact--
   transition-delay: 0.02s;
 }
 
-@media (max-width: 899px) {
-  html.dh-page-contact .dh-contact__page-banner {
-    display: none;
-  }
-
-  /* Unlock the viewport-locked shell so the page can scroll on the document */
-  html.dh-page-contact,
-  html.dh-page-contact body {
-    height: auto !important;
-    max-height: none !important;
-    min-height: 100dvh;
-    min-height: 100svh;
-    overflow-x: clip !important;
-    overflow-y: visible !important;
-    overscroll-behavior: auto !important;
-  }
-
-  html.dh-page-contact .dh-side-header888 {
-    height: auto !important;
-    min-height: 100dvh !important;
-    min-height: 100svh !important;
-    max-height: none !important;
-    overflow: visible !important;
-  }
-
-  html.dh-page-contact .dh-side-header888__layout888 {
-    height: auto !important;
-    min-height: 100dvh;
-    min-height: 100svh;
-    max-height: none !important;
-    overflow: visible !important;
-    align-items: flex-start;
-  }
-
-  html.dh-page-contact .dh-side-header888__content888 {
-    height: auto !important;
-    max-height: none !important;
-    min-height: auto !important;
-    overflow: visible !important;
-    flex: none;
-    align-self: auto;
-    width: 100%;
-  }
-
-  html.dh-page-contact .dh-main-content.dh-main-content--contact {
-    max-height: none !important;
-    overflow: visible !important;
-    height: auto;
-    flex: none;
-  }
-
-  /* Phones: breadcrumbs stay in the shared top bar (index-layout). */
-
-  html.dh-page-contact #dh-contact-root.dh-contact {
-    max-height: none;
-    overflow: visible;
-    flex: none;
-  }
-
-  html.dh-page-contact .dh-contact__bg {
-    overflow: visible;
-    min-height: auto;
-  }
-
-  html.dh-page-contact .dh-contact__inner {
-    overflow: visible;
-    min-height: auto;
-  }
-
-  html.dh-page-contact .dh-contact__main {
-    overflow: visible;
-    min-height: auto;
-  }
-
-  html.dh-page-contact .dh-contact__form-wrap {
-    overflow: visible;
-    min-height: auto;
-    flex: none;
-  }
-
-  html.dh-page-contact .dh-contact__form {
-    overflow: visible;
-    min-height: auto;
-    flex: none;
-  }
-
-  html.dh-page-contact .dh-contact__sidebar {
-    overflow: visible;
-    min-height: auto;
-  }
-
-  html.dh-page-contact .dh-contact__aside {
-    overflow: visible;
-    min-height: auto;
-  }
-
-  html.dh-page-contact .dh-contact__textarea {
-    min-height: 100px;
-    max-height: none;
-    resize: vertical;
-  }
-
-  html.dh-page-contact .dh-contact__lead {
-    display: block;
-    -webkit-line-clamp: unset;
-    overflow: visible;
-    font-size: clamp(0.85rem, 3.5vw, 1rem);
-  }
-
-  html.dh-page-contact .dh-contact__title {
-    font-size: clamp(1.3rem, 5vw, 1.7rem);
-  }
-
-  html.dh-page-contact .dh-contact__form-title {
-    font-size: 1rem;
-  }
-
-  html.dh-page-contact .dh-contact__label {
-    font-size: 0.82rem;
-  }
-
-  html.dh-page-contact .dh-contact__input,
-  html.dh-page-contact .dh-contact__select,
-  html.dh-page-contact .dh-contact__textarea {
-    font-size: 0.9rem;
-    padding: 0.55rem 0.65rem;
-  }
-
-  html.dh-page-contact .dh-contact__card-title {
-    font-size: 0.88rem;
-  }
-
-  html.dh-page-contact .dh-contact__card p {
-    font-size: 0.82rem;
-  }
-
-  html.dh-page-contact .dh-contact__links a {
-    font-size: 0.85rem;
-  }
-
-  html.dh-page-contact .dh-contact__chip {
-    padding: 0.35rem 0.65rem;
-    font-size: 0.78rem;
-  }
-
-  html.dh-page-contact .dh-contact__submit {
-    padding: 0.65rem 1.3rem;
-    font-size: 0.88rem;
-  }
-
-  html.dh-page-contact .dh-contact__check label {
-    font-size: 0.78rem;
-  }
-
-  html.dh-page-contact .dh-contact__form-hint {
-    font-size: 0.78rem;
-  }
-
-  html.dh-page-contact .dh-contact__hint {
-    font-size: 0.72rem;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   html.dh-page-contact .dh-contact__page-banner {
     opacity: 1;
@@ -254,6 +91,13 @@ html.dh-page-contact #dh-contact-root.dh-contact {
   margin-inline: auto;
   padding-block: 0;
   padding-inline: max(0.65rem, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+}
+
+/* Large monitors: keep the panel centred instead of stretching edge to edge */
+@media (min-width: 1440px) {
+  html.dh-page-contact #dh-contact-root.dh-contact {
+    max-width: 1440px;
+  }
 }
 
 @media (min-width: 900px) {
@@ -416,23 +260,27 @@ html.dh-page-contact .dh-contact__inner {
   padding: clamp(0.45rem, 1.1vh, 0.85rem) clamp(0.55rem, 1.5vw, 1rem);
 }
 
-/* Three columns (RTL): form right | intro + aside center | video left (≥900px) */
+/* Showcase on top (video + contact details), form full width underneath. */
 @media (min-width: 900px) {
-  html.dh-page-contact .dh-contact__inner > * + * {
-    border-inline-start: 1px solid rgba(44, 45, 102, 0.14);
-    padding-inline-start: clamp(0.45rem, 1.2vw, 0.75rem);
+  html.dh-page-contact .dh-contact__inner {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    overflow: visible;
+    align-items: start;
   }
+}
 
-  html.dh-page-contact .dh-contact__main {
-    grid-column: 1;
-  }
+html.dh-page-contact .dh-contact__showcase {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(0.75rem, 1.6vw, 1.15rem);
+  align-items: stretch;
+  min-width: 0;
+}
 
-  html.dh-page-contact .dh-contact__sidebar {
-    grid-column: 2;
-  }
-
-  html.dh-page-contact .dh-contact__hero-media {
-    grid-column: 3;
+@media (min-width: 900px) {
+  html.dh-page-contact .dh-contact__showcase {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
   }
 }
 
@@ -456,32 +304,21 @@ html.dh-page-contact .dh-contact__hero-media {
 html.dh-page-contact .dh-contact__hero-video {
   display: block;
   width: 100%;
+  height: 100%;
   flex: 1 1 auto;
-  min-height: 7rem;
-  object-fit: cover;
+  min-height: 16rem;
+  object-fit: contain;
   object-position: center;
+  background: #fff;
 }
 
 @media (max-width: 899px) {
-  html.dh-page-contact .dh-contact__inner > * + * {
-    border-inline-start: none !important;
-    padding-inline-start: 0 !important;
-  }
-
   html.dh-page-contact .dh-contact__inner {
     gap: 1rem;
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
+    grid-template-rows: auto auto;
     overflow: visible;
     padding: 1rem;
-  }
-
-  html.dh-page-contact .dh-contact__main {
-    order: 0;
-  }
-
-  html.dh-page-contact .dh-contact__sidebar {
-    order: 1;
   }
 
   html.dh-page-contact .dh-contact__hero-media {
@@ -499,12 +336,20 @@ html.dh-page-contact .dh-contact__hero-video {
 }
 
 @media (min-width: 900px) {
-  html.dh-page-contact .dh-contact__inner {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-rows: minmax(0, 1fr);
-    gap: clamp(0.55rem, 1.4vw, 1rem);
-    overflow: hidden;
-    align-items: stretch;
+  html.dh-page-contact .dh-contact__sidebar {
+    overflow: visible;
+  }
+
+  html.dh-page-contact .dh-main-content.dh-main-content--contact {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  html.dh-page-contact #dh-contact-root.dh-contact,
+  html.dh-page-contact .dh-contact__bg {
+    flex: none;
+    max-height: none;
+    min-height: auto;
   }
 }
 
@@ -530,7 +375,7 @@ html.dh-page-contact .dh-contact__hero-video {
   }
 
   html.dh-page-contact .dh-contact__aside .dh-contact__card {
-    flex: 1 1 calc(50% 0.32rem);
+    flex: 1 1 calc(50% - 0.32rem);
     min-width: 140px;
     padding: 0.75rem 0.85rem;
   }
@@ -599,8 +444,9 @@ html.dh-page-contact .dh-contact__sidebar {
 }
 
 @media (min-width: 900px) {
-  html.dh-page-contact .dh-contact__sidebar {
-    overflow: hidden;
+  html.dh-page-contact .dh-contact__sidebar,
+  .dh-contact__main {
+    overflow: visible;
   }
 }
 
@@ -610,12 +456,6 @@ html.dh-page-contact .dh-contact__sidebar {
   gap: clamp(0.25rem, 0.9vh, 0.55rem);
   min-width: 0;
   min-height: 0;
-}
-
-@media (min-width: 900px) {
-  .dh-contact__main {
-    overflow: hidden;
-  }
 }
 
 html.dh-page-contact .dh-contact__main {
@@ -634,7 +474,7 @@ html.dh-page-contact .dh-contact__eyebrow-wrap {
 .dh-contact__eyebrow {
   display: inline-block;
   position: relative;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.14em;
@@ -672,7 +512,7 @@ html.dh-page-contact .dh-contact__eyebrow-wrap {
 
 .dh-contact__title {
   margin: 0 0 0.85rem;
-  font-family: "Noto Sans Hebrew", "Rubik", system-ui, sans-serif;
+  font-family: "Noto Sans Hebrew", "Heebo", system-ui, sans-serif;
   font-weight: 700;
   font-size: clamp(1.75rem, 5vw, 2.55rem);
   line-height: 1.15;
@@ -691,7 +531,7 @@ html.dh-page-contact .dh-contact__title {
 .dh-contact__lead {
   margin: 0 0 1.35rem;
   max-width: 38rem;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: clamp(1.02rem, 2.5vw, 1.14rem);
   line-height: 1.68;
   color: var(--dh-contact-muted);
@@ -763,7 +603,7 @@ html.dh-page-contact .dh-contact__chips {
   background: rgba(255, 255, 255, 0.72);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.8125rem;
   font-weight: 500;
   color: var(--dh-contact-ink);
@@ -861,7 +701,7 @@ html.dh-page-contact .dh-contact__card:hover {
 
 .dh-contact__card-title {
   margin: 0 0 0.5rem;
-  font-family: "Noto Sans Hebrew", "Rubik", system-ui, sans-serif;
+  font-family: "Noto Sans Hebrew", "Heebo", system-ui, sans-serif;
   font-weight: 700;
   font-size: 0.95rem;
   color: var(--dh-contact-ink);
@@ -875,7 +715,7 @@ html.dh-page-contact .dh-contact__card-title {
 
 .dh-contact__card p {
   margin: 0;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.9rem;
   line-height: 1.58;
   color: var(--dh-contact-muted);
@@ -901,7 +741,7 @@ html.dh-page-contact .dh-contact__links {
 }
 
 .dh-contact__links a {
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--dh-contact-accent);
@@ -915,6 +755,17 @@ html.dh-page-contact .dh-contact__links {
 
 html.dh-page-contact .dh-contact__links a {
   font-size: 0.78rem;
+}
+
+/* Invisible taller hit area (≥24px) without changing the card layout */
+.dh-contact__links a {
+  position: relative;
+}
+
+.dh-contact__links a::after {
+  content: "";
+  position: absolute;
+  inset: -0.25rem -0.25rem;
 }
 
 .dh-contact__links a:hover {
@@ -977,7 +828,7 @@ html.dh-page-contact .dh-contact__form-wrap::before {
 
 .dh-contact__form-title {
   margin: 0.35rem 0 0.35rem;
-  font-family: "Noto Sans Hebrew", "Rubik", system-ui, sans-serif;
+  font-family: "Noto Sans Hebrew", "Heebo", system-ui, sans-serif;
   font-weight: 700;
   font-size: 1.2rem;
   letter-spacing: -0.02em;
@@ -991,7 +842,7 @@ html.dh-page-contact .dh-contact__form-title {
 
 .dh-contact__form-hint {
   margin: 0 0 1.25rem;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.875rem;
   line-height: 1.55;
   color: var(--dh-contact-muted);
@@ -1041,7 +892,7 @@ html.dh-page-contact .dh-contact__field--message {
 }
 
 .dh-contact__label {
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--dh-contact-ink);
@@ -1061,7 +912,7 @@ html.dh-page-contact .dh-contact__label {
 .dh-contact__textarea {
   width: 100%;
   box-sizing: border-box;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 1rem;
   line-height: 1.4;
   color: var(--dh-contact-ink);
@@ -1126,18 +977,18 @@ html.dh-page-contact .dh-contact__textarea {
 }
 
 .dh-contact__hint {
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.75rem;
   color: var(--dh-contact-muted);
 }
 
 html.dh-page-contact .dh-contact__hint {
-  font-size: 0.62rem;
+  font-size: 0.7rem;
   line-height: 1.25;
 }
 
 .dh-contact__error {
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.8125rem;
   color: #2c2d66;
   min-height: 1.1em;
@@ -1190,14 +1041,14 @@ html.dh-page-contact .dh-contact__check {
 }
 
 .dh-contact__check label {
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.8125rem;
   line-height: 1.55;
   color: var(--dh-contact-muted);
 }
 
 html.dh-page-contact .dh-contact__check label {
-  font-size: 0.65rem;
+  font-size: 0.72rem;
   line-height: 1.35;
 }
 
@@ -1221,7 +1072,7 @@ html.dh-page-contact .dh-contact__actions {
   cursor: pointer;
   border-radius: 999px;
   padding: 0.82rem 1.85rem;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.95rem;
   font-weight: 600;
   color: #fff;
@@ -1286,7 +1137,7 @@ a.dh-contact__submit {
 }
 
 .dh-contact__secondary {
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.84rem;
   color: var(--dh-contact-muted);
   max-width: 20rem;
@@ -1299,7 +1150,7 @@ a.dh-contact__submit {
   border-radius: 12px;
   background: rgba(180, 35, 24, 0.07);
   border: 1px solid rgba(180, 35, 24, 0.22);
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.875rem;
   color: #2c2d66;
 }
@@ -1342,7 +1193,7 @@ html.dh-page-contact .dh-contact__success {
 
 .dh-contact__success h3 {
   margin: 0 0 0.35rem;
-  font-family: "Noto Sans Hebrew", "Rubik", system-ui, sans-serif;
+  font-family: "Noto Sans Hebrew", "Heebo", system-ui, sans-serif;
   font-weight: 700;
   font-size: 1.02rem;
   color: #2c2d66;
@@ -1355,7 +1206,7 @@ html.dh-page-contact .dh-contact__success h3 {
 
 .dh-contact__success p {
   margin: 0;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.9rem;
   line-height: 1.55;
   color: #2c2d66;
@@ -1456,4 +1307,171 @@ html.dh-page-contact .dh-contact--split .dh-contact__title {
 
 html.dh-page-contact .dh-contact__sidebar .dh-contact__intro {
   flex-shrink: 0;
+}
+
+/* Phones (≤899px) - kept last so these override the base rules above (same selectors) */
+@media (max-width: 899px) {
+  html.dh-page-contact .dh-contact__page-banner {
+    display: none;
+  }
+
+  /* Unlock the viewport-locked shell so the page can scroll on the document */
+  html.dh-page-contact,
+  html.dh-page-contact body {
+    height: auto !important;
+    max-height: none !important;
+    min-height: 100dvh;
+    min-height: 100svh;
+    overflow-x: clip !important;
+    overflow-y: visible !important;
+    overscroll-behavior: auto !important;
+  }
+
+  /* x clipped like the document pages: the closed menu's icons otherwise widen the page */
+  html.dh-page-contact .dh-side-header888 {
+    height: auto !important;
+    min-height: 100dvh !important;
+    min-height: 100svh !important;
+    max-height: none !important;
+    overflow-x: clip !important;
+    overflow-y: visible !important;
+  }
+
+  html.dh-page-contact .dh-side-header888__layout888 {
+    height: auto !important;
+    min-height: 100dvh;
+    min-height: 100svh;
+    max-height: none !important;
+    overflow: visible !important;
+    align-items: flex-start;
+  }
+
+  html.dh-page-contact .dh-side-header888__content888 {
+    height: auto !important;
+    max-height: none !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    flex: none;
+    align-self: auto;
+    width: 100%;
+  }
+
+  html.dh-page-contact .dh-main-content.dh-main-content--contact {
+    max-height: none !important;
+    overflow: visible !important;
+    height: auto;
+    flex: none;
+  }
+
+  /* Phones: breadcrumbs stay in the shared top bar (index-layout). */
+
+  html.dh-page-contact #dh-contact-root.dh-contact {
+    max-height: none;
+    overflow: visible;
+    flex: none;
+  }
+
+  html.dh-page-contact .dh-contact__bg {
+    overflow: visible;
+    min-height: auto;
+  }
+
+  html.dh-page-contact .dh-contact__inner {
+    overflow: visible;
+    min-height: auto;
+  }
+
+  html.dh-page-contact .dh-contact__main {
+    overflow: visible;
+    min-height: auto;
+  }
+
+  html.dh-page-contact .dh-contact__form-wrap {
+    overflow: visible;
+    min-height: auto;
+    flex: none;
+  }
+
+  html.dh-page-contact .dh-contact__form {
+    overflow: visible;
+    min-height: auto;
+    flex: none;
+  }
+
+  html.dh-page-contact .dh-contact__sidebar {
+    overflow: visible;
+    min-height: auto;
+  }
+
+  html.dh-page-contact .dh-contact__aside {
+    overflow: visible;
+    min-height: auto;
+  }
+
+  html.dh-page-contact .dh-contact__textarea {
+    min-height: 100px;
+    max-height: none;
+    resize: vertical;
+  }
+
+  html.dh-page-contact .dh-contact__lead {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+    font-size: clamp(0.85rem, 3.5vw, 1rem);
+  }
+
+  html.dh-page-contact .dh-contact__title {
+    font-size: clamp(1.3rem, 5vw, 1.7rem);
+  }
+
+  html.dh-page-contact .dh-contact__form-title {
+    font-size: 1rem;
+  }
+
+  html.dh-page-contact .dh-contact__label {
+    font-size: 0.82rem;
+  }
+
+  /* 16px: iOS Safari zooms the page when a focused field is smaller */
+  html.dh-page-contact .dh-contact__input,
+  html.dh-page-contact .dh-contact__select,
+  html.dh-page-contact .dh-contact__textarea {
+    font-size: 1rem;
+    padding: 0.55rem 0.65rem;
+  }
+
+  html.dh-page-contact .dh-contact__card-title {
+    font-size: 0.88rem;
+  }
+
+  html.dh-page-contact .dh-contact__card p {
+    font-size: 0.82rem;
+  }
+
+  html.dh-page-contact .dh-contact__links a {
+    font-size: 0.85rem;
+  }
+
+  html.dh-page-contact .dh-contact__chip {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.78rem;
+  }
+
+  html.dh-page-contact .dh-contact__submit {
+    padding: 0.65rem 1.3rem;
+    font-size: 0.88rem;
+  }
+
+  html.dh-page-contact .dh-contact__check label {
+    font-size: 0.78rem;
+  }
+
+  html.dh-page-contact .dh-contact__form-hint {
+    font-size: 0.78rem;
+  }
+
+  html.dh-page-contact .dh-contact__hint {
+    font-size: 0.75rem;
+  }
 }

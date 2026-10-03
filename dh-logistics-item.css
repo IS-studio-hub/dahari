@@ -145,7 +145,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 
   .dh-logistics-item__content-col .dh-logistics-item__description .dh-logistics-item__body {
     margin-bottom: 0.45rem;
-    font-size: clamp(0.66rem, 1.1vw, 0.72rem);
+    font-size: clamp(0.8125rem, 0.6875rem + 0.2vw, 1rem);
     line-height: 1.45;
   }
 
@@ -187,11 +187,11 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   }
 
   .dh-logistics-item__content-col .dh-logistics-item__meta-label {
-    font-size: 0.58rem;
+    font-size: clamp(0.6875rem, 0.55rem + 0.15vw, 0.8125rem);
   }
 
   .dh-logistics-item__content-col .dh-logistics-item__meta-row > span:last-child {
-    font-size: 0.72rem;
+    font-size: clamp(0.8125rem, 0.6875rem + 0.2vw, 1rem);
   }
 
   .dh-logistics-item__content-col .dh-logistics-item__inquiry {
@@ -206,17 +206,17 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 
   .dh-logistics-item__content-col .dh-logistics-item__inquiry-hint {
     margin-bottom: 0.35rem;
-    font-size: 0.58rem;
+    font-size: clamp(0.6875rem, 0.55rem + 0.15vw, 0.8125rem);
   }
 
   .dh-logistics-item__content-col .dh-logistics-item__inquiry-input {
     padding: 0.32rem 0.45rem;
-    font-size: 0.62rem;
+    font-size: clamp(0.75rem, 0.6rem + 0.2vw, 0.9375rem);
   }
 
   .dh-logistics-item__content-col .dh-logistics-item__inquiry-submit {
     padding: 0.32rem 0.75rem;
-    font-size: 0.62rem;
+    font-size: clamp(0.75rem, 0.6rem + 0.2vw, 0.9375rem);
   }
 
   .dh-logistics-item__content-col .dh-logistics-item__also-like {
@@ -245,7 +245,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   }
 
   .dh-logistics-item__content-col .dh-logistics-item__plans-name {
-    font-size: 0.58rem;
+    font-size: clamp(0.6875rem, 0.55rem + 0.15vw, 0.8125rem);
     -webkit-line-clamp: 2;
   }
 
@@ -260,7 +260,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   }
 
   .dh-logistics-item__content-col .dh-logistics-item__also-like-title-en {
-    font-size: 0.58rem;
+    font-size: clamp(0.6875rem, 0.55rem + 0.15vw, 0.8125rem);
   }
 
   .dh-logistics-item__content-col .dh-logistics-item__also-like-grid {
@@ -277,7 +277,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   }
 
   .dh-logistics-item__content-col .dh-logistics-item__also-like-name {
-    font-size: 0.58rem;
+    font-size: clamp(0.6875rem, 0.55rem + 0.15vw, 0.8125rem);
     line-height: 1.25;
     -webkit-line-clamp: 1;
   }
@@ -299,7 +299,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--dh-item-ink);
@@ -320,7 +320,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 
 .dh-logistics-item__title {
   margin: 0 0 0.65rem;
-  font-family: "Gveret Levin", "Noto Sans Hebrew", "Rubik", cursive, system-ui, sans-serif;
+  font-family: "Gveret Levin", "Noto Sans Hebrew", "Heebo", cursive, system-ui, sans-serif;
   font-weight: 400;
   font-size: clamp(1.85rem, 5vw, 2.65rem);
   line-height: 1.2;
@@ -331,7 +331,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 
 .dh-logistics-item__tagline {
   margin: 0 0 1.35rem;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: clamp(0.88rem, 2vw, 1rem);
   font-weight: 500;
   line-height: 1.55;
@@ -450,7 +450,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   margin: 0 0 1.35rem;
   padding: 0;
   border: none;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
 }
 
 .dh-logistics-item__meta-row {
@@ -469,7 +469,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 
 .dh-logistics-item__meta-label {
   flex: none;
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -485,8 +485,8 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 
 .dh-logistics-item__body {
   margin: 0 0 0.85rem;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
-  font-size: clamp(0.72rem, 1.35vw, 0.78rem);
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-size: clamp(0.875rem, 0.8rem + 0.3vw, 0.95rem);
   line-height: 1.6;
   color: var(--dh-item-muted);
   max-width: none;
@@ -494,7 +494,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 
 .dh-logistics-item__dropdown {
   margin: 0 0 0.85rem;
-  border-radius: calc(var(--dh-item-radius) 4px);
+  border-radius: calc(var(--dh-item-radius) - 4px);
   border: 1px solid var(--dh-item-line);
   background: rgba(255, 255, 255, 0.45);
   overflow: hidden;
@@ -508,8 +508,8 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0.55rem 0.7rem;
-  font-family: "Noto Sans Hebrew", "Rubik", system-ui, sans-serif;
-  font-size: clamp(0.72rem, 1.35vw, 0.8rem);
+  font-family: "Noto Sans Hebrew", "Heebo", system-ui, sans-serif;
+  font-size: clamp(0.875rem, 0.8rem + 0.3vw, 0.95rem);
   font-weight: 700;
   line-height: 1.35;
   color: var(--dh-item-ink);
@@ -557,7 +557,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 
   .dh-logistics-item__content-col .dh-logistics-item__dropdown-summary {
     padding: 0.4rem 0.55rem;
-    font-size: clamp(0.66rem, 1.1vw, 0.72rem);
+    font-size: clamp(0.8125rem, 0.6875rem + 0.2vw, 1rem);
   }
 
   .dh-logistics-item__content-col .dh-logistics-item__dropdown-body {
@@ -576,7 +576,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   gap: 0.45rem;
   padding: 0.72rem 1.5rem;
   border-radius: 999px;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.9rem;
   font-weight: 600;
   color: #fff;
@@ -629,7 +629,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   padding: 0;
   grid-column: span 2;
   grid-row: span 1;
-  border-radius: calc(var(--dh-item-radius) 4px);
+  border-radius: calc(var(--dh-item-radius) - 4px);
   overflow: hidden;
   border: 1px solid var(--dh-item-line);
   background: var(--dh-item-surface);
@@ -709,7 +709,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 
 .dh-logistics-item__inquiry-title {
   margin: 0 0 0.25rem;
-  font-family: "Noto Sans Hebrew", "Rubik", system-ui, sans-serif;
+  font-family: "Noto Sans Hebrew", "Heebo", system-ui, sans-serif;
   font-weight: 700;
   font-size: clamp(0.88rem, 1.8vw, 1rem);
   line-height: 1.25;
@@ -718,8 +718,8 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 
 .dh-logistics-item__inquiry-hint {
   margin: 0 0 0.55rem;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
-  font-size: clamp(0.62rem, 1.1vw, 0.72rem);
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-size: clamp(0.75rem, 0.7rem + 0.25vw, 0.8125rem);
   line-height: 1.45;
   color: var(--dh-item-muted);
 }
@@ -736,7 +736,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 }
 
 .dh-logistics-item__inquiry-label {
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.62rem;
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -752,8 +752,9 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   border-radius: 999px;
   border: 1px solid var(--dh-item-line);
   background: rgba(255, 255, 255, 0.92);
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
-  font-size: 0.72rem;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
+  /* 16px: iOS Safari zooms the page when a focused field is smaller */
+  font-size: 1rem;
   color: var(--dh-item-ink);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -775,7 +776,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   flex: 0 0 auto;
   border-radius: 999px;
   padding: 0.48rem 1rem;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.72rem;
   font-weight: 600;
   color: #fff;
@@ -806,7 +807,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   border-radius: 8px;
   background: rgba(180, 35, 24, 0.07);
   border: 1px solid rgba(180, 35, 24, 0.22);
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: 0.68rem;
   color: var(--dh-item-ink);
 }
@@ -831,7 +832,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   background: #2c2d66;
   color: #fff;
   box-shadow: 0 12px 28px rgba(44, 45, 102, 0.28);
-  font-family: "Noto Sans Hebrew", "Rubik", system-ui, sans-serif;
+  font-family: "Noto Sans Hebrew", "Heebo", system-ui, sans-serif;
   font-size: 0.88rem;
   font-weight: 600;
   line-height: 1.3;
@@ -851,7 +852,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   flex-direction: column;
   gap: 0.05rem;
   margin: 0 0 0.35rem;
-  font-family: "Noto Sans Hebrew", "Rubik", system-ui, sans-serif;
+  font-family: "Noto Sans Hebrew", "Heebo", system-ui, sans-serif;
   font-weight: 700;
   font-size: clamp(0.95rem, 2.2vw, 1.1rem);
   line-height: 1.25;
@@ -867,7 +868,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 
 .dh-logistics-item__plans-title {
   margin: 0 0 0.35rem;
-  font-family: "Noto Sans Hebrew", "Rubik", system-ui, sans-serif;
+  font-family: "Noto Sans Hebrew", "Heebo", system-ui, sans-serif;
   font-weight: 700;
   font-size: clamp(0.95rem, 2.2vw, 1.1rem);
   line-height: 1.25;
@@ -889,7 +890,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   flex-direction: column;
   min-width: 0;
   height: 100%;
-  border-radius: calc(var(--dh-item-radius) 2px);
+  border-radius: calc(var(--dh-item-radius) - 2px);
   overflow: hidden;
   border: 1px solid var(--dh-item-line);
   background: var(--dh-item-surface);
@@ -939,8 +940,8 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   -webkit-line-clamp: 2;
   overflow: hidden;
   padding: 0.35rem 0.4rem 0.45rem;
-  font-family: "Noto Sans Hebrew", "Rubik", system-ui, sans-serif;
-  font-size: clamp(0.68rem, 1.4vw, 0.78rem);
+  font-family: "Noto Sans Hebrew", "Heebo", system-ui, sans-serif;
+  font-size: clamp(0.75rem, 0.7rem + 0.25vw, 0.8125rem);
   font-weight: 600;
   line-height: 1.3;
   color: var(--dh-item-ink);
@@ -948,8 +949,8 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 }
 
 .dh-logistics-item__also-like-title-en {
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
-  font-size: clamp(0.68rem, 1.4vw, 0.75rem);
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-size: clamp(0.75rem, 0.7rem + 0.25vw, 0.8125rem);
   font-weight: 500;
   letter-spacing: 0.01em;
   color: var(--dh-item-muted);
@@ -969,7 +970,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   flex-direction: column;
   min-width: 0;
   height: 100%;
-  border-radius: calc(var(--dh-item-radius) 2px);
+  border-radius: calc(var(--dh-item-radius) - 2px);
   overflow: hidden;
   border: 1px solid var(--dh-item-line);
   background: var(--dh-item-surface);
@@ -1031,8 +1032,8 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   -webkit-line-clamp: 2;
   overflow: hidden;
   text-align: center;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
-  font-size: clamp(0.68rem, 1.2vw, 0.78rem);
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-size: clamp(0.75rem, 0.7rem + 0.25vw, 0.8125rem);
   font-weight: 600;
   line-height: 1.35;
   color: var(--dh-item-ink);

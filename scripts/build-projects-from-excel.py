@@ -290,7 +290,7 @@ PRODUCT_PAGE_OVERRIDES = {
             "הקרבה לתחנת הרכבת נתניה–ספיר, לצד חניות צמודות לנכס, מאפשרת הגעה נוחה "
             "ללקוחות, לאנשי מקצוע ולעובדים.\n\n"
             "קהל יעד:\n"
-            "אדריכלים ומעצבי פנים, יזמים וקבלנים, חברות בנייה והתחדשות עירונית, "
+            "אדריכלים ומעצבי פנים, יזמים וקבלנים, חברות בנייה ומגורים, "
             "חברות המתמחות בחיפויי מבנים וחומרי גמר, ספקים ומותגים מעולמות העיצוב "
             "והבנייה, וכן חברות המחפשות אולם תצוגה איכותי במיקום מרכזי ונגיש."
         ),
@@ -1503,9 +1503,9 @@ def build_item_page(project, all_projects):
 <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
 <title>{html.escape(meta['title_prefix'])} — {html.escape(title)}</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@500;600;700&amp;family=Rubik:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="index-layout.css?v=73" rel="stylesheet"/>
-<link href="dh-side-header888.css?v=92" rel="stylesheet"/>
-<link href="dh-logistics-item.css?v=98" rel="stylesheet"/>
+<link href="index-layout.css?v=81" rel="stylesheet"/>
+<link href="dh-side-header888.css?v=95" rel="stylesheet"/>
+<link href="dh-logistics-item.css?v=100" rel="stylesheet"/>
 <link href="dh-image-lightbox.css?v=4" rel="stylesheet" media="print" onload="this.media='all'"/>
 </head>
 <body>

@@ -39,7 +39,7 @@
    */
   const DEFAULT_SLIDES = [
     { href: "offices.html", src: "assets/Homepagevids/office.mp4", titleHe: "פרוייקטים בהקמה", titleEn: "Under construction" },
-    { href: "residences.html", src: "assets/Homepagevids/residences.mp4", titleHe: "התחדשות עירונית", titleEn: "Urban renewal" },
+    { href: "residences.html", src: "assets/Homepagevids/residences.mp4", titleHe: "מגורים", titleEn: "Residential" },
     { href: "commerce.html", src: "assets/Homepagevids/commercial.mp4", titleHe: "נדל״ן מסחרי", titleEn: "Commercial" },
     { href: "about.html", src: "assets/Homepagevids/%D7%90%D7%95%D7%93%D7%95%D7%AA%20V3.mp4", titleHe: "אודות", titleEn: "About" },
     { href: "contact.html", src: "assets/Homepagevids/contact.mp4", titleHe: "יצירת קשר", titleEn: "Contact" },
@@ -165,14 +165,14 @@
   }
 
   async function resolveSlides() {
-    let slidesUrl = "assets/carousel-slides.json";
+    let slidesUrl = "assets/carousel-slides.json?v=2";
     try {
-      slidesUrl = new URL("assets/carousel-slides.json", getAssetBaseHref()).href;
+      slidesUrl = new URL("assets/carousel-slides.json?v=2", getAssetBaseHref()).href;
     } catch (e) {
       /* keep relative */
     }
     try {
-      const res = await fetch(slidesUrl, { cache: "force-cache" });
+      const res = await fetch(slidesUrl, { cache: "no-cache" });
       if (res.ok) {
         const parsed = await res.json();
         const norm = normalizeSlides(parsed);

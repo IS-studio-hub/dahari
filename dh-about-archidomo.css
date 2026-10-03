@@ -44,7 +44,7 @@ html.dh-page-archidomo .dh-main-content.dh-main-content--archidomo {
 
 /* Body copy + titles (breadcrumbs untouched - outside .dh-arch-page) */
 html.dh-page-archidomo .dh-arch-page {
-  font-family: "Rubik", system-ui, sans-serif;
+  font-family: "Heebo", system-ui, sans-serif;
 }
 
 html.dh-page-archidomo .dh-arch-page h1,
@@ -52,7 +52,7 @@ html.dh-page-archidomo .dh-arch-page h2,
 html.dh-page-archidomo .dh-arch-page h3,
 html.dh-page-archidomo .dh-arch-hero__brand,
 html.dh-page-archidomo .dh-arch-ag-panel__intro-text {
-  font-family: "Noto Sans Hebrew", "Rubik", system-ui, sans-serif;
+  font-family: "Noto Sans Hebrew", "Heebo", system-ui, sans-serif;
 }
 
 /* --- Reveal motion --- */
@@ -65,6 +65,7 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal {
 }
 
 html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in {
+  margin: 32px 0 0 0;
   opacity: 1;
   transform: translate3d(0, 0, 0);
 }
@@ -128,7 +129,7 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
 /* --- Stagger images --- */
 .dh-arch-stagger {
   display: grid;
-  grid-template-columns: minmax(0, 0.34fr) minmax(0, 0.66fr);
+  grid-template-columns: minmax(0, 0.5fr) minmax(0, 0.66fr);
   gap: clamp(0.5rem, 1.5vw, 1rem);
   align-items: start;
   margin-bottom: clamp(2rem, 5vw, 3.5rem);
@@ -292,7 +293,7 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
 
 .dh-arch-ag-row__body {
   margin: 0;
-  font-size: clamp(0.72rem, 1.05vw, 0.84rem);
+  font-size: clamp(0.875rem, 1.05vw, 1rem);
   line-height: 1.35;
   max-width: 52ch;
   color: var(--site-text-color, #2c2d66);
@@ -311,6 +312,168 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
   min-height: clamp(140px, 17vw, 220px);
   object-fit: cover;
   filter: grayscale(1) contrast(1.05);
+}
+
+/* --- FAQ accordion (answers stay open until JS adds .dh-arch-faq--js) --- */
+.dh-arch-faq {
+  --faq-num-col: 3rem;
+  --faq-icon: 2.5rem;
+  --faq-gap: clamp(0.75rem, 2vw, 1.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dh-arch-faq__item {
+  border-bottom: 1px solid rgba(44, 45, 102, 0.16);
+}
+
+.dh-arch-faq__q {
+  margin: 0;
+}
+
+.dh-arch-faq__btn {
+  display: grid;
+  grid-template-columns: var(--faq-num-col) minmax(0, 1fr) var(--faq-icon);
+  align-items: center;
+  gap: var(--faq-gap);
+  width: 100%;
+  margin: 0;
+  padding: clamp(1.1rem, 2.4vw, 1.6rem) 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.dh-arch-faq__btn:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.dh-arch-faq__btn:focus-visible {
+  outline: 3px solid var(--site-color-30, #99beff);
+  outline-offset: 2px;
+}
+
+.dh-arch-faq__num {
+  font-family: "Heebo", system-ui, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.5;
+}
+
+.dh-arch-faq__label {
+  font-family: "Noto Sans Hebrew", "Heebo", system-ui, sans-serif;
+  font-size: clamp(1.2rem, 2.2vw, 1.75rem);
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+/* Circle with a drawn +; rotates into × when open */
+.dh-arch-faq__icon {
+  position: relative;
+  width: var(--faq-icon);
+  height: var(--faq-icon);
+  border: 1px solid var(--site-text-color, #2c2d66);
+  border-radius: 50%;
+  box-sizing: border-box;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dh-arch-faq__icon::before,
+.dh-arch-faq__icon::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 36%;
+  height: 1.5px;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+}
+
+.dh-arch-faq__icon::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.dh-arch-faq__item.is-open .dh-arch-faq__icon {
+  transform: rotate(45deg);
+  background-color: var(--site-text-color, #2c2d66);
+  color: #ece9e3;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dh-arch-faq__btn:hover .dh-arch-faq__icon {
+    background-color: var(--site-text-color, #2c2d66);
+    color: #ece9e3;
+  }
+}
+
+.dh-arch-faq:not(.dh-arch-faq--js) .dh-arch-faq__icon {
+  display: none;
+}
+
+.dh-arch-faq:not(.dh-arch-faq--js) .dh-arch-faq__btn {
+  cursor: default;
+}
+
+/* Height animates via 0fr → 1fr; visibility keeps closed answers out of tab order */
+.dh-arch-faq--js .dh-arch-faq__a {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition:
+    grid-template-rows 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s;
+}
+
+.dh-arch-faq--js .dh-arch-faq__item:not(.is-open) .dh-arch-faq__a {
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition:
+    grid-template-rows 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s 0.5s;
+}
+
+.dh-arch-faq__a-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.dh-arch-faq__a-inner p {
+  margin: 0;
+  padding-bottom: clamp(1.25rem, 2.5vw, 1.75rem);
+  padding-inline: calc(var(--faq-num-col) + var(--faq-gap)) calc(var(--faq-icon) + var(--faq-gap));
+  box-sizing: content-box;
+  max-width: 60ch;
+  font-size: clamp(0.98rem, 1.5vw, 1.1rem);
+  line-height: 1.7;
+  color: var(--site-text-color, #2c2d66);
+}
+
+.dh-arch-faq__a-inner a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.dh-arch-faq__a-inner a:hover {
+  text-decoration-thickness: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dh-arch-faq__icon,
+  .dh-arch-faq--js .dh-arch-faq__a {
+    transition: none !important;
+  }
 }
 
 /* --- Statement + imagery --- */
@@ -348,7 +511,7 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
   flex-wrap: wrap;
   gap: 1rem 2.5rem;
   padding-block: 1.5rem;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   letter-spacing: 0.06em;
   color: var(--site-text-color, #2c2d66);
   border-block: 1px solid rgba(0, 0, 0, 0.08);
@@ -391,13 +554,15 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
 
 .dh-arch-foot__link {
   display: inline-block;
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--site-text-color, #2c2d66);
   text-decoration: none;
   border-bottom: 1px solid #111;
+  /* top padding grows the tap target without moving the underline */
+  padding-top: 0.75rem;
   padding-bottom: 0.2rem;
 }
 
@@ -412,7 +577,7 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
   justify-content: center;
   margin: 0 0 1.5rem;
   padding: 0.95rem 1.6rem;
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   font-size: clamp(0.9rem, 1.6vw, 1rem);
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -483,6 +648,15 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
 
   .dh-arch-ag-row__plus {
     grid-column: 1;
+  }
+
+  .dh-arch-faq {
+    --faq-num-col: 1.75rem;
+    --faq-icon: 2.1rem;
+  }
+
+  .dh-arch-faq__a-inner p {
+    padding-inline-end: 0;
   }
 
   .dh-arch-media-grid,

@@ -45,3 +45,24 @@
     io.observe(el);
   });
 })();
+
+/* FAQ accordion: each question toggles its own answer independently */
+(function () {
+  "use strict";
+
+  var lists = document.querySelectorAll("[data-arch-faq]");
+  if (!lists.length) return;
+
+  lists.forEach(function (list) {
+    list.classList.add("dh-arch-faq--js");
+
+    list.addEventListener("click", function (event) {
+      var btn = event.target.closest(".dh-arch-faq__btn");
+      if (!btn || !list.contains(btn)) return;
+
+      var open = btn.getAttribute("aria-expanded") !== "true";
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      btn.closest(".dh-arch-faq__item").classList.toggle("is-open", open);
+    });
+  });
+})();

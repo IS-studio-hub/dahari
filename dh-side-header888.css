@@ -96,7 +96,7 @@
 		--menu-font-size: clamp(14px, min(2.65vw, 3.5vmin), 28px);
 		--menu-index-size: clamp(10px, 0.8vw, 12px);
 		--font-title: "Noto Sans Hebrew", "Noto Sans", system-ui, sans-serif;
-		--font-body: "Rubik", system-ui, sans-serif;
+		--font-body: "Heebo", system-ui, sans-serif;
 		font-family: var(--font-body);
 	  }
 
@@ -737,7 +737,7 @@
 		box-sizing: border-box;
 		margin: 0;
 		padding: 0.35rem 0.55rem;
-		font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+		font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
 		font-size: clamp(0.8rem, 1.35vw, 0.95rem);
 		font-weight: 500;
 		line-height: 1.35;
@@ -1562,6 +1562,20 @@
 		  font-size: clamp(11px, 3.2vw, 13px);
 		}
 	  }
+
+	  /*
+		Browser zoom / short windows: a tile never shrinks below its icon + label + subtitle.
+		When the tiles don't fit, the panel scrolls from the top (centring would push the top out of reach).
+		With room to spare the rows still stretch to fill, so normal screens look the same.
+	  */
+	  .dh-side-header888__menu-nav888 {
+		grid-template-rows: repeat(3, minmax(min-content, 1fr));
+		min-height: min-content;
+	  }
+
+	  .dh-side-header888__overlay888.is-active888 .dh-side-header888__menu-shell888 {
+		justify-content: flex-start;
+	  }
   
 	  @media (prefers-reduced-motion: reduce) {
 		.dh-side-header888 {
@@ -1676,6 +1690,16 @@
 		  right: env(safe-area-inset-right, 0px);
 		  width: var(--rail-width-desktop);
 		  z-index: 70;
+		}
+
+		/* No rail behind it here: the button floats over video, photos and scrolling text */
+		.dh-side-header888__icon-btn888,
+		.dh-side-header888__icon-btn888:hover {
+		  background-color: rgba(255, 255, 255, 0.72);
+		  -webkit-backdrop-filter: blur(8px) saturate(1.02);
+		  backdrop-filter: blur(8px) saturate(1.02);
+		  border: 1px solid rgba(44, 45, 102, 0.14);
+		  box-shadow: 0 2px 10px rgba(15, 16, 40, 0.12);
 		}
 
 		.dh-side-header888__back-to-top {

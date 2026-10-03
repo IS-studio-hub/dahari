@@ -100,7 +100,9 @@
       return String(num).padStart(2, "0");
     };
 
-    const mqDesktop = window.matchMedia("(min-width: 900px)");
+    /* Slider needs room for heading + card + arrows; shorter windows (e.g. 175–200% zoom) get the stacked grid */
+    const mqDesktop = window.matchMedia("(min-width: 900px) and (min-height: 560px)");
+    const MIN_FIT = 0.6;
     const isRtl = document.documentElement.getAttribute("dir") === "rtl";
 
     function clearWrapperHeightLock() {
@@ -128,6 +130,65 @@
       requestAnimationFrame(function () {
         requestAnimationFrame(run);
       });
+    }
+
+    /**
+     * Short windows: the content column scrolls (index-layout.css), so a vertical wheel must scroll it.
+     * Only lock the slider to horizontal wheel/trackpad gestures while the column actually overflows.
+     */
+    function syncWheelAxis(swiperInstance) {
+      if (!swiperInstance || !swiperInstance.params || !swiperInstance.params.mousewheel) return;
+      const scroller = root.closest(".dh-side-header888__content888");
+      swiperInstance.params.mousewheel.forceToAxis =
+        !!scroller && scroller.scrollHeight > scroller.clientHeight + 1;
+    }
+
+    /**
+     * Short windows / browser zoom: shrink every card as a whole (width, photo and card text together, so it
+     * stays a scaled copy of the 100% card) until heading + cards + arrows fit. CSS reads --wqf-fit.
+     */
+    function fitSliderToHeight(swiperInstance) {
+      const scroller = root.closest(".dh-side-header888__content888");
+      if (!swiperInstance || !scroller) return;
+
+      root.classList.add("wqf-fitting");
+      root.style.setProperty("--wqf-fit", "1");
+      clearWrapperHeightLock();
+      swiperInstance.update();
+
+      /* Height of the tallest card when it is the active one (longer texts), so navigating never overflows */
+      function tallestActiveCard() {
+        let tallest = 0;
+        sliderEl.querySelectorAll(".swiper-slide").forEach(function (slide) {
+          const wasActive = slide.classList.contains("swiper-slide-active");
+          if (!wasActive) slide.classList.add("swiper-slide-active");
+          const card = slide.querySelector(".wqf-slide-card");
+          if (card) tallest = Math.max(tallest, card.offsetHeight);
+          if (!wasActive) slide.classList.remove("swiper-slide-active");
+        });
+        return tallest;
+      }
+
+      const section = root.querySelector(".wqf-section") || root;
+      let fit = 1;
+      for (let i = 0; i < 5 && fit > MIN_FIT; i++) {
+        const card =
+          sliderEl.querySelector(".swiper-slide-active .wqf-slide-card") || sliderEl.querySelector(".wqf-slide-card");
+        const cardH = card ? card.offsetHeight : 0;
+        if (!cardH) break;
+        // Signed: negative = spare room (scrollHeight can't show that), plus headroom for the tallest card
+        const contentBottom =
+          section.getBoundingClientRect().bottom - scroller.getBoundingClientRect().top + scroller.scrollTop;
+        const over = contentBottom - scroller.clientHeight + Math.max(0, tallestActiveCard() - cardH);
+        if (over <= 0) break;
+        // The whole card scales with --wqf-fit; re-measure in case rounding leaves a few px over
+        fit = Math.max(MIN_FIT, (fit * Math.max(0, cardH - over - 8)) / cardH);
+        root.style.setProperty("--wqf-fit", fit.toFixed(4));
+        swiperInstance.update();
+      }
+
+      void root.offsetWidth;
+      root.classList.remove("wqf-fitting");
     }
 
     function updateNav(swiperInstance) {
@@ -180,7 +241,11 @@
           afterInit: function (s) {
             requestAnimationFrame(function () {
               s.update();
+              fitSliderToHeight(s);
               applyWrapperHeightLock(s);
+              requestAnimationFrame(function () {
+                syncWheelAxis(s);
+              });
             });
             updateNav(s);
           },
@@ -208,10 +273,12 @@
           root._wqfSwiper.enable();
           root._wqfSwiper.update();
           updateNav(root._wqfSwiper);
+          fitSliderToHeight(root._wqfSwiper);
           applyWrapperHeightLock(root._wqfSwiper);
         }
       } else {
         root.classList.add("wqf-portfolio--mobile-stack");
+        root.style.removeProperty("--wqf-fit");
         clearWrapperHeightLock();
         if (root._wqfSwiper) {
           root._wqfSwiper.destroy(true, true);
@@ -234,7 +301,15 @@
     setupSliderMode();
 
     window.addEventListener("load", function () {
-      if (root._wqfSwiper) applyWrapperHeightLock(root._wqfSwiper);
+      if (root._wqfSwiper) {
+        fitSliderToHeight(root._wqfSwiper);
+        applyWrapperHeightLock(root._wqfSwiper);
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            syncWheelAxis(root._wqfSwiper);
+          });
+        });
+      }
     });
 
     mqDesktop.addEventListener("change", setupSliderMode);
@@ -247,6 +322,7 @@
         setupSliderMode();
         if (mqDesktop.matches && root._wqfSwiper) {
           applyWrapperHeightLock(root._wqfSwiper);
+          syncWheelAxis(root._wqfSwiper);
         }
       }, 150);
     });

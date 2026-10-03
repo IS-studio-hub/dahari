@@ -95,6 +95,9 @@
     #2a2a2a 270deg 360deg
   );
   --wqf-card-stroke: #2C2D66;
+  /* Photo width:height of the active card (the 100% design). --wqf-fit < 1 shrinks cards on short windows (JS). */
+  --wqf-photo-ratio: 1.57;
+  --wqf-fit: 1;
   box-sizing: border-box;
   container-name: wqfport;
   container-type: inline-size;
@@ -185,16 +188,10 @@
 
 #wqf-portfolio-root .p2-mono {
   font-family: "Azeret Mono", monospace;
-  font-size: 0.688rem;
+  font-size: 0.75rem;
   line-height: 0.938rem;
   text-transform: uppercase;
   margin: 0;
-}
-
-@media (min-width: 768px) {
-  #wqf-portfolio-root .p2-mono {
-    font-size: 0.75rem;
-  }
 }
 
 #wqf-portfolio-root .h6 {
@@ -509,34 +506,35 @@
   }
 }
 
+/* Card widths live in variables so every photo can follow the active card width (see .wqf-logo) */
 @media (min-width: 768px) {
+  #wqf-portfolio-root {
+    --wqf-card-w: 34.72cqw;
+    --wqf-active-w: 40.52cqw;
+  }
   #wqf-portfolio-root .wqf-slide-card {
     height: 100%;
-    width: 34.72cqw;
+    width: calc(var(--wqf-card-w) * var(--wqf-fit));
   }
   #wqf-portfolio-root .wqf-slide.swiper-slide-active .wqf-slide-card {
     height: 100%;
-    width: 40.52cqw;
+    width: calc(var(--wqf-active-w) * var(--wqf-fit));
   }
 }
 
 @media (min-width: 1024px) {
-  #wqf-portfolio-root .wqf-slide-card {
-    height: 100%;
-    width: 20.83cqw;
-  }
-  #wqf-portfolio-root .wqf-slide.swiper-slide-active .wqf-slide-card {
-    height: 100%;
-    width: 34.31cqw;
+  #wqf-portfolio-root {
+    --wqf-card-w: 20.83cqw;
+    --wqf-active-w: 34.31cqw;
   }
 }
 
 @media (min-width: 1280px) {
+  #wqf-portfolio-root {
+    --wqf-active-w: 24.31cqw;
+  }
   #wqf-portfolio-root .wqf-slide-card {
     gap: 8px;
-  }
-  #wqf-portfolio-root .wqf-slide.swiper-slide-active .wqf-slide-card {
-    width: 24.31cqw;
   }
 }
 #wqf-portfolio-root .wqf-slide-title-wrap {
@@ -590,6 +588,30 @@
   flex-shrink: 0;
 }
 
+/* Slider: all photos share the active card's shape, so zoom or a narrower window never squares them up */
+@media (min-width: 768px) {
+  #wqf-portfolio-root:not(.wqf-portfolio--mobile-stack) .wqf-logo {
+    height: calc(var(--wqf-active-w) * var(--wqf-fit) / var(--wqf-photo-ratio));
+  }
+
+  /* Height comes from the cards themselves (JS locks it after layout); a cqw floor would outgrow short windows */
+  #wqf-portfolio-root:not(.wqf-portfolio--mobile-stack) .wqf-swiper-wrap .swiper-wrapper {
+    min-height: 0;
+  }
+
+  /* Card text scales with the card, so a fitted card is a smaller copy of the 100% card (same wrapping) */
+  #wqf-portfolio-root:not(.wqf-portfolio--mobile-stack) .wqf-slide-copy,
+  #wqf-portfolio-root:not(.wqf-portfolio--mobile-stack) .wqf-expand-grid,
+  #wqf-portfolio-root:not(.wqf-portfolio--mobile-stack) .wqf-area-tag {
+    zoom: var(--wqf-fit);
+  }
+}
+
+#wqf-portfolio-root.wqf-fitting .wqf-slide-card,
+#wqf-portfolio-root.wqf-fitting .wqf-slide-card * {
+  transition: none !important;
+}
+
 /* House + area (m²) as a pill on the image, top-end corner */
 #wqf-portfolio-root .wqf-area-tag {
   position: absolute;
@@ -602,7 +624,7 @@
   align-items: center;
   gap: 6px;
   padding: 6px 10px;
-  max-width: min(70%, calc(100% 24px));
+  max-width: min(70%, calc(100% - 24px));
   background: rgba(255, 255, 255, 0.94);
   border-radius: 999px;
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
@@ -706,8 +728,8 @@
 }
 
 #wqf-portfolio-root .wqf-slide-meta-text {
-  font-family: var(--font-body, "Rubik", system-ui, sans-serif);
-  font-size: clamp(11px, 2.4cqw, 13px);
+  font-family: var(--font-body, "Heebo", system-ui, sans-serif);
+  font-size: clamp(12px, 2.4cqw, 13px);
   font-weight: 500;
   line-height: 1.35;
   color: #2c2d66;
@@ -872,6 +894,7 @@
   }
 }
 
+/* 44px hit area around the 18px arrow; negative margin keeps the visual spacing unchanged */
 #wqf-portfolio-root .wqf-nav button {
   align-items: center;
   background: none;
@@ -879,7 +902,8 @@
   color: inherit;
   cursor: pointer;
   display: flex;
-  padding: 0;
+  padding: 13px;
+  margin: -13px;
 }
 
 #wqf-portfolio-root .wqf-nav button:disabled {
@@ -997,6 +1021,8 @@
 #wqf-portfolio-root.wqf-portfolio--mobile-stack .wqf-desc {
   width: 100% !important;
   max-width: 100% !important;
+  font-size: 0.8125rem;
+  line-height: 1.5;
   opacity: 0.85 !important;
   padding-bottom: 8px;
   padding-top: 0;
@@ -1040,32 +1066,45 @@
   flex-shrink: 0;
 }
 
+/* Stacked cards from 600px up (tablets, and short or zoomed desktop windows): a grid of the slider's card shape */
+@media (min-width: 600px) {
+  #wqf-portfolio-root.wqf-portfolio--mobile-stack .wqf-swiper-wrap .swiper-wrapper {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+
+  #wqf-portfolio-root.wqf-portfolio--mobile-stack .wqf-logo {
+    height: auto;
+    aspect-ratio: var(--wqf-photo-ratio);
+  }
+}
+
 /* Hebrew / RTL (logistics portfolio embed) */
 #wqf-portfolio-root[dir="rtl"] {
-  font-family: "Rubik", "Noto Sans Hebrew", "Roc Grotesk", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", "Roc Grotesk", system-ui, sans-serif;
 }
 
 #wqf-portfolio-root[dir="rtl"] .p1-mono,
 #wqf-portfolio-root[dir="rtl"] .p2-mono,
 #wqf-portfolio-root[dir="rtl"] .wqf-nav-counter {
-  font-family: "Rubik", "Noto Sans Hebrew", ui-monospace, system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", ui-monospace, system-ui, sans-serif;
   text-transform: none;
   letter-spacing: normal;
 }
 
 #wqf-portfolio-root[dir="rtl"] .h5 {
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   text-transform: none;
   line-height: 1.2;
 }
 
 #wqf-portfolio-root[dir="rtl"] .wqf-slide-title {
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   text-transform: none;
 }
 
 #wqf-portfolio-root[dir="rtl"] .wqf-slide-location {
-  font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
   text-transform: none;
   letter-spacing: normal;
 }
@@ -1137,7 +1176,7 @@ html {
   padding: 0.55rem 1rem;
   background: #0a0a0a;
   color: #fff;
-  font-family: "Noto Sans Hebrew", "Rubik", system-ui, sans-serif;
+  font-family: "Noto Sans Hebrew", "Heebo", system-ui, sans-serif;
   font-weight: 600;
   font-size: clamp(0.9rem, 2.8vw, 1rem);
   border-radius: 4px;
@@ -1185,21 +1224,17 @@ body::-webkit-scrollbar {
 
 /* 768–1023: slightly narrower cards so rail + Swiper fit portrait tablets (1280+ rules unchanged) */
 @media (min-width: 768px) and (max-width: 1023px) {
-  #wqf-portfolio-root .wqf-slide-card {
-    width: 30cqw;
-  }
-  #wqf-portfolio-root .wqf-slide.swiper-slide-active .wqf-slide-card {
-    width: 40cqw;
+  #wqf-portfolio-root {
+    --wqf-card-w: 30cqw;
+    --wqf-active-w: 40cqw;
   }
 }
 
 /* 1024–1279: tween default 1024 and large-desktop card proportions */
 @media (min-width: 1024px) and (max-width: 1279px) {
-  #wqf-portfolio-root .wqf-slide-card {
-    width: 20cqw;
-  }
-  #wqf-portfolio-root .wqf-slide.swiper-slide-active .wqf-slide-card {
-    width: 32cqw;
+  #wqf-portfolio-root {
+    --wqf-card-w: 20cqw;
+    --wqf-active-w: 32cqw;
   }
 }
 
@@ -1207,5 +1242,23 @@ body::-webkit-scrollbar {
   #wqf-portfolio-root.wqf-portfolio--mobile-stack .wqf-slide-card {
     padding: 0 0 14px;
     gap: 0;
+  }
+}
+
+/* ≥900px: vertical spacing scales with the window height (capped at the design values), so short windows
+   and browser zoom keep the 100% proportions instead of pushing the cards off the bottom */
+@media (min-width: 900px) {
+  #wqf-portfolio-root .wqf-section {
+    padding-top: min(64px, 7.2vh);
+    padding-bottom: min(32px, 3.6vh);
+  }
+
+  #wqf-portfolio-root .wqf-head,
+  #wqf-portfolio-root .h5 {
+    margin-bottom: min(32px, 3.6vh);
+  }
+
+  #wqf-portfolio-root .wqf-nav {
+    margin-top: min(32px, 3.6vh);
   }
 }

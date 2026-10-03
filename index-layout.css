@@ -260,6 +260,32 @@
       --dh-carousel-shadow-core-sy: 1;
     }
 
+    /* Short desktop windows: perspective renders the front card ~2.3x --card-size, which clips its top.
+       Plain px steps (not min()/vh) because dh-carousel-embed.js reads --card-size to size the ring. */
+    @media (min-width: 1024px) and (max-height: 680px) {
+      html.dh-page-home .dh-carousel-embed {
+        --card-size: 236px;
+      }
+    }
+
+    @media (min-width: 1024px) and (max-height: 645px) {
+      html.dh-page-home .dh-carousel-embed {
+        --card-size: 226px;
+      }
+    }
+
+    @media (min-width: 1024px) and (max-height: 599px) {
+      html.dh-page-home .dh-carousel-embed {
+        --card-size: 214px;
+      }
+    }
+
+    @media (min-width: 1024px) and (max-height: 551px) {
+      html.dh-page-home .dh-carousel-embed {
+        --card-size: 200px;
+      }
+    }
+
     /*
       index.html: ground shadow under the 3D carousel.
       Desktop only - mobile carousel is flat scroll; shadow is omitted to avoid a floating smudge.
@@ -401,13 +427,16 @@
       overflow: hidden;
     }
 
+    /* Column scrolls only when the slider is taller than the window (short laptops) */
     html.dh-page-logistics-wqf .dh-side-header888__content888,
     html.dh-page-wqf-inline .dh-side-header888__content888 {
       flex: 1 1 auto;
       min-height: 0;
       height: auto;
       max-height: none;
-      overflow: hidden;
+      overflow-x: clip;
+      overflow-y: auto;
+      overscroll-behavior: contain;
       display: flex;
       flex-direction: column;
     }
@@ -587,7 +616,8 @@
         min-height: 100dvh !important;
         min-height: 100svh !important;
         max-height: none !important;
-        overflow: visible !important;
+        overflow-x: clip !important;
+        overflow-y: visible !important;
       }
 
       html.dh-page-property-item .dh-side-header888__layout888,
@@ -740,7 +770,7 @@
       padding: 0.65rem 1.1rem;
       background: #0f1028;
       color: #fff;
-      font-family: "Noto Sans Hebrew", "Rubik", system-ui, sans-serif;
+      font-family: "Noto Sans Hebrew", "Heebo", system-ui, sans-serif;
       font-weight: 600;
       font-size: clamp(0.95rem, 2.8vw, 1.05rem);
       line-height: 1.35;
@@ -772,7 +802,7 @@
     @media (max-width: 1023px) {
       .dh-corner-logo {
         max-width: calc(
-          100% var(--rail-width-desktop, 54px) max(1.25rem, env(safe-area-inset-inline-start, 0px)) 4.5rem
+          100% - var(--rail-width-desktop, 54px) - max(1.25rem, env(safe-area-inset-inline-start, 0px)) - 4.5rem
         );
       }
     }
@@ -780,7 +810,7 @@
     @media (max-width: 767px) {
       .dh-corner-logo {
         max-width: calc(
-          100% var(--rail-width-mobile, 54px) max(0.75rem, env(safe-area-inset-inline-start, 0px)) 3.25rem
+          100% - var(--rail-width-mobile, 54px) - max(0.75rem, env(safe-area-inset-inline-start, 0px)) - 3.25rem
         );
       }
 
@@ -872,7 +902,7 @@
 
     @media (min-width: 1024px) and (max-width: 1279px) {
       .dh-breadcrumbs {
-        max-width: min(34rem, calc(100% 8rem var(--rail-width-desktop, 54px)));
+        max-width: min(34rem, calc(100% - 8rem - var(--rail-width-desktop, 54px)));
       }
     }
 
@@ -929,7 +959,7 @@
 
     .dh-breadcrumbs__track {
       margin: 0;
-      font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+      font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
       font-size: 0.75rem;
       line-height: 1.45;
       color: var(--site-text-color);
@@ -963,7 +993,7 @@
 
     .dh-page-heading {
       margin: 0 0 0.75rem;
-      font-family: "Noto Sans Hebrew", "Rubik", system-ui, sans-serif;
+      font-family: "Noto Sans Hebrew", "Heebo", system-ui, sans-serif;
       font-weight: 700;
       font-size: clamp(1.35rem, 4.5vw, 2rem);
       line-height: 1.25;
@@ -973,7 +1003,7 @@
     .dh-page-lead {
       margin: 0 auto;
       max-width: min(36rem, 100%);
-      font-family: "Rubik", "Noto Sans Hebrew", system-ui, sans-serif;
+      font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
       font-size: clamp(0.95rem, 3.2vw, 1.1rem);
       line-height: 1.55;
       color: var(--site-text-color);

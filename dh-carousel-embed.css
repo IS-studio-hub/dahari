@@ -1,6 +1,6 @@
     .dh-carousel-embed {
-      --font-primary: "Rubik", system-ui, sans-serif;
-      --font-title: "Gveret Levin", "Noto Sans Hebrew", "Rubik", cursive, system-ui, sans-serif;
+      --font-primary: "Heebo", system-ui, sans-serif;
+      --font-title: "Gveret Levin", "Noto Sans Hebrew", "Heebo", cursive, system-ui, sans-serif;
       --site-color-60: #fff5df;
       --site-color-30: #99beff;
       --site-color-10: #cfb682;
@@ -255,7 +255,7 @@
       will-change: auto;
     }
     .dh-carousel {
-      height: calc(var(--component-height) var(--container-offset));
+      height: calc(var(--component-height) - var(--container-offset));
       min-height: calc(max(var(--card-width), var(--card-height)) + 120px);
       width: 100%;
       overflow: hidden;
@@ -703,10 +703,10 @@
       /* Avoid 100vw (ignores parent rail padding). cqw = embed width when supported. */
       .dh-carousel__item {
         position: relative !important;
-        flex: 0 0 calc(100vw 5.5rem);
-        width: calc(100vw 5.5rem) !important;
-        min-width: calc(100vw 5.5rem) !important;
-        max-width: calc(100vw 5.5rem) !important;
+        flex: 0 0 calc(100vw - 5.5rem);
+        width: calc(100vw - 5.5rem) !important;
+        min-width: calc(100vw - 5.5rem) !important;
+        max-width: calc(100vw - 5.5rem) !important;
         height: var(--component-height) !important;
         min-height: var(--component-height) !important;
         transform: none !important;
@@ -794,7 +794,7 @@
         margin-right: 10px;
         max-width: min(72vw, 16rem);
         white-space: nowrap;
-        overflow: hidden;
+        /* overflow: hidden; */
         text-overflow: ellipsis;
         text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
         pointer-events: none;
