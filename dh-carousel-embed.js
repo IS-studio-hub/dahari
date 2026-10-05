@@ -39,10 +39,10 @@
    */
   const DEFAULT_SLIDES = [
     { href: "offices.html", src: "assets/Homepagevids/office.mp4", titleHe: "פרוייקטים בהקמה", titleEn: "Under construction" },
-    { href: "residences.html", src: "assets/Homepagevids/residences.mp4", titleHe: "מגורים", titleEn: "Residential" },
+    { href: "residences.html", src: "assets/Homepagevids/residences.mp4?v=7", titleHe: "מגורים", titleEn: "Residential" },
     { href: "commerce.html", src: "assets/Homepagevids/commercial.mp4", titleHe: "נדל״ן מסחרי", titleEn: "Commercial" },
     { href: "about.html", src: "assets/Homepagevids/%D7%90%D7%95%D7%93%D7%95%D7%AA%20V3.mp4", titleHe: "אודות", titleEn: "About" },
-    { href: "contact.html", src: "assets/Homepagevids/contact.mp4", titleHe: "יצירת קשר", titleEn: "Contact" },
+    { href: "contact.html", src: "assets/Homepagevids/contact.mp4?v=7", titleHe: "יצירת קשר", titleEn: "Contact" },
   ];
 
   function escAttr(s) {
@@ -147,6 +147,11 @@
         /* ignore */
       }
     }
+    /* Homepage has no matching slide href — default to אודות. */
+    if (isHome) {
+      const aboutIdx = findSlideIndexByHref(slides, "about.html");
+      if (aboutIdx >= 0) return aboutIdx;
+    }
     return 0;
   }
 
@@ -165,9 +170,9 @@
   }
 
   async function resolveSlides() {
-    let slidesUrl = "assets/carousel-slides.json?v=2";
+    let slidesUrl = "assets/carousel-slides.json?v=7";
     try {
-      slidesUrl = new URL("assets/carousel-slides.json?v=2", getAssetBaseHref()).href;
+      slidesUrl = new URL("assets/carousel-slides.json?v=7", getAssetBaseHref()).href;
     } catch (e) {
       /* keep relative */
     }
@@ -221,11 +226,26 @@
     }
 
     /**
-     * Dual-layer swap is unused: every homepage clip uses native loop like office/commercial/about.
+     * All homepage clips use native loop (same path as office/commercial/about).
      * @param {HTMLVideoElement} el
      */
     needsSeamless(el) {
       return false;
+    }
+
+    /**
+     * Which slides should be loaded + playing. Mobile: only the visible card.
+     * Desktop: every card in the ring is on screen, so all clips loop
+     * (previously only front ±1 played, leaving מגורים / צור קשר frozen on the sides).
+     * @param {number} i primary index
+     * @returns {Set<number>}
+     */
+    nearSet(i) {
+      const n = this.items.length;
+      if (this.c && this.c.isMobile) return new Set([i]);
+      const all = new Set();
+      for (let k = 0; k < n; k++) all.add(k);
+      return all;
     }
 
     /**
@@ -244,6 +264,12 @@
       if (!el) return;
       el.muted = true;
       el.defaultMuted = true;
+      el.setAttribute("muted", "");
+      if (el.dataset.dhSeamless === "1" || this.needsSeamless(el)) {
+        el.loop = false;
+        el.removeAttribute("loop");
+        return;
+      }
       el.loop = true;
       el.setAttribute("loop", "");
     }
@@ -518,8 +544,11 @@
         el.muted = true;
         el.defaultMuted = true;
         el.playsInline = true;
+        el.controls = false;
+        el.removeAttribute("controls");
         el.setAttribute("playsinline", "");
         el.setAttribute("webkit-playsinline", "");
+        el.setAttribute("muted", "");
         this.applyLoopAttrs(el);
         el.preload = "none";
         el.disablePictureInPicture = true;
@@ -529,24 +558,24 @@
           if (el.hasAttribute("poster")) el.removeAttribute("poster");
         });
         el.addEventListener("ended", () => {
-          el.loop = true;
+          /* Fallback if native loop misses — do not seek while already looping. */
+          this.applyLoopAttrs(el);
+          if (!el.loop) {
+            try {
+              el.currentTime = 0.001;
+            } catch (e) {}
+          }
           void el.play().catch(() => {});
         });
         let stallTimer = 0;
         const recoverFromStall = () => {
-          if (el.paused || document.hidden) return;
+          if (document.hidden || el.seeking) return;
           const n = this.items.length;
           const i = this._primary;
           const mobile = !!(this.c && this.c.isMobile);
-          const near = mobile ? new Set([i]) : new Set([i, (i - 1 + n) % n, (i + 1) % n]);
+          const near = this.nearSet(i);
           if (!near.has(idx)) return;
-          if (el.readyState >= 2 && !el.ended) {
-            void el.play().catch(() => {});
-            return;
-          }
-          try {
-            el.currentTime = 0;
-          } catch (e) {}
+          this.applyLoopAttrs(el);
           void el.play().catch(() => {});
         };
         el.addEventListener("waiting", () => {
@@ -561,9 +590,6 @@
         el.addEventListener("error", function () {
           if (retriedDecode) return;
           retriedDecode = true;
-          try {
-            el.load();
-          } catch (e) {}
           window.setTimeout(function () {
             void el.play().catch(function () {});
           }, 80);
@@ -634,7 +660,10 @@
      */
     ensureSrc(el) {
       if (!el) return;
-      if (el.getAttribute("src") && el.dataset.dhBlob === "1") {
+      /* Never call load() again once src is attached — mid-playback load() freezes
+       * residences/contact on desktop Safari (neighbors get ensureSrc many times). */
+      if (el.getAttribute("src") || el.currentSrc) {
+        this.applyLoopAttrs(el);
         const item = this.items.find((it) => it.el === el || it.twin === el);
         if (item) {
           this.ensureSeamlessTwin(item);
@@ -645,8 +674,7 @@
       const pending =
         el.getAttribute("data-src") ||
         el.getAttribute("data-remote-src") ||
-        (!String(el.currentSrc || "").startsWith("blob:") ? el.getAttribute("src") : "");
-      if (!pending && el.getAttribute("src")) return;
+        "";
       if (!pending) return;
       el.setAttribute("data-remote-src", pending);
       this.applyLoopAttrs(el);
@@ -657,9 +685,7 @@
       el.playsInline = true;
       el.setAttribute("playsinline", "");
       el.setAttribute("webkit-playsinline", "");
-      if (!el.getAttribute("src")) {
-        el.src = pending;
-      }
+      el.src = pending;
       el.removeAttribute("data-src");
       try {
         el.load();
@@ -677,7 +703,7 @@
         this.tickInterval = null;
       }
       if (document.hidden) return;
-      const ms = this.c && this.c.liteDevice ? 8000 : 6000;
+      const ms = this.c && this.c.liteDevice ? 4000 : 1500;
       this.tickInterval = setInterval(() => this.ensurePlayback(), ms);
     }
 
@@ -695,9 +721,7 @@
       this._primary = i;
 
       const mobile = !!(this.c && this.c.isMobile);
-      const near = mobile
-        ? new Set([i])
-        : new Set([i, (i - 1 + n) % n, (i + 1) % n]);
+      const near = this.nearSet(i);
 
       this.items.forEach((item, idx) => {
         const el = item.el;
@@ -761,9 +785,7 @@
       const n = this.items.length;
       const i = this._primary;
       const mobile = !!(this.c && this.c.isMobile);
-      const near = mobile
-        ? new Set([i])
-        : new Set([i, (i - 1 + n) % n, (i + 1) % n]);
+      const near = this.nearSet(i);
       this.items.forEach((item, idx) => {
         const el = item.el;
         if (!near.has(idx)) {
@@ -887,7 +909,11 @@
       var card = Math.max(readDim("--card-width", fbSize), readDim("--card-height", fbSize));
       var step = Math.PI / this.itemCount;
       this.radius = Math.round((card / 2 / Math.sin(step)) * 2);
-      const i0 = Math.max(0, Math.min(Number(initialFrontIndex) || 0, Math.max(0, this.itemCount - 1)));
+      const i0Raw = Number(initialFrontIndex);
+      const i0 = Math.max(
+        0,
+        Math.min(Number.isFinite(i0Raw) ? i0Raw : 0, Math.max(0, this.itemCount - 1))
+      );
       const startRot = i0 * this.angleStep;
       this.rotation = startRot;
       this.rotationX = 0;
@@ -916,6 +942,8 @@
       this._wheelSnapping = false;
       this._wheelSnapTarget = null;
       this.currentMobileIndex = i0;
+      /** Desired landing card; kept so mobile retries do not collapse to 0 before layout. */
+      this._initialMobileIndex = i0;
       this._lastPrimaryFront = -1;
       this.liveRegion = rootEl.querySelector("#dh-carousel-live");
       this.reduceMotionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -964,15 +992,55 @@
         if (history.scrollRestoration) {
           history.scrollRestoration = "manual";
         }
-        this.scrollToCard(this.currentMobileIndex, false);
-        requestAnimationFrame(() => this.scrollToCard(this.currentMobileIndex, false));
-        setTimeout(() => this.scrollToCard(this.currentMobileIndex, false), 100);
+        this.ensureMobileStartCard();
         window.addEventListener(
           "load",
-          (this._loadHandler = () => this.scrollToCard(this.currentMobileIndex, false))
+          (this._loadHandler = () => this.ensureMobileStartCard())
         );
       }
       this.updateMobileTitle();
+    }
+
+    /**
+     * Scroll mobile strip to the landing card. Retries until layout has real offsets,
+     * so a first paint with offsetLeft=0 cannot pin the strip on card 0.
+     */
+    ensureMobileStartCard() {
+      if (!this.isMobile || !this.container || !this.items.length) return;
+      const target = Math.max(
+        0,
+        Math.min(
+          typeof this._initialMobileIndex === "number"
+            ? this._initialMobileIndex
+            : this.currentMobileIndex,
+          this.itemCount - 1
+        )
+      );
+      this._initialMobileIndex = target;
+
+      const tryScroll = (attempt) => {
+        if (!this.isMobile || !this.container) return;
+        const item = this.items[target];
+        if (!item) return;
+        const left = item.offsetLeft;
+        const layoutReady = target === 0 || left > 1;
+        if (layoutReady) {
+          this.scrollToCard(target, false);
+          requestAnimationFrame(() => {
+            if (this.currentMobileIndex !== target) {
+              this.scrollToCard(target, false);
+            }
+          });
+          return;
+        }
+        if (attempt < 20) {
+          window.setTimeout(() => tryScroll(attempt + 1), 50);
+        } else {
+          this.scrollToCard(target, false);
+        }
+      };
+
+      tryScroll(0);
     }
 
     announceFromIndex(index) {
@@ -1057,6 +1125,12 @@
         behavior: smooth ? "smooth" : "auto",
       });
       requestAnimationFrame(() => {
+        /* Avoid snapping the intended start card back to 0 before layout settles. */
+        if (left <= 1 && i > 0) {
+          this.updateMobileNav();
+          this.updateMobileTitle();
+          return;
+        }
         this.updateMobileActive();
         this.updateMobileNav();
         this.updateMobileTitle();

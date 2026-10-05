@@ -7,7 +7,7 @@
   },
   {
     "href": "residences.html",
-    "src": "assets/Homepagevids/residences.mp4",
+    "src": "assets/Homepagevids/residences.mp4?v=7",
     "titleHe": "מגורים",
     "titleEn": "Residential"
   },
@@ -25,7 +25,7 @@
   },
   {
     "href": "contact.html",
-    "src": "assets/Homepagevids/contact.mp4",
+    "src": "assets/Homepagevids/contact.mp4?v=7",
     "titleHe": "יצירת קשר",
     "titleEn": "Contact"
   }

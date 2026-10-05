@@ -1722,10 +1722,10 @@ def update_portfolio_file(path, section, projects, iframe=False):
         text,
         count=1,
     )
-    if "js-split-reveal" in text:
+    if re.search(r'<p class="h5(?: js-split-reveal)?">', text):
         text = re.sub(
-            r"<p class=\"h5 js-split-reveal\">.*?</p>",
-            f'<p class="h5 js-split-reveal">{meta["portfolio_head"]}</p>',
+            r"<p class=\"h5(?: js-split-reveal)?\">.*?</p>",
+            f'<p class="h5">{meta["portfolio_head"]}</p>',
             text,
             count=1,
             flags=re.DOTALL,

@@ -19,69 +19,6 @@
           },
         });
       }
-
-      const splitEl = root.querySelector(".js-split-reveal");
-      if (splitEl && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        const sourceNodes = Array.from(splitEl.childNodes);
-        const ariaText = splitEl.textContent.trim().replace(/\s+/g, " ");
-        splitEl.textContent = "";
-        splitEl.setAttribute("aria-label", ariaText);
-        splitEl.setAttribute("role", "text");
-
-        const inners = [];
-
-        sourceNodes.forEach(function (node) {
-          if (node.nodeType === Node.TEXT_NODE) {
-            const text = node.textContent.trim();
-            if (!text) return;
-
-            Array.from(text).forEach(function (char) {
-              const wrap = document.createElement("span");
-              wrap.className = "wqf-word-wrap";
-              wrap.setAttribute("aria-hidden", "true");
-
-              const outer = document.createElement("span");
-              outer.className = "wqf-word";
-
-              const inner = document.createElement("span");
-              inner.className = "wqf-word-inner";
-              inner.textContent = char === " " ? "\u00a0" : char;
-
-              outer.appendChild(inner);
-              wrap.appendChild(outer);
-              splitEl.appendChild(wrap);
-              inners.push(inner);
-            });
-            return;
-          }
-
-          if (node.nodeName === "BR") {
-            splitEl.appendChild(document.createElement("br"));
-          }
-        });
-
-        gsap.from(inners, {
-          yPercent: -120,
-          opacity: 0,
-          duration: 0.55,
-          stagger: 0.035,
-          ease: "power3.out",
-          delay: 0.15,
-          onComplete: function () {
-            splitEl.classList.add("wqf-split-reveal--settled");
-            inners.forEach(function (inner, i) {
-              gsap.to(inner, {
-                y: gsap.utils.random(1.2, 2.4),
-                duration: gsap.utils.random(2.4, 3.6),
-                ease: "sine.inOut",
-                repeat: -1,
-                yoyo: true,
-                delay: i * 0.028,
-              });
-            });
-          },
-        });
-      }
     }
   }
 

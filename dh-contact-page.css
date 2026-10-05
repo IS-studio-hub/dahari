@@ -41,40 +41,6 @@ html.dh-page-contact .dh-main-content.dh-main-content--contact {
   }
 }
 
-/* Full-bleed empty spacer (reserved height, no image) */
-html.dh-page-contact .dh-contact__page-banner {
-  flex: 0 0 auto;
-  margin: 0;
-  width: 100%;
-  max-width: none;
-  padding-inline: 0;
-  height: clamp(12rem, 34vh, 18rem);
-  border-radius: 0;
-  overflow: hidden;
-  border: none;
-  border-block-end: 1px solid rgba(44, 45, 102, 0.1);
-  background: transparent;
-  opacity: 0;
-  transform: translate3d(0, -10px, 0);
-  transition:
-    opacity 0.75s var(--dh-contact-ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
-    transform 0.75s var(--dh-contact-ease-out, cubic-bezier(0.16, 1, 0.3, 1));
-}
-
-html.dh-page-contact .dh-main-content--contact:has(#dh-contact-root.dh-contact--visible) .dh-contact__page-banner {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-  transition-delay: 0.02s;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html.dh-page-contact .dh-contact__page-banner {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-}
-
 @media (max-height: 560px) {
   html.dh-page-contact .dh-main-content.dh-main-content--contact {
     overflow-y: auto;
@@ -91,13 +57,6 @@ html.dh-page-contact #dh-contact-root.dh-contact {
   margin-inline: auto;
   padding-block: 0;
   padding-inline: max(0.65rem, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
-}
-
-/* Large monitors: keep the panel centred instead of stretching edge to edge */
-@media (min-width: 1440px) {
-  html.dh-page-contact #dh-contact-root.dh-contact {
-    max-width: 1440px;
-  }
 }
 
 @media (min-width: 900px) {
@@ -1311,10 +1270,6 @@ html.dh-page-contact .dh-contact__sidebar .dh-contact__intro {
 
 /* Phones (≤899px) - kept last so these override the base rules above (same selectors) */
 @media (max-width: 899px) {
-  html.dh-page-contact .dh-contact__page-banner {
-    display: none;
-  }
-
   /* Unlock the viewport-locked shell so the page can scroll on the document */
   html.dh-page-contact,
   html.dh-page-contact body {
