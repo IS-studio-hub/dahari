@@ -619,8 +619,6 @@ html.dh-page-contact .dh-main-content.dh-main-content--contact {
 .dh-cx__video {
   display: block;
   width: 100%;
-  aspect-ratio: 4 / 3;
-  max-height: 300px;
   object-fit: contain;
   background: #fff;
 }
@@ -645,4 +643,17 @@ html.dh-page-contact .dh-main-content.dh-main-content--contact {
   .dh-cx > :nth-child(3) { animation-delay: 0.12s; }
   .dh-cx > :nth-child(4) { animation-delay: 0.18s; }
   .dh-cx > :nth-child(5) { animation-delay: 0.24s; }
+}
+
+/* Desktop only: wider content, smaller side margins */
+@media (min-width: 1000px) {
+  .dh-cx {
+    max-width: 1520px;
+    padding-inline: clamp(1rem, 2vw, 2rem);
+  }
+}
+
+/* Background image at 30% opacity (page colour shows through) */
+html.dh-page-contact body::before {
+  opacity: 0.3;
 }
