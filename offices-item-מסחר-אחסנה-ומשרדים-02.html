@@ -44,6 +44,14 @@
 <link href="index-layout.css?v=81" rel="stylesheet"/>
 <link href="dh-side-header888.css?v=95" rel="stylesheet"/>
 <link href="dh-logistics-item.css?v=100" rel="stylesheet"/>
+<style>
+/* This page only: one image fills the whole media (left) column */
+.dh-logistics-item__gallery-grid--single{grid-template-columns:1fr}
+.dh-logistics-item__gallery-grid--single>li{grid-column:1/-1}
+@media (min-width:900px){
+  .dh-logistics-item__gallery-grid--single img{aspect-ratio:auto;height:calc(100vh - 140px);height:calc(100dvh - 140px);min-height:460px}
+}
+</style>
 <link href="dh-no-hover-touch.css?v=2" rel="stylesheet" media="print" onload="this.media='all'"/>
 <link href="dh-image-lightbox.css?v=4" rel="stylesheet" media="print" onload="this.media='all'"/>
 </head>
@@ -166,8 +174,8 @@
 </div>
 <div class="dh-logistics-item__media-col">
 <div aria-label="גלריה" class="dh-logistics-item__gallery">
-<ul class="dh-logistics-item__gallery-grid dh-logistics-item__gallery-grid--2" role="list">
-<li role="listitem"><img fetchpriority="high" alt="א.ת. קריית יהלום נתניה" decoding="async" height="600" referrerpolicy="no-referrer" src="assets/RealEstate/Inprogress/%D7%93%D7%92%D7%A0%D7%99%D7%94%2C%20%D7%90%D7%96%D7%95%D7%A8%20%D7%AA%D7%A2%D7%A9%D7%99%D7%99%D7%94%20%D7%A7%D7%A8%D7%99%D7%99%D7%AA%20%D7%99%D7%94%D7%9C%D7%95%D7%9D/%D7%93%D7%92%D7%A0%D7%99%D7%94-1.webp" width="960"/></li>
+<ul class="dh-logistics-item__gallery-grid dh-logistics-item__gallery-grid--single" role="list">
+<li role="listitem"><img fetchpriority="high" alt="א.ת. קריית יהלום נתניה" decoding="async" height="941" referrerpolicy="no-referrer" src="assets/RealEstate/Inprogress/%D7%93%D7%92%D7%A0%D7%99%D7%94%2C%20%D7%90%D7%96%D7%95%D7%A8%20%D7%AA%D7%A2%D7%A9%D7%99%D7%99%D7%94%20%D7%A7%D7%A8%D7%99%D7%99%D7%AA%20%D7%99%D7%94%D7%9C%D7%95%D7%9D/degania-aerial-site-v2.webp" width="1672"/></li>
 </ul>
 </div>
 </div>
