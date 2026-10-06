@@ -43,7 +43,7 @@
 <noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@500;600;700&amp;family=Heebo:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/></noscript>
 <link href="index-layout.css?v=81" rel="stylesheet"/>
 <link href="dh-side-header888.css?v=95" rel="stylesheet"/>
-<link href="dh-contact-page.css?v=43" rel="stylesheet"/>
+<link href="dh-contact-v2.css?v=1" rel="stylesheet"/>
 <link href="dh-no-hover-touch.css?v=2" rel="stylesheet" media="print" onload="this.media='all'"/>
 <link href="dh-image-lightbox.css?v=4" rel="stylesheet" media="print" onload="this.media='all'"/>
 </head>
@@ -67,84 +67,70 @@
 <span aria-current="page" class="dh-breadcrumbs__current">יצירת קשר</span>
 </p>
 </nav>
-<div class="dh-contact dh-contact--split" id="dh-contact-root">
-<div class="dh-contact__bg">
-<div class="dh-contact__inner">
-<section aria-label="פרטי יצירת קשר" class="dh-contact__showcase">
-<div class="dh-contact__sidebar">
-<header class="dh-contact__intro">
-<div class="dh-contact__eyebrow-wrap">
-<p class="dh-contact__eyebrow" lang="en">Contact</p>
-</div>
-<h1 class="dh-contact__title">בואו נדבר על הצעד הבא</h1>
-<p class="dh-contact__lead">
-	                ספרו לנו במשפט מה אתם צריכים - נחזור אליכם עם איש קשר מתאים. אפשר גם לפנות ישירות בטלפון או בדוא״ל.
-	              </p>
-<ul class="dh-contact__chips" role="list">
-<li><span class="dh-contact__chip">תגובה מהירה</span></li>
-<li><span class="dh-contact__chip">ייעוץ ללא התחייבות</span></li>
-<li><span class="dh-contact__chip">מומחיות בנדל״ן</span></li>
+<div class="dh-cx" id="dh-contact-root">
+
+<header class="dh-cx__intro">
+<p class="dh-cx__eyebrow" lang="en">Contact</p>
+<h1 class="dh-cx__title">בואו נדבר על הצעד הבא</h1>
+<p class="dh-cx__lead">ספרו לנו במשפט מה אתם צריכים ונחזור אליכם עם איש הקשר המתאים, או פנו אלינו ישירות בטלפון, בוואטסאפ או בדוא״ל.</p>
+<ul class="dh-cx__chips" role="list">
+<li>תגובה מהירה</li>
+<li>ייעוץ ללא התחייבות</li>
+<li>מומחיות בנדל״ן</li>
 </ul>
 </header>
-<aside aria-label="דרכי קשר נוספות" class="dh-contact__aside">
-<div class="dh-contact__card">
-<h2 class="dh-contact__card-title">משרד ושעות</h2>
-<p class="dh-contact__hours">א׳–ה׳ 09:00–18:00 · ו׳ 09:00–13:00</p>
-<p class="dh-contact__map-note">התרופה 4, אזור התעשייה פולג, נתניה.</p>
-<ul class="dh-contact__links" role="list">
+
+<nav aria-label="דרכי קשר ישירות" class="dh-cx__quick">
+<h2 class="dh-cx__card-title">דברו איתנו ישירות</h2>
+<ul class="dh-cx__quick-list" role="list">
 <li>
-<a href="https://maps.google.com/?q=%D7%94%D7%AA%D7%A8%D7%95%D7%A4%D7%94%204%20%D7%A0%D7%AA%D7%A0%D7%99%D7%94" rel="noopener noreferrer" target="_blank">פתיחה במפה</a>
+<a class="dh-cx__quick-link" href="tel:+97235123456">
+<span aria-hidden="true" class="dh-cx__icon"><svg viewBox="0 0 24 24" focusable="false"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg></span>
+<span class="dh-cx__quick-text"><span class="dh-cx__quick-label">טלפון</span><span class="dh-cx__quick-value" dir="ltr">+972-3-512-3456</span></span>
+</a>
+</li>
+<li>
+<a class="dh-cx__quick-link" href="https://wa.me/972501234567" rel="noopener noreferrer" target="_blank">
+<span aria-hidden="true" class="dh-cx__icon"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3zm0 2a7 7 0 1 1-3.6 13l-.3-.2-2.3.6.6-2.2-.2-.3A7 7 0 0 1 12 5zm-2.6 3.5c-.2 0-.5 0-.7.3-.3.3-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.8 2.8 4.4 3.8 2.1.8 2.6.7 3 .6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2l-.4-.3-1.6-.8c-.2-.1-.4-.1-.6.1l-.7.9c-.1.2-.3.2-.5.1a5.6 5.6 0 0 1-2.8-2.4c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.8c-.2-.5-.4-.4-.5-.4z"/></svg></span>
+<span class="dh-cx__quick-text"><span class="dh-cx__quick-label">וואטסאפ</span><span class="dh-cx__quick-value">שלחו לנו הודעה</span></span>
+</a>
+</li>
+<li>
+<a class="dh-cx__quick-link" href="mailto:info@dahari.co.il">
+<span aria-hidden="true" class="dh-cx__icon"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zm0 2v.4l8 5 8-5V7H4zm16 2.75-7.47 4.67a1 1 0 0 1-1.06 0L4 9.75V17h16V9.75z"/></svg></span>
+<span class="dh-cx__quick-text"><span class="dh-cx__quick-label">דוא״ל</span><span class="dh-cx__quick-value" dir="ltr">info@dahari.co.il</span></span>
+</a>
 </li>
 </ul>
+</nav>
+
+<section aria-labelledby="dh-cx-form-title" class="dh-cx__form-card">
+<div class="dh-cx__form-head">
+<h2 class="dh-cx__form-title" id="dh-cx-form-title">השאירו פרטים ונחזור אליכם</h2>
+<p class="dh-cx__form-hint">שדות המסומנים ב־<span aria-hidden="true">*</span><span class="dh-cx__sr">כוכבית</span> הם שדות חובה.</p>
 </div>
-<div class="dh-contact__card">
-<h2 class="dh-contact__card-title">ישירות</h2>
-<ul class="dh-contact__links" role="list">
-<li><a dir="ltr" href="tel:+97235123456">+972-3-512-3456</a></li>
-<li><a dir="ltr" href="mailto:info@dahari.co.il">info@dahari.co.il</a></li>
-<li><a href="https://wa.me/972501234567" rel="noopener noreferrer" target="_blank">וואטסאפ</a></li>
-</ul>
+<div aria-live="assertive" class="dh-cx__alert" hidden="" id="dh-contact-form-alert" role="alert" tabindex="-1"></div>
+<div aria-live="polite" class="dh-cx__success" hidden="" id="dh-contact-success" role="status" tabindex="-1">
+<h3>ההודעה מוכנה</h3>
+<p>לחצו על הכפתור כדי לפתוח אותה באפליקציית הדוא״ל. אם היא לא נפתחת, כתבו לנו ל־<span dir="ltr">info@dahari.co.il</span>.</p>
+<a class="dh-cx__submit" href="#" id="dh-contact-mailto-link">פתיחת ההודעה בדוא״ל</a>
 </div>
-</aside>
+<form class="dh-cx__form" data-mailto="info@dahari.co.il" id="dh-contact-form" lang="he" novalidate="">
+<div class="dh-cx__field">
+<label class="dh-cx__label" for="dh-contact-name">שם מלא <span aria-hidden="true" class="dh-cx__req">*</span></label>
+<input aria-required="true" autocomplete="name" class="dh-cx__input" id="dh-contact-name" maxlength="120" name="name" required="" type="text"/>
 </div>
-<figure class="dh-contact__hero-media">
-<video aria-label="סרטון הצגת המותג - דהרי" class="dh-contact__hero-video" muted playsinline preload="metadata" loop autoplay>
-<source src="assets/ContantUs/FINAL%201.mp4" type="video/mp4"/>
-</video>
-</figure>
-</section>
-<div class="dh-contact__main">
-<div class="dh-contact__form-wrap">
-<h2 class="dh-contact__form-title">טופס פנייה</h2>
-<p class="dh-contact__form-hint">שדות חובה מסומנים בכוכבית. לאחר השליחה ייפתח דוא״ל מוכן לשליחה מהמכשיר.</p>
-<div aria-live="assertive" class="dh-contact__alert" hidden="" id="dh-contact-form-alert" role="alert" tabindex="-1"></div>
-<div aria-live="polite" class="dh-contact__success" hidden="" id="dh-contact-success" role="status" tabindex="-1">
-<h3>הטופס מוכן</h3>
-<p>לחצו לפתיחת דוא״ל עם ההודעה. אם לא נפתח - שלחו ל־info@dahari.co.il.</p>
-<a class="dh-contact__submit" href="#" id="dh-contact-mailto-link">פתיחת הודעה בדוא״ל</a>
+<div class="dh-cx__field">
+<label class="dh-cx__label" for="dh-contact-phone">טלפון</label>
+<input autocomplete="tel" class="dh-cx__input" dir="ltr" id="dh-contact-phone" inputmode="tel" name="phone" placeholder="050-0000000" type="tel"/>
 </div>
-<form class="dh-contact__form" data-mailto="info@dahari.co.il" id="dh-contact-form" lang="he" novalidate="">
-<div class="dh-contact__row2">
-<div class="dh-contact__field">
-<label class="dh-contact__label" for="dh-contact-name">שם מלא <span aria-hidden="true" class="dh-contact__req">*</span></label>
-<input aria-required="true" autocomplete="name" class="dh-contact__input" id="dh-contact-name" maxlength="120" name="name" required="" type="text"/>
-<span aria-live="polite" class="dh-contact__error" id="dh-contact-name-err"></span>
+<div class="dh-cx__field">
+<label class="dh-cx__label" for="dh-contact-email">דוא״ל <span aria-hidden="true" class="dh-cx__req">*</span></label>
+<input aria-required="true" autocomplete="email" class="dh-cx__input" dir="ltr" id="dh-contact-email" inputmode="email" name="email" placeholder="name@domain.co.il" required="" type="email"/>
 </div>
-<div class="dh-contact__field">
-<label class="dh-contact__label" for="dh-contact-email">דוא״ל <span aria-hidden="true" class="dh-contact__req">*</span></label>
-<input aria-required="true" autocomplete="email" class="dh-contact__input" dir="ltr" id="dh-contact-email" inputmode="email" name="email" required="" type="email"/>
-<span class="dh-contact__hint">לדוגמה: name@domain.co.il</span>
-</div>
-</div>
-<div class="dh-contact__row2">
-<div class="dh-contact__field">
-<label class="dh-contact__label" for="dh-contact-phone">טלפון</label>
-<input autocomplete="tel" class="dh-contact__input" dir="ltr" id="dh-contact-phone" inputmode="tel" name="phone" type="tel"/>
-<span class="dh-contact__hint">אופציונלי - מקל על חזרה מהירה</span>
-</div>
-<div class="dh-contact__field">
-<label class="dh-contact__label" for="dh-contact-topic">נושא <span aria-hidden="true" class="dh-contact__req">*</span></label>
-<select aria-required="true" class="dh-contact__select" id="dh-contact-topic" name="topic" required="">
+<div class="dh-cx__field">
+<label class="dh-cx__label" for="dh-contact-topic">נושא הפנייה <span aria-hidden="true" class="dh-cx__req">*</span></label>
+<select aria-required="true" class="dh-cx__input dh-cx__select" id="dh-contact-topic" name="topic" required="">
 <option value="">בחרו נושא</option>
 <option value="general">שאלה כללית</option>
 <option value="commercial">נדל״ן מסחרי</option>
@@ -154,26 +140,44 @@
 <option value="press">תקשורת ושותפויות</option>
 </select>
 </div>
+<div class="dh-cx__field dh-cx__field--full">
+<label class="dh-cx__label" for="dh-contact-message">הודעה <span aria-hidden="true" class="dh-cx__req">*</span></label>
+<textarea aria-describedby="dh-cx-message-hint" aria-required="true" class="dh-cx__input dh-cx__textarea" id="dh-contact-message" maxlength="4000" minlength="10" name="message" placeholder="מה הצורך, לוח זמנים או שאלה…" required="" rows="4"></textarea>
+<span class="dh-cx__hint" id="dh-cx-message-hint">לפחות 10 תווים</span>
 </div>
-<div class="dh-contact__field dh-contact__field--message">
-<label class="dh-contact__label" for="dh-contact-message">הודעה <span aria-hidden="true" class="dh-contact__req">*</span></label>
-<textarea aria-required="true" class="dh-contact__textarea" id="dh-contact-message" maxlength="4000" minlength="10" name="message" placeholder="מה הצורך, לוח זמנים או שאלה…" required="" rows="3"></textarea>
-<span class="dh-contact__hint">מינימום 10 תווים</span>
-</div>
-<div class="dh-contact__check">
+<div class="dh-cx__check dh-cx__field--full">
 <input aria-required="true" id="dh-contact-consent" name="consent" required="" type="checkbox"/>
-<label for="dh-contact-consent">
-	                    מאשר/ת יצירת קשר ועדכונים בנושא הפנייה (ניתן לבטל בכל עת).
-	                  </label>
+<label for="dh-contact-consent">אני מאשר/ת יצירת קשר ועדכונים בנושא הפנייה (ניתן לבטל בכל עת). <span aria-hidden="true" class="dh-cx__req">*</span></label>
 </div>
-<div class="dh-contact__actions">
-<button class="dh-contact__submit" type="submit">הכנת הודעה לשליחה</button>
+<div class="dh-cx__actions dh-cx__field--full">
+<button class="dh-cx__submit" type="submit">הכנת ההודעה לשליחה</button>
+<p class="dh-cx__actions-note">בלחיצה תיפתח הודעת דוא״ל מוכנה לשליחה מהמכשיר שלכם.</p>
 </div>
 </form>
+</section>
+
+<section aria-labelledby="dh-cx-office-title" class="dh-cx__office">
+<h2 class="dh-cx__card-title" id="dh-cx-office-title">המשרד שלנו</h2>
+<div class="dh-cx__office-row">
+<span aria-hidden="true" class="dh-cx__icon dh-cx__icon--soft"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 2a7 7 0 0 1 7 7c0 5.2-7 13-7 13S5 14.2 5 9a7 7 0 0 1 7-7zm0 4.5A2.5 2.5 0 1 0 12 11.5 2.5 2.5 0 0 0 12 6.5z"/></svg></span>
+<p>התרופה 4, אזור התעשייה פולג, נתניה</p>
 </div>
+<div class="dh-cx__office-row">
+<span aria-hidden="true" class="dh-cx__icon dh-cx__icon--soft"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20zm0 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16zm1 3v4.6l3.2 1.9-1 1.7L11 12.7V7h2z"/></svg></span>
+<dl class="dh-cx__hours">
+<div><dt>א׳–ה׳</dt><dd dir="ltr">09:00–18:00</dd></div>
+<div><dt>ו׳</dt><dd dir="ltr">09:00–13:00</dd></div>
+</dl>
 </div>
-</div>
-</div>
+<a class="dh-cx__map-link" href="https://maps.google.com/?q=%D7%94%D7%AA%D7%A8%D7%95%D7%A4%D7%94%204%20%D7%A0%D7%AA%D7%A0%D7%99%D7%94" rel="noopener noreferrer" target="_blank">פתיחה במפה<span aria-hidden="true"> ←</span></a>
+</section>
+
+<figure class="dh-cx__media">
+<video aria-label="סרטון הצגת המותג - דהרי" class="dh-contact__hero-video dh-cx__video" muted playsinline preload="metadata" loop autoplay>
+<source src="assets/ContantUs/FINAL%201.mp4" type="video/mp4"/>
+</video>
+</figure>
+
 </div>
 </main>
 </div>
@@ -268,7 +272,7 @@
 </div>
 <script defer="" src="dh-side-header888.js?v=22"></script>
 <script defer="" src="dh-image-lightbox.js?v=4"></script>
-<script defer="" src="dh-contact-page.js?v=3"></script>
+<script defer="" src="dh-contact-page.js?v=4"></script>
 </div>
 <script defer src="https://lytico-production.up.railway.app/lytico.js" data-site="lt_dahari_is07"></script>
 </body>
