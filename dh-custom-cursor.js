@@ -101,14 +101,22 @@
   el.style.transform = "translate3d(" + mx + "px," + my + "px,0)";
   raf = window.requestAnimationFrame(frame);
 
-  window.addEventListener(
-    "beforeunload",
-    function () {
-      window.cancelAnimationFrame(raf);
-      if (window.__dhCustomCursorBridge) {
-        delete window.__dhCustomCursorBridge;
-      }
-    },
-    { once: true }
-  );
+  /* Back/forward cache: the page is frozen on pagehide and later restored as-is, so the
+     animation loop must be stopped and restarted here (not on beforeunload, which never
+     runs again after a restore and left the OS pointer hidden with a frozen fake cursor). */
+  window.addEventListener("pagehide", function () {
+    window.cancelAnimationFrame(raf);
+    raf = 0;
+  });
+  window.addEventListener("pageshow", function (ev) {
+    if (!ev.persisted) return;
+    window.__dhCustomCursorBridge = {
+      setState: setState,
+      setHidden: setHidden,
+      setPressed: setPressed,
+    };
+    setPressed(false);
+    setHidden(false);
+    if (!raf) raf = window.requestAnimationFrame(frame);
+  });
 })();

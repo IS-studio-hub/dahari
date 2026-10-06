@@ -2,29 +2,6 @@
   display: none !important;
 }
 
-@font-face {
-  font-display: swap;
-  font-family: "Roc Grotesk";
-  font-style: normal;
-  font-weight: 400;
-  src: url("https://www.worldquantfoundry.com/assets/roc-grotesk-regular.woff2") format("woff2"),
-    url("https://www.worldquantfoundry.com/assets/roc-grotesk-regular.woff") format("woff");
-}
-@font-face {
-  font-display: swap;
-  font-family: "Roc Grotesk";
-  font-style: normal;
-  font-weight: 500;
-  src: url("https://www.worldquantfoundry.com/assets/roc-grotesk-medium.woff2") format("woff2"),
-    url("https://www.worldquantfoundry.com/assets/roc-grotesk-medium.woff") format("woff");
-}
-@font-face {
-  font-display: swap;
-  font-family: "Azeret Mono";
-  font-style: normal;
-  font-weight: 500;
-  src: url("https://www.worldquantfoundry.com/assets/azeret-mono-regular.otf") format("opentype");
-}
 
 @keyframes wqf-glitch-hover {
   0% {

@@ -162,6 +162,7 @@ html.dh-page-terms body {
   background: rgba(255, 255, 255, 0.55);
   border: 1px solid rgba(44, 45, 102, 0.1);
   border-radius: 999px;
+  -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
 }
 

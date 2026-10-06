@@ -513,6 +513,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
   font-weight: 700;
   line-height: 1.35;
   color: var(--dh-item-ink);
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -770,6 +771,7 @@ html.dh-page-property-item .dh-main-content.dh-main-content--logistics-item {
 }
 
 .dh-logistics-item__inquiry-submit {
+  -webkit-appearance: none;
   appearance: none;
   border: none;
   cursor: pointer;

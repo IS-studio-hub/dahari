@@ -1505,7 +1505,7 @@ def build_item_page(project, all_projects):
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@500;600;700&amp;family=Rubik:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="index-layout.css?v=81" rel="stylesheet"/>
 <link href="dh-side-header888.css?v=95" rel="stylesheet"/>
-<link href="dh-logistics-item.css?v=100" rel="stylesheet"/>
+<link href="dh-logistics-item.css?v=101" rel="stylesheet"/>
 <link href="dh-image-lightbox.css?v=4" rel="stylesheet" media="print" onload="this.media='all'"/>
 </head>
 <body>
@@ -1655,7 +1655,7 @@ def build_item_page(project, all_projects):
 </div>
 </nav>
 </div>
-<script defer="" src="dh-side-header888.js?v=22"></script>
+<script defer="" src="dh-side-header888.js?v=23"></script>
 <script defer="" src="dh-image-lightbox.js?v=4"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
