@@ -53,6 +53,12 @@ html.dh-page-home body,
 html.dh-page-home .dh-side-header888__content888,
 html.dh-page-home .dh-carousel-embed,
 html.dh-page-home .dh-main-content{background-image:none!important}
+/* Desktop only: slightly smaller carousel cards (~12% smaller; mobile untouched) */
+@media (min-width:1024px){html.dh-page-home .dh-carousel-embed{--card-size:220px}}
+@media (min-width:1024px) and (max-height:680px){html.dh-page-home .dh-carousel-embed{--card-size:208px}}
+@media (min-width:1024px) and (max-height:645px){html.dh-page-home .dh-carousel-embed{--card-size:199px}}
+@media (min-width:1024px) and (max-height:599px){html.dh-page-home .dh-carousel-embed{--card-size:188px}}
+@media (min-width:1024px) and (max-height:551px){html.dh-page-home .dh-carousel-embed{--card-size:176px}}
 </style>
 </head>
 <body>
