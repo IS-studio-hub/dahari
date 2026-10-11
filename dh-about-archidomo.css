@@ -665,7 +665,9 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
   }
 }
 
-/* About hero title in the site's handwriting font (same as homepage / project titles) */
+/* About hero title in the site's handwriting font (same as homepage / project titles).
+   Selector includes .dh-arch-page h1 so it outranks the generic heading font rule above. */
+html.dh-page-archidomo .dh-arch-page h1.dh-arch-hero__brand,
 html.dh-page-archidomo .dh-arch-hero__brand {
   font-family: "Gveret Levin", "Noto Sans Hebrew", "Heebo", cursive, system-ui, sans-serif;
   font-weight: 400;
