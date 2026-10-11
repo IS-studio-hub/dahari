@@ -1,0 +1,124 @@
+/* Before / After comparison slider (about page) */
+.dh-ba {
+  --ba-pos: 50%;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  max-height: 88vh;
+  margin-inline: auto;
+  background: #e9edf5;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-y;
+  cursor: ew-resize;
+  direction: ltr;
+}
+
+.dh-ba__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+/* "Before" sits on top and is revealed from the left up to the handle */
+.dh-ba__img--before {
+  clip-path: inset(0 calc(100% - var(--ba-pos)) 0 0);
+}
+
+.dh-ba__divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--ba-pos);
+  width: 2px;
+  margin-left: -1px;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(44, 45, 102, 0.15), 0 0 18px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+
+.dh-ba__handle {
+  position: absolute;
+  top: 50%;
+  left: var(--ba-pos);
+  width: 52px;
+  height: 52px;
+  margin: -26px 0 0 -26px;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--site-text-color, #2c2d66);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 6px 22px -6px rgba(44, 45, 102, 0.55);
+  pointer-events: none;
+  transition: transform 0.2s ease;
+}
+
+.dh-ba__handle svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dh-ba.is-dragging .dh-ba__handle {
+  transform: scale(1.08);
+}
+
+.dh-ba__label {
+  position: absolute;
+  top: 14px;
+  padding: 0.3rem 0.8rem;
+  font-family: "Heebo", "Noto Sans Hebrew", system-ui, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #fff;
+  background: rgba(44, 45, 102, 0.72);
+  border-radius: 999px;
+  pointer-events: none;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  transition: opacity 0.2s ease;
+}
+
+.dh-ba__label--before { left: 14px; }
+.dh-ba__label--after { right: 14px; }
+
+/* Native range input covers the component for keyboard + screen readers */
+.dh-ba__range {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.dh-ba__range:focus-visible ~ .dh-ba__handle {
+  outline: 3px solid var(--site-color-30, #99beff);
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .dh-ba__handle {
+    width: 44px;
+    height: 44px;
+    margin: -22px 0 0 -22px;
+  }
+  .dh-ba__label {
+    top: 10px;
+    font-size: 0.78rem;
+  }
+}

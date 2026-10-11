@@ -39,11 +39,12 @@
 <!-- dh-seo:end -->
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@400;500;600;700&amp;family=Heebo:wght@400;500;600;700&amp;display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
-<noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@400;500;600;700&amp;family=Heebo:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/></noscript>
+<link href="https://fonts.googleapis.com/css2?family=Gveret+Levin&amp;family=Noto+Sans+Hebrew:wght@400;500;600;700&amp;family=Heebo:wght@400;500;600;700&amp;display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
+<noscript><link href="https://fonts.googleapis.com/css2?family=Gveret+Levin&amp;family=Noto+Sans+Hebrew:wght@400;500;600;700&amp;family=Heebo:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/></noscript>
 <link href="index-layout.css?v=81" rel="stylesheet"/>
 <link href="dh-side-header888.css?v=95" rel="stylesheet"/>
-<link href="dh-about-archidomo.css?v=25" rel="stylesheet"/>
+<link href="dh-about-archidomo.css?v=26" rel="stylesheet"/>
+<link href="dh-before-after.css?v=1" rel="stylesheet"/>
 <link href="dh-no-hover-touch.css?v=2" rel="stylesheet" media="print" onload="this.media='all'"/>
 <link href="dh-image-lightbox.css?v=4" rel="stylesheet" media="print" onload="this.media='all'"/>
 </head>
@@ -82,7 +83,15 @@
 <img alt="מבנה דהרי" class="dh-arch-media dh-arch-media--tall" decoding="async" height="1086" loading="lazy" src="assets/RealEstate/about/brick-building-day.webp" width="1448"/>
 </figure>
 <figure class="dh-arch-stagger__fig dh-arch-stagger__fig--wide" data-arch-reveal="">
-<img alt="בניין משרדי דהרי, התרופה 4 נתניה" class="dh-arch-media dh-arch-media--hero" decoding="async" height="1448" loading="lazy" src="assets/RealEstate/about/dahari-hq-day.webp" width="1086"/>
+<div aria-label="השוואת לפני ואחרי – בניין דהרי, התרופה 4 נתניה" class="dh-ba" data-before-after="" role="group">
+<img alt="בניין התרופה 4 נתניה אחרי השיפוץ" class="dh-ba__img dh-ba__img--after" decoding="async" draggable="false" height="1448" loading="lazy" src="assets/RealEstate/about/hq-after.webp" width="1086"/>
+<img alt="בניין התרופה 4 נתניה לפני השיפוץ" class="dh-ba__img dh-ba__img--before" decoding="async" draggable="false" height="1448" loading="lazy" src="assets/RealEstate/about/hq-before.webp" width="1086"/>
+<span aria-hidden="true" class="dh-ba__label dh-ba__label--before">לפני</span>
+<span aria-hidden="true" class="dh-ba__label dh-ba__label--after">אחרי</span>
+<input aria-label="גררו להשוואה בין לפני לאחרי" class="dh-ba__range" max="100" min="0" step="0.5" type="range" value="50"/>
+<span aria-hidden="true" class="dh-ba__divider"></span>
+<span aria-hidden="true" class="dh-ba__handle"><svg viewBox="0 0 24 24"><path d="M9 6l-6 6 6 6"/><path d="M15 6l6 6-6 6"/></svg></span>
+</div>
 </figure>
 </section>
 <section aria-label="ציטוט" class="dh-arch-quote-band" data-arch-reveal="">
@@ -160,7 +169,7 @@
 <p class="dh-arch-prose" data-arch-reveal="">איתור ורכישה · תכנון ופיתוח · רישוי · השבחה · ניהול פרויקטים · שיווק והשכרה · התאמות לשוכרים · ניהול נכסים</p>
 <p class="dh-arch-prose" data-arch-reveal="">היכולת ללוות את מלוא מחזור החיים של הנכס מאפשרת לנו לחבר בין החלטות תכנוניות, שיקולים עסקיים וצרכים תפעוליים – ולנהל כל פרויקט מתוך ראייה כוללת וארוכת טווח.</p>
 <div class="dh-arch-media-grid" data-arch-reveal="">
-<img alt="פרויקט מגורים דהרי" class="dh-arch-media" decoding="async" height="1440" loading="lazy" src="assets/RealEstate/about/residential-project-day.webp" width="1432"/>
+<img alt="בניין משרדי דהרי, התרופה 4 נתניה" class="dh-arch-media" decoding="async" height="1448" loading="lazy" src="assets/RealEstate/about/dahari-hq-day.webp" width="1086"/>
 <img alt="מבנה מגורים דהרי" class="dh-arch-media" decoding="async" height="560" loading="lazy" src="assets/RealEstate/about/E2.webp" width="800"/>
 </div>
 <div class="dh-arch-coords" data-arch-reveal="">
@@ -168,7 +177,7 @@
 </div>
 <div class="dh-arch-media-grid dh-arch-media-grid--triple" data-arch-reveal="">
 <img alt="חנות BabyStar, המלאכה 30 נתניה" class="dh-arch-media" decoding="async" height="1434" loading="lazy" src="assets/RealEstate/about/babystar-day.webp" width="1097"/>
-<img alt="מבנה מסחרי של דהרי בשלבי סיום" class="dh-arch-media" decoding="async" height="1200" loading="lazy" src="assets/RealEstate/about/IMG_3756.webp" width="1600"/>
+<img alt="חנות במבנה המלאכה 30 נתניה" class="dh-arch-media" decoding="async" height="1600" loading="lazy" src="assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2030/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2030%20%D7%97%D7%A0%D7%95%D7%AA%20%D7%97%D7%96%D7%99%D7%AA%20%D7%A6%D7%93%20%D7%A9%D7%9E%D7%90%D7%9C/IMG_1818.webp" width="1200"/>
 <img alt="נכס מסחרי דהרי" class="dh-arch-media" decoding="async" height="420" loading="lazy" src="assets/RealEstate/about/L2small.webp" width="560"/>
 </div>
 </section>
@@ -332,8 +341,9 @@
 </nav>
 </div>
 <script defer="" src="dh-side-header888.js?v=23"></script>
-<script defer="" src="dh-image-lightbox.js?v=4"></script>
+<script defer="" src="dh-image-lightbox.js?v=5"></script>
 <script defer="" src="dh-about-archidomo.js?v=3"></script>
+<script defer="" src="dh-before-after.js?v=1"></script>
 </div>
 <script defer src="https://lytico-production.up.railway.app/lytico.js" data-site="lt_dahari_is07"></script>
 </body>

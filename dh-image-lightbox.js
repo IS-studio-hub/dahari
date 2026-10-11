@@ -7,7 +7,7 @@
     /* Portfolio / listing cards - lightbox is for content images only */
     ".wqf-logo-img, .wqf-slide img, .wqf-slide-card img, " +
     ".dh-logistics-item__also-like-media img, .dh-logistics-item__also-like-card img, " +
-    ".dh-lightbox img, .dh-lightbox video";
+    ".dh-lightbox img, .dh-lightbox video, .dh-ba img";
 
   var IMAGE_EXT = /\.(jpe?g|png|gif|webp|avif|bmp)(\?|#|$)/i;
 

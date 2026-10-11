@@ -44,6 +44,14 @@
 <link href="index-layout.css?v=81" rel="stylesheet"/>
 <link href="dh-side-header888.css?v=95" rel="stylesheet"/>
 <link href="dh-logistics-item.css?v=101" rel="stylesheet"/>
+<style>
+/* This page only: one image fills the whole media column */
+.dh-logistics-item__gallery-grid--single{grid-template-columns:1fr}
+.dh-logistics-item__gallery-grid--single>li{grid-column:1/-1}
+@media (min-width:900px){
+  .dh-logistics-item__gallery-grid--single img{aspect-ratio:auto;height:calc(100vh - 140px);height:calc(100dvh - 140px);min-height:460px}
+}
+</style>
 <link href="dh-no-hover-touch.css?v=2" rel="stylesheet" media="print" onload="this.media='all'"/>
 <link href="dh-image-lightbox.css?v=4" rel="stylesheet" media="print" onload="this.media='all'"/>
 <style>
@@ -140,43 +148,6 @@
 </div>
 </div>
 </div>
-<section aria-label="תוכניות בנייה" class="dh-logistics-item__plans">
-<h3 class="dh-logistics-item__plans-title">תוכניות בנייה</h3>
-<ul class="dh-logistics-item__plans-grid" role="list">
-<li role="listitem">
-<a aria-label="פתיחת תוכנית גלריה" class="dh-logistics-item__plans-card" href="assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2030/plans/plan-gallery.webp" rel="noopener" target="_blank">
-<span class="dh-logistics-item__plans-media">
-<img alt="תוכנית גלריה" decoding="async" height="400" loading="lazy" src="assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2030/plans/plan-gallery.webp" width="400"/>
-</span>
-<span class="dh-logistics-item__plans-name">תוכנית גלריה</span>
-</a>
-</li>
-<li role="listitem">
-<a aria-label="פתיחת תוכניות קומות" class="dh-logistics-item__plans-card" href="assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2030/plans/plan-floors.webp" rel="noopener" target="_blank">
-<span class="dh-logistics-item__plans-media">
-<img alt="תוכניות קומות" decoding="async" height="400" loading="lazy" src="assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2030/plans/plan-floors.webp" width="400"/>
-</span>
-<span class="dh-logistics-item__plans-name">תוכניות קומות</span>
-</a>
-</li>
-<li role="listitem">
-<a aria-label="פתיחת חישוב שטחים" class="dh-logistics-item__plans-card" href="assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2030/plans/plan-areas.webp" rel="noopener" target="_blank">
-<span class="dh-logistics-item__plans-media">
-<img alt="חישוב שטחים" decoding="async" height="400" loading="lazy" src="assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2030/plans/plan-areas.webp" width="400"/>
-</span>
-<span class="dh-logistics-item__plans-name">חישוב שטחים</span>
-</a>
-</li>
-<li role="listitem">
-<a aria-label="פתיחת תוכנית משרדים" class="dh-logistics-item__plans-card" href="assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2030/plans/plan-offices.webp" rel="noopener" target="_blank">
-<span class="dh-logistics-item__plans-media">
-<img alt="תוכנית משרדים" decoding="async" height="400" loading="lazy" src="assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2030/plans/plan-offices.webp" width="400"/>
-</span>
-<span class="dh-logistics-item__plans-name">תוכנית משרדים</span>
-</a>
-</li>
-</ul>
-</section>
 <section aria-label="אולי יעניין אותך גם" class="dh-logistics-item__also-like">
 <h3 class="dh-logistics-item__also-like-title">
 <span class="dh-logistics-item__also-like-title-he">אולי יעניין אותך גם</span>
@@ -238,13 +209,8 @@
 </div>
 <div class="dh-logistics-item__media-col">
 <div aria-label="גלריה" class="dh-logistics-item__gallery">
-<ul class="dh-logistics-item__gallery-grid" role="list" data-contentstorage-gallery="assets/RealEstate/Commerce/המלאכה 30/המלאכה 30 משרדים אופטיק">
+<ul class="dh-logistics-item__gallery-grid dh-logistics-item__gallery-grid--single" role="list" data-contentstorage-gallery="assets/RealEstate/Commerce/המלאכה 30/המלאכה 30 משרדים אופטיק">
 <li role="listitem"><img alt="ADON OPTICS" decoding="async" height="600" loading="lazy" referrerpolicy="no-referrer" src="assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2030/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2030%20%D7%9E%D7%A9%D7%A8%D7%93%D7%99%D7%9D%20%D7%90%D7%95%D7%A4%D7%98%D7%99%D7%A7/00-hero.webp" width="960"/></li>
-<li role="listitem"><img alt="ADON OPTICS" decoding="async" height="600" loading="lazy" referrerpolicy="no-referrer" src="assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2030/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2030%20%D7%9E%D7%A9%D7%A8%D7%93%D7%99%D7%9D%20%D7%90%D7%95%D7%A4%D7%98%D7%99%D7%A7/IMG_3702.webp" width="960"/></li>
-<li role="listitem"><img alt="ADON OPTICS" decoding="async" height="600" loading="lazy" referrerpolicy="no-referrer" src="assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2030/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2030%20%D7%9E%D7%A9%D7%A8%D7%93%D7%99%D7%9D%20%D7%90%D7%95%D7%A4%D7%98%D7%99%D7%A7/IMG_3703.webp" width="960"/></li>
-<li role="listitem"><img alt="ADON OPTICS" decoding="async" height="600" loading="lazy" referrerpolicy="no-referrer" src="assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2030/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2030%20%D7%9E%D7%A9%D7%A8%D7%93%D7%99%D7%9D%20%D7%90%D7%95%D7%A4%D7%98%D7%99%D7%A7/IMG_3708.webp" width="960"/></li>
-<li role="listitem"><img alt="ADON OPTICS" decoding="async" height="600" loading="lazy" referrerpolicy="no-referrer" src="assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2030/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2030%20%D7%9E%D7%A9%D7%A8%D7%93%D7%99%D7%9D%20%D7%90%D7%95%D7%A4%D7%98%D7%99%D7%A7/IMG_3723.webp" width="960"/></li>
-<li role="listitem"><img alt="ADON OPTICS" decoding="async" height="600" loading="lazy" referrerpolicy="no-referrer" src="assets/RealEstate/Commerce/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2030/%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%94%2030%20%D7%9E%D7%A9%D7%A8%D7%93%D7%99%D7%9D%20%D7%90%D7%95%D7%A4%D7%98%D7%99%D7%A7/IMG_7684.webp" width="960"/></li>
 </ul>
 </div>
 </div>

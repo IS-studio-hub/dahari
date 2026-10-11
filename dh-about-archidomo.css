@@ -664,3 +664,9 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
     grid-template-columns: 1fr;
   }
 }
+
+/* About hero title in the site's handwriting font (same as homepage / project titles) */
+html.dh-page-archidomo .dh-arch-hero__brand {
+  font-family: "Gveret Levin", "Noto Sans Hebrew", "Heebo", cursive, system-ui, sans-serif;
+  font-weight: 400;
+}
