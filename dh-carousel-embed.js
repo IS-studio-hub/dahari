@@ -1212,8 +1212,8 @@
               const py = ((y - br.top) / br.height) * 100;
               link.style.setProperty("--shine-x", px + "%");
               link.style.setProperty("--shine-y", py + "%");
-              link.style.setProperty("--tilt-x", 0.3 * (50 - py) + "deg");
-              link.style.setProperty("--tilt-y", 0.3 * (px - 50) + "deg");
+              link.style.setProperty("--tilt-x", "0deg");
+              link.style.setProperty("--tilt-y", "0deg");
             } else {
               link.classList.remove("is-hovered");
               link.style.setProperty("--tilt-x", "0deg");
@@ -1420,20 +1420,9 @@
       this.updateMobileTitle();
     }
 
-    trackMouse(ev) {
-      if (this.reduceMotion) return;
-      const now = performance.now();
-      if (!this.lastContainerUpdate || now - this.lastContainerUpdate > 100) {
-        this.updateCenter();
-        this.lastContainerUpdate = now;
-      }
-      const bounds = this.container.getBoundingClientRect();
-      const dx = ev.clientX - this.centerX;
-      const dy = ev.clientY - this.centerY;
-      this.mouseOffsetRotation =
-        90 * Math.max(-1, Math.min(1, dx / (bounds.width / 2))) * this.mouseSensitivity;
-      this.targetRotationX =
-        90 * -Math.max(-1, Math.min(1, dy / (bounds.height / 2))) * this.mouseSensitivityY;
+    trackMouse() {
+      this.mouseOffsetRotation = 0;
+      this.targetRotationX = 0;
     }
 
     animate() {
