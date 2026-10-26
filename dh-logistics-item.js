@@ -57,6 +57,75 @@
     bindGalleryVideos();
   }
 
+  syncAlsoLikeWithCategoryCards();
+
+  function cardFile(href) {
+    if (!href) return "";
+    var file = String(href).split("#")[0].split("?")[0].split("/").pop();
+    try {
+      file = decodeURIComponent(file);
+    } catch (e) {}
+    return file;
+  }
+
+  function collectCategoryCards(doc) {
+    var map = {};
+    var cards = doc.querySelectorAll(".wqf-slide-card");
+    for (var i = 0; i < cards.length; i++) {
+      var card = cards[i];
+      var link =
+        card.querySelector("a.wqf-btn[href]") ||
+        card.querySelector("a.wqf-area-tag[href]");
+      var img = card.querySelector("img.wqf-logo-img");
+      if (!link || !img) continue;
+      var key = cardFile(link.getAttribute("href"));
+      var src = img.getAttribute("src");
+      if (!key || !src) continue;
+      map[key] = { src: src, alt: img.getAttribute("alt") || "" };
+    }
+    return map;
+  }
+
+  function applyAlsoLike(map) {
+    var links = document.querySelectorAll("a.dh-logistics-item__also-like-card");
+    for (var i = 0; i < links.length; i++) {
+      var link = links[i];
+      var img = link.querySelector("img");
+      if (!img) continue;
+      var entry = map[cardFile(link.getAttribute("href"))];
+      if (!entry) continue;
+      img.setAttribute("src", entry.src);
+      if (entry.alt) img.setAttribute("alt", entry.alt);
+    }
+  }
+
+  function syncAlsoLikeWithCategoryCards() {
+    if (!document.querySelector("a.dh-logistics-item__also-like-card")) return;
+    Promise.all(
+      ["commerce.html", "offices.html"].map(function (url) {
+        return fetch(url, { cache: "no-store" })
+          .then(function (res) {
+            return res.ok ? res.text() : "";
+          })
+          .catch(function () {
+            return "";
+          });
+      })
+    ).then(function (pages) {
+      var map = {};
+      pages.forEach(function (html) {
+        if (!html) return;
+        var part = collectCategoryCards(
+          new DOMParser().parseFromString(html, "text/html")
+        );
+        Object.keys(part).forEach(function (key) {
+          map[key] = part[key];
+        });
+      });
+      applyAlsoLike(map);
+    });
+  }
+
   function bindGalleryVideos() {
     var videos = document.querySelectorAll(
       "video.dh-logistics-item__video, video.dh-logistics-item__gallery-video"

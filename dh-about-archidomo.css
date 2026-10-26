@@ -501,6 +501,10 @@ html.dh-page-archidomo:not(.dh-arch-reduced) .dh-arch-reveal.is-in .dh-arch-medi
   margin-top: 1.5rem;
 }
 
+.dh-arch-media-grid > :only-child {
+  grid-column: 1 / -1;
+}
+
 .dh-arch-media-grid--triple {
   grid-template-columns: repeat(3, 1fr);
 }
