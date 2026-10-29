@@ -3,10 +3,12 @@
   --ba-pos: 50%;
   position: relative;
   overflow: hidden;
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  max-height: 88vh;
+  /* Portrait frame (source is 1086×1448), never wider than the column
+     and never taller than the viewport, centered in the page. */
+  width: min(100%, calc(88vh * 1086 / 1448));
+  aspect-ratio: 1086 / 1448;
   margin-inline: auto;
+  justify-self: center;
   background: #e9edf5;
   user-select: none;
   -webkit-user-select: none;
