@@ -81,7 +81,19 @@
       var key = cardFile(link.getAttribute("href"));
       var src = img.getAttribute("src");
       if (!key || !src) continue;
-      map[key] = { src: src, alt: img.getAttribute("alt") || "" };
+      var title = "";
+      var aria = link.getAttribute("aria-label") || "";
+      var m = aria.match(/^עמוד הפרויקט - (.+)$/);
+      if (m) title = m[1].trim();
+      if (!title) {
+        var loc = card.querySelector(".wqf-slide-location");
+        if (loc) title = (loc.textContent || "").replace(/\s+/g, " ").trim();
+      }
+      map[key] = {
+        src: src,
+        alt: img.getAttribute("alt") || "",
+        title: title,
+      };
     }
     return map;
   }
@@ -96,6 +108,11 @@
       if (!entry) continue;
       img.setAttribute("src", entry.src);
       if (entry.alt) img.setAttribute("alt", entry.alt);
+      if (entry.title) {
+        link.setAttribute("aria-label", "מעבר לעמוד הפרויקט — " + entry.title);
+        var name = link.querySelector(".dh-logistics-item__also-like-name");
+        if (name) name.textContent = entry.title;
+      }
     }
   }
 
