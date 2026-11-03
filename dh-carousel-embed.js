@@ -914,7 +914,9 @@
         0,
         Math.min(Number.isFinite(i0Raw) ? i0Raw : 0, Math.max(0, this.itemCount - 1))
       );
-      const startRot = i0 * this.angleStep;
+      /* CSS compose: stage rotateY(θ) then item rotateY(base) translateZ — card faces
+       * the camera when θ + base ≡ 0, so start at -index·step (not +index·step). */
+      const startRot = -i0 * this.angleStep;
       this.rotation = startRot;
       this.rotationX = 0;
       this.mouseOffsetRotation = 0;
@@ -1580,7 +1582,7 @@
       let best = 0;
       let bestAngle = Infinity;
       this.items.forEach((_, idx) => {
-        let ang = ((idx * this.angleStep - this.rotation) % 360) + 360;
+        let ang = ((idx * this.angleStep + this.rotation) % 360) + 360;
         ang %= 360;
         if (ang > 180) ang -= 360;
         const a = Math.abs(ang);
@@ -1611,7 +1613,7 @@
       this.carousel.style.transform = `translateZ(0) rotateX(${this.rotationX}deg) rotateY(${this.rotation}deg)`;
       this.items.forEach((item, idx) => {
         const base = idx * this.angleStep;
-        let ang = ((base - this.rotation) % 360) + 360;
+        let ang = ((base + this.rotation) % 360) + 360;
         ang %= 360;
         if (ang > 180) ang -= 360;
         const abs = Math.abs(ang);
