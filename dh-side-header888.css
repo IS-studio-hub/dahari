@@ -811,6 +811,17 @@
 		height: 22px;
 		display: block;
 	  }
+
+	  /* WhatsApp in menu: mobile only */
+	  .dh-side-header888__menu-social-item--whatsapp888 {
+		display: none;
+	  }
+
+	  @media (max-width: 1023px) {
+		.dh-side-header888__menu-social-item--whatsapp888 {
+		  display: list-item;
+		}
+	  }
   
 	  .dh-side-header888__menu-link888 {
 		position: relative;
