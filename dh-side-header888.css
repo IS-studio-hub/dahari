@@ -812,54 +812,18 @@
 		display: block;
 	  }
 
-	  /* WhatsApp in menu + floating button: mobile only */
+	  /* WhatsApp in menu: mobile only (floating button disabled) */
 	  .dh-side-header888__menu-social-item--whatsapp888 {
 		display: none;
 	  }
 
 	  .dh-side-header888__whatsapp-float888 {
-		display: none;
+		display: none !important;
 	  }
 
 	  @media (max-width: 1023px) {
 		.dh-side-header888__menu-social-item--whatsapp888 {
 		  display: list-item;
-		}
-
-		.dh-side-header888__whatsapp-float888 {
-		  position: fixed;
-		  z-index: 68;
-		  bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
-		  left: max(1rem, env(safe-area-inset-left, 0px));
-		  right: auto;
-		  display: flex;
-		  align-items: center;
-		  justify-content: center;
-		  width: 52px;
-		  height: 52px;
-		  border-radius: 50%;
-		  background-color: #25d366;
-		  color: #fff;
-		  text-decoration: none;
-		  box-shadow: 0 4px 14px rgba(15, 16, 40, 0.22);
-		  pointer-events: auto;
-		  transition: transform 0.2s var(--ease), opacity 0.2s var(--ease);
-		}
-
-		.dh-side-header888__whatsapp-float888 svg {
-		  width: 28px;
-		  height: 28px;
-		  display: block;
-		}
-
-		.dh-side-header888__whatsapp-float888:focus-visible {
-		  outline: 3px solid #99beff;
-		  outline-offset: 3px;
-		}
-
-		.dh-side-header888--menu-open .dh-side-header888__whatsapp-float888 {
-		  opacity: 0;
-		  pointer-events: none;
 		}
 	  }
   
